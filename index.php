@@ -10,6 +10,11 @@
             <h1>Math 6730</h1>
             <p>Hello world</p>
             <p>Hello world</p>
+            <ul>
+                <li>Cool</li>
+                <li>Stuff</li>
+                <li>Stuff</li>
+            </ul>
         </div>
     </body>
 </html>
