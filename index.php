@@ -10,10 +10,10 @@
             <h1>Math 6730</h1>
             <p>Hello world</p>
             <p>Hello world</p>
+            <h2>Links</h2>
             <ul>
-                <li>Cool</li>
-                <li>Stuff</li>
-                <li>Stuff</li>
+                <li><a href="syllabus.pdf">Syllabus</a></li>
+                <li><a href="BA.pdf">BA Text</a></li>
             </ul>
         </div>
     </body>
