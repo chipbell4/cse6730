@@ -1,0 +1,18 @@
+# Things to exclude
+Exclusions:
+    - Cross-wise traffic blocking the flow of traffic during a green light (gridlock).
+
+Questions:
+    - Handling car acceleration/decelerating due to light changes, cars ahead accelerating/decelerating
+    - Input rate of cars (function of time?)
+    - Handling lane switches between cars
+    - Acceleration rates/speeds of cars
+    - Variation in car size
+    - Distance between lights
+    - Lane count
+
+# Useful online resources (might cite them)?
+Resources:
+    - http://www.ctr.kth.se/publications/ctr2006_07.pdf
+    - http://www.tsi.lv/sites/default/files/editor/science/Publikacii/RelStat_09/sess_9_lopez.pdf
+
