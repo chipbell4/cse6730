@@ -2,7 +2,7 @@
 Exclusions:
     - Cross-wise traffic blocking the flow of traffic during a green light (gridlock).
 
-Questions:
+Considerations:
     - Handling car acceleration/decelerating due to light changes, cars ahead accelerating/decelerating
     - Input rate of cars (function of time?)
     - Handling lane switches between cars
