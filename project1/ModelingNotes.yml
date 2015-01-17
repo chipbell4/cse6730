@@ -20,6 +20,10 @@ Considerations:
         - Handling car acceleration/decelerating due to light changes, cars ahead accelerating/decelerating
         - Variation in car size
 
+Mathy Stuff:
+    Inverse Transform Sampling:
+        - Exponential distribution: http://en.wikipedia.org/wiki/Exponential_distribution#Generating_exponential_variates
+
 # Useful online resources (might cite them)?
 Resources:
     Papers:
