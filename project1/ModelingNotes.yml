@@ -3,14 +3,22 @@ Exclusions:
     - Cross-wise traffic blocking the flow of traffic during a green light (gridlock).
 
 Considerations:
-    - Handling car acceleration/decelerating due to light changes, cars ahead accelerating/decelerating
-    - Input rate of cars (function of time?)
-    - Handling lane switches between cars
-    - Acceleration rates/speeds of cars
-    - Variation in car size
-    - Distance between lights
-    - Lane count
-    - Turning early off of the street
+    Calculations:
+        Csv:
+            Input rate of cars:
+                - Is it a function of time?
+                - Exponential distribution from file
+            Turning early off of the street:
+                - What type of distribution
+        Maps:
+            Distance between lights:
+                - Calculate from google maps
+                - Lane count
+    Extras:
+        - Lane switches between cars
+        - Acceleration rates and speeds of cars
+        - Handling car acceleration/decelerating due to light changes, cars ahead accelerating/decelerating
+        - Variation in car size
 
 # Useful online resources (might cite them)?
 Resources:
