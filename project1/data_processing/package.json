@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "ascii-histogram": "^1.2.1",
-    "gulp": "^3.8.10",
-    "node-csv": "^0.1.2"
+    "csv": "^0.4.1",
+    "gulp": "^3.8.10"
   }
 }
