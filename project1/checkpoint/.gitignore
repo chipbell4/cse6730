@@ -1,1 +1,7 @@
 node_modules
+*.aux
+*.bbl
+*.blg
+*.dvi
+*.log
+*.pdf
