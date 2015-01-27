@@ -1,7 +1,7 @@
 var gulp = require('gulp');
 var csv = require('csv');
 var fs = require('fs');
-var chart = require('ascii-chart');
+var histogram = require('./histogram.js');
 
 /**
  * Helper method for querying the CSV file
@@ -52,6 +52,7 @@ gulp.task('northbound-input-distribution', function(taskDone) {
         }))
         .on('finish', function() {
             // sort the start times and calculate the differences to map to a Exponential
+            startTimes = startTimes.map(Number)
             startTimes.sort();
             var N = startTimes.length;
             var startOffsets = [];
@@ -59,7 +60,7 @@ gulp.task('northbound-input-distribution', function(taskDone) {
                 startOffsets.push( startTimes[i] - startTimes[i-1] );
             }
             
-            console.log(startOffsets);
+            console.log(histogram(startOffsets));            
 
             taskDone();
         });
