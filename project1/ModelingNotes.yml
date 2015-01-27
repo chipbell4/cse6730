@@ -17,6 +17,7 @@ Considerations:
     Extras:
         - Lane switches between cars
         - Acceleration rates and speeds of cars
+            - See response time in 3.6.5 of the report
         - Handling car acceleration/decelerating due to light changes, cars ahead accelerating/decelerating
         - Variation in car size
 
