@@ -60,7 +60,9 @@ gulp.task('northbound-input-distribution', function(taskDone) {
                 startOffsets.push( startTimes[i] - startTimes[i-1] );
             }
             
-            console.log(histogram(startOffsets));            
+            console.log(histogram(startOffsets, { bins: 25 }));
+
+
 
             taskDone();
         });
