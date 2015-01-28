@@ -18,12 +18,17 @@ module.exports = function(data, options) {
     var binWidth = (maxValue - minValue) / binCount;
 
     // initialize the bins to zero. From http://stackoverflow.com/a/13735425
-    var bins = Array.apply(null, new Array(binCount)).map(Number.prototype.valueOf, 0);
+    var bins = Array.apply(null, new Array(binCount + 1)).map(Number.prototype.valueOf, 0);
 
     // populate the bins
     data.forEach(function(item) {
         var binIndex = whichBin(item, minValue, binWidth);
         bins[binIndex] += 1;
+    });
+
+    // scale the bins to be probabilities
+    bins = bins.map(function(binValue) {
+        return binValue / N;
     });
 
     // now return the plotted result
