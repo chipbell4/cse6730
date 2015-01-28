@@ -1,8 +1,24 @@
-var chart = require('ascii-chart');
+var histogram = require('ascii-histogram');
 
 var whichBin = function(value, binStart, binWidth) {
     return Math.floor((value - binStart) / binWidth);
 };
+
+var binName = function(binIndex, binStart, binWidth) {
+    var min = binIndex * binWidth + binStart;
+    var max = (binIndex + 1) * binWidth + binStart;
+    return min.toPrecision(4) + "-" + max.toPrecision(4);
+}
+
+var repeatString = function(string, percent, width) {
+    var count = Math.round(percent * width);
+    var outputString = "";
+    for(var i = 0; i < count; i++) {
+        outputString += string;
+    }
+
+    return outputString;
+}
 
 /**
  * Draws an ascii histogram by bucketing the values in the passed array
@@ -11,6 +27,7 @@ module.exports = function(data, options) {
     options = options || {};
 
     var binCount = options.bins || 10;
+    var width = options.width || 80;
     
     var N = data.length;
     var maxValue = Math.max.apply(Math, data);
@@ -26,11 +43,19 @@ module.exports = function(data, options) {
         bins[binIndex] += 1;
     });
 
-    // scale the bins to be probabilities
-    bins = bins.map(function(binValue) {
-        return binValue / N;
+    // Format as an object
+    var histogramFormattedBins = {};
+    bins.forEach(function(count, index) {
+        histogramFormattedBins[ binName(index, minValue, binWidth) ] = count / N;
     });
 
-    // now return the plotted result
-    return chart(bins);
+    var outputString = "";
+    for(var label in histogramFormattedBins) {
+        outputString += label + ' | ';
+        outputString += repeatString('=', histogramFormattedBins[label], width);
+        outputString += "\n";
+    }
+
+    return outputString;
+
 };
