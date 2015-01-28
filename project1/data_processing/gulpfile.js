@@ -60,9 +60,13 @@ gulp.task('northbound-input-distribution', function(taskDone) {
                 startOffsets.push( startTimes[i] - startTimes[i-1] );
             }
             
-            console.log(histogram(startOffsets, { bins: 25 }));
+            console.log(histogram(startOffsets, { bins: 20 }));
 
-
+            // calculate the mean
+            var meanInMillis = startOffsets.reduce(function(accumulator, item) {
+                return accumulator + item;
+            }, 0) / startOffsets.length;
+            console.log("Mean is " + meanInMillis/1000 + " seconds");
 
             taskDone();
         });
