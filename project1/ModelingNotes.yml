@@ -8,6 +8,9 @@ Considerations:
             Input rate of cars:
                 - Is it a function of time?
                 - Exponential distribution from file
+                    - Use normality test on residuals to determine goodness of fit
+                    - Pearsons Chi-Squared test?
+                - Assume cars are IID
             Turning early off of the street:
                 - What type of distribution
         Maps:
