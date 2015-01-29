@@ -3,6 +3,7 @@ var csv = require('csv');
 var fs = require('fs');
 var array_interval = require('./array_interval.js');
 var mean = require('./mean.js');
+var performGoodnessOfFit = require('./performGoodnessOfFit.js');
 var histogram = require('./histogram.js');
 
 /**
@@ -53,21 +54,12 @@ gulp.task('northbound-input-distribution', function(taskDone) {
             return row;
         }))
         .on('finish', function() {
-            // calculate the intervals between arrivals
-            var startOffsets = array_interval(startTimes);
-            
-            console.log(startOffsets);
-            console.log(histogram(startOffsets, { bins: 30 }));
-
-            // calculate the mean
-            var meanOffset = mean(startOffsets);
-            console.log("Raw Mean is " + meanOffset + " seconds");
-
-            var reducedOffsets = startOffsets.filter(function(value) {
-                return value < 40;
+            // calculate the intervals between arrivals (in seconds)
+            var startOffsets = array_interval(startTimes).map(function(interval) {
+                return interval / 1000;
             });
-            var reducedMean = mean(reducedOffsets);
-            console.log('Reduced mean is ' + reducedMean);
+            
+            console.log("Chi-Squared Test Probability: " + performGoodnessOfFit(startOffsets, 25));
 
             taskDone();
         });
