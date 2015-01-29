@@ -9,7 +9,7 @@ var Bin = function(items, binCount) {
     }
 
     var N = items.length;
-    this.maxValue = Math.max.apply(Math, items);
+    this.maxValue = Math.max.apply(Math, items) * 1.05;
     this.minValue = Math.min.apply(Math, items);
     this.binWidth = (this.maxValue - this.minValue ) / this.binCount;
     var that = this;
