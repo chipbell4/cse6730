@@ -41,8 +41,8 @@ gulp.task('northbound-input-distribution', function(taskDone) {
 
     getCsv()
         .pipe(csv.transform(function(row) {
-            // Filter only rows that are northbound, and in the correct section of road
-            if(row[17] != '3' || row[18] != '2') {
+            // Filter only rows that are northbound, and in the intersection
+            if(row[16] != '3' || row[18] != '2') {
                 return;
             }
 
