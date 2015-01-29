@@ -73,10 +73,4 @@ gulp.task('northbound-input-distribution', function(taskDone) {
         });
 });
 
-gulp.task('input-distribution', function() {
-    return keepEntrances()
-        .pipe(csv.stringify())
-        .pipe(process.stdout);
-});
-
-gulp.task('default', ['input-distribution']);
+gulp.task('default', ['northbound-input-distribution']);
