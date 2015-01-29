@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var csv = require('csv');
 var fs = require('fs');
+var mean = require('./mean.js');
 var histogram = require('./histogram.js');
 
 /**
@@ -65,17 +66,13 @@ gulp.task('northbound-input-distribution', function(taskDone) {
             console.log(histogram(startOffsets, { bins: 30 }));
 
             // calculate the mean
-            var mean = startOffsets.reduce(function(accumulator, item) {
-                return accumulator + item;
-            }, 0) / startOffsets.length;
-            console.log("Raw Mean is " + mean + " seconds");
+            var meanOffset = mean(startOffsets);
+            console.log("Raw Mean is " + meanOffset + " seconds");
 
             var reducedOffsets = startOffsets.filter(function(value) {
                 return value < 40;
             });
-            var reducedMean = reducedOffsets.reduce(function(accumulator, item) {
-                return accumulator + item;
-            }, 0) / reducedOffsets.length;
+            var reducedMean = mean(reducedOffsets);
             console.log('Reduced mean is ' + reducedMean);
 
             taskDone();
