@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var csv = require('csv');
 var fs = require('fs');
+var array_interval = require('./array_interval.js');
 var mean = require('./mean.js');
 var histogram = require('./histogram.js');
 
@@ -52,15 +53,8 @@ gulp.task('northbound-input-distribution', function(taskDone) {
             return row;
         }))
         .on('finish', function() {
-            // sort the start times and calculate the differences to map to a Exponential
-            startTimes.sort(function(a, b) {
-                return Number(a) - Number(b);
-            });
-            var N = startTimes.length;
-            var startOffsets = [];
-            for(var i = 1; i < N; i++) {
-                startOffsets.push( (startTimes[i] - startTimes[i-1]) / 1000 );
-            }
+            // calculate the intervals between arrivals
+            var startOffsets = array_interval(startTimes);
             
             console.log(startOffsets);
             console.log(histogram(startOffsets, { bins: 30 }));
