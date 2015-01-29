@@ -58,14 +58,11 @@ gulp.task('northbound-input-distribution', function(taskDone) {
             var startOffsets = array_interval(startTimes).map(function(interval) {
                 return interval / 1000;
             });
-            
-            var chiSquaredResults = performGoodnessOfFit(startOffsets, 25);
-            console.log("Chi-Squared Test : p = " + chiSquaredResults.probability + " chi^2 = " + chiSquaredResults.chiSquared);
 
-            // try skipping the last quarter of points?
-            var subListLength = Math.round(startOffsets.length * 0.25);
-            chiSquaredResults = performGoodnessOfFit(startOffsets.slice(0, subListLength), 25);
-            console.log("Skipped points Chi-Squared Test : p = " + chiSquaredResults.probability + " chi^2 = " + chiSquaredResults.chiSquared);
+            var chiSquaredResults = performGoodnessOfFit(startOffsets, 25);
+            console.log('N = ' + startOffsets.length);
+            console.log("Chi-Squared Test : p = " + chiSquaredResults.probability + " chi^2 = " + chiSquaredResults.chiSquared);
+            console.log(histogram(startOffsets, { }));
 
             taskDone();
         });
