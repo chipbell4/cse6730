@@ -43,6 +43,8 @@ module.exports = function(data, options) {
         bins[binIndex] += 1;
     });
 
+    console.log(bins);
+
     // Format as an object
     var histogramFormattedBins = {};
     bins.forEach(function(count, index) {

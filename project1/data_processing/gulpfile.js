@@ -52,21 +52,31 @@ gulp.task('northbound-input-distribution', function(taskDone) {
         }))
         .on('finish', function() {
             // sort the start times and calculate the differences to map to a Exponential
-            startTimes = startTimes.map(Number)
-            startTimes.sort();
+            startTimes.sort(function(a, b) {
+                return Number(a) - Number(b);
+            });
             var N = startTimes.length;
             var startOffsets = [];
             for(var i = 1; i < N; i++) {
                 startOffsets.push( (startTimes[i] - startTimes[i-1]) / 1000 );
             }
             
+            console.log(startOffsets);
             console.log(histogram(startOffsets, { bins: 30 }));
 
             // calculate the mean
             var mean = startOffsets.reduce(function(accumulator, item) {
                 return accumulator + item;
             }, 0) / startOffsets.length;
-            console.log("Mean is " + mean + " seconds");
+            console.log("Raw Mean is " + mean + " seconds");
+
+            var reducedOffsets = startOffsets.filter(function(value) {
+                return value < 40;
+            });
+            var reducedMean = reducedOffsets.reduce(function(accumulator, item) {
+                return accumulator + item;
+            }, 0) / reducedOffsets.length;
+            console.log('Reduced mean is ' + reducedMean);
 
             taskDone();
         });
