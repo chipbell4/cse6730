@@ -18,11 +18,10 @@ light timing has on traffic flow, given a source input distribution of cars.
 
 \section{The Conceptual Model}
 In order to create a representative software simulation of the aforementioned system, we first begin by designing a
-conceptual version of this model from which we can plan our implementation. Let's consider a couple of key aspects
-categorically:
+conceptual version of this model from which we can plan our implementation. Data from \cite{cts12} was used extensively
+for modeling purposes in this project.
 
 \subsection{Simulation Input}
-
 
 \subsection{Simulation Output}
 
@@ -38,9 +37,8 @@ idealized random input distribution of cars from both North and South of the 12t
 certainly not the case, since this input distribution is affected by countless other factors like the surrounding
 lights, cars passing along 12th at that intersection, and even simply time of day. We assume in this simulation is
 perpetually between 4:00PM to 4:15PM in Atlanta (a frightening thought indeed), simply due to the fact that we only
-have data for that time range.
-
-
+have data for that time range. All in all, we assume the conditions were fairly identical to that in which the 
+aforementioned CTS study was made.
 
 \section{Simulation Software Architecture}
 Simulation Software
