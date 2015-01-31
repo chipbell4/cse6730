@@ -39,7 +39,9 @@ values and observing the outcome. Perhaps the timings are \emph{not} optimal. Pe
 some crucial interaction within the system. This is perhaps the most exciting part of the project.
 
 From the intersection entity, we can glean an important interaction that occurs: The changing of light signal. When a
-signal changes, each car in-queue will be forced to change it's state, whether it's waiting or currently in motion. 
+signal changes, each car in-queue will be forced to change it's state, whether it's waiting or currently in motion.
+From an event-driven perspective, this means that any listener would need to be able to know \emph{how} the light
+changed in order to act accordingly.
 
 \subsection{Simulation Input}
 The two main sources of input into this simulation are the cars entering the section of Peachtree St with which we are
