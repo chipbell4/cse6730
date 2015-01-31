@@ -17,6 +17,29 @@ time constraints, and the sheer difficulty with modeling traffic in general. In 
 light timing has on traffic flow, given a source input distribution of cars.
 
 \section{The Conceptual Model}
+In order to create a representative software simulation of the aforementioned system, we first begin by designing a
+conceptual version of this model from which we can plan our implementation. Let's consider a couple of key aspects
+categorically:
+
+\subsection{Simulation Input}
+
+
+\subsection{Simulation Output}
+
+\subsection{Content}
+
+\subsection{Simplifications and Assumptions}
+Probably the most obvious "flaw" in such a design are the simplifications made. Details can certainly be left out
+purposely for many reasons such as time constraints, lack of supporting data to model a extra feature, or simply
+unneccesary complexity.
+
+In this case, certainly the most prominent would be the ``isolation'' of the model. We are only considering an
+idealized random input distribution of cars from both North and South of the 12th St. intersection. However, this is
+certainly not the case, since this input distribution is affected by countless other factors like the surrounding
+lights, cars passing along 12th at that intersection, and even simply time of day. We assume in this simulation is
+perpetually between 4:00PM to 4:15PM in Atlanta (a frightening thought indeed), simply due to the fact that we only
+have data for that time range.
+
 
 
 \section{Simulation Software Architecture}
