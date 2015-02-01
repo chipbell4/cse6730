@@ -8,17 +8,21 @@ var histogram = require('./histogram.js');
 /**
  * Factory function for building a gulp task for filtering the NGSIM data for a certain direction and intersection of the road
  */
-module.exports = function(direction, intersection) {
+module.exports = function(options) {
     return function(taskDone) {
         var startTimes = [];
 
         var filters = [];
 
-        // Only northbound
-        filters.push(ngsimFilters.direction(direction));
+        // Only one direction
+        if(options.direction) {
+            filters.push(ngsimFilters.direction(options.direction));
+        }
 
         // only through our intersection
-        filters.push(ngsimFilters.intersection(intersection));
+        if(options.intersection) {
+            filters.push(ngsimFilters.intersection(options.intersection));
+        }
 
         // only keep the first occurrences
         filters.push(ngsimFilters.firstKeeper());
