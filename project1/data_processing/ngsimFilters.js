@@ -44,6 +44,21 @@ filterMovement.LEFT = '2';
 filterMovement.RIGHT = '3';
 
 /**
+ * Filters by origin
+ */
+var filterOrigin = function(origin) {
+    return filterFactory(14, origin);
+};
+// TODO: Name the origins
+
+/**
+ * Filters by destination
+ */
+var filterDestination = function(destination) {
+    return filterFactory(15, destination);
+};
+
+/**
  * Factory for a filter that only keeps the first occurrence of car
  */
 var keepFirst = function() {
@@ -67,6 +82,8 @@ module.exports = {
     direction: filterDirection,
     intersection: filterIntersection,
     movement: filterMovement,
+    origin: filterOrigin,
+    destination: filterDestination,
     firstKeeper: keepFirst,
     factory: filterFactory
 };
