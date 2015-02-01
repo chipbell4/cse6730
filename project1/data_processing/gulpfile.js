@@ -2,10 +2,15 @@ var gulp = require('gulp');
 var ngsim = require('./ngsimFilters.js');
 var inputDistribution = require('./inputDistributionTaskFactory.js');
 
-gulp.task('northbound', inputDistribution({
+gulp.task('northboundPlatoonLeaders', inputDistribution({
     direction: ngsim.direction.NORTH,
     intersection: '3',
-    movement: ngsim.movement.THROUGH
+    isLeader: true
+}));
+
+gulp.task('northbound', inputDistribution({
+    direction: ngsim.direction.NORTH,
+    intersection: '3'
 }));
 
 gulp.task('southbound', inputDistribution({
@@ -13,4 +18,4 @@ gulp.task('southbound', inputDistribution({
     intersection: '3'
 }));
 
-gulp.task('default', ['northbound']);
+gulp.task('default', ['northboundPlatoonLeaders', 'northbound']);

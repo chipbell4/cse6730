@@ -38,6 +38,7 @@ module.exports = function(options) {
         });
 
         var finish = function() {
+
             // calculate the intervals between arrivals (in seconds)
             var startOffsets = array_interval(startTimes).map(function(interval) {
                 return interval / 1000;

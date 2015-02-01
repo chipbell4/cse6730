@@ -58,6 +58,10 @@ var filterDestination = function(destination) {
     return filterFactory(15, destination);
 };
 
+var filterIsLeader = function() {
+    return filterFactory(20, '0');
+};
+
 /**
  * Factory for a filter that only keeps the first occurrence of car
  */
@@ -84,6 +88,7 @@ module.exports = {
     movement: filterMovement,
     origin: filterOrigin,
     destination: filterDestination,
+    isLeader: filterIsLeader,
     firstKeeper: keepFirst,
     factory: filterFactory
 };
