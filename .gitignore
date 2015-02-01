@@ -1,2 +1,3 @@
 *.swp
 bundle.tar.gz
+**/.DS_Store
