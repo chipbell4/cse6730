@@ -4,7 +4,8 @@ var inputDistribution = require('./inputDistributionTaskFactory.js');
 
 gulp.task('northbound', inputDistribution({
     direction: ngsim.direction.NORTH,
-    intersection: '3'
+    intersection: '3',
+    movement: ngsim.movement.THROUGH
 }));
 
 gulp.task('southbound', inputDistribution({
