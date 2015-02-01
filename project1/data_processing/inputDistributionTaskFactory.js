@@ -6,9 +6,9 @@ var performGoodnessOfFit = require('./performGoodnessOfFit.js');
 var histogram = require('./histogram.js');
 
 /**
- * Factory function for building a gulp task for filtering the NGSIM data for a certain direction and section of the road
+ * Factory function for building a gulp task for filtering the NGSIM data for a certain direction and intersection of the road
  */
-module.exports = function(direction, section) {
+module.exports = function(direction, intersection) {
     return function(taskDone) {
         var startTimes = [];
 
