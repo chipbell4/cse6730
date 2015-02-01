@@ -18,7 +18,7 @@ module.exports = function(direction, intersection) {
         filters.push(ngsimFilters.direction(direction));
 
         // only through our intersection
-        filters.push(ngsimFilters.intersection(section));
+        filters.push(ngsimFilters.intersection(intersection));
 
         // only keep the first occurrences
         filters.push(ngsimFilters.firstKeeper());
