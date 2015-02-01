@@ -1,10 +1,7 @@
 var gulp = require('gulp');
-var ngsimFilters = require('./ngsimFilters.js');
-var inputDistributionTaskFactory = require('./inputDistributionTaskFactory.js');
+var ngsim = require('./ngsimFilters.js');
+var inputDistribution = require('./inputDistributionTaskFactory.js');
 
-gulp.task(
-    'northbound-input-distribution',
-    inputDistributionTaskFactory(ngsimFilters.direction.NORTH, '3')
-);
+gulp.task('northbound', inputDistribution(ngsim.direction.NORTH, '3'));
 
-gulp.task('default', ['northbound-input-distribution']);
+gulp.task('default', ['northbound']);
