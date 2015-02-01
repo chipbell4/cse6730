@@ -34,6 +34,16 @@ var filterIntersection = function(intersection) {
 //
 
 /**
+ * Filters by turn direction
+ */
+var filterMovement = function(direction) {
+    return filterFactory(19, direction);
+};
+filterMovement.THROUGH = '1';
+filterMovement.LEFT = '2';
+filterMovement.RIGHT = '3';
+
+/**
  * Factory for a filter that only keeps the first occurrence of car
  */
 var keepFirst = function() {
@@ -56,6 +66,7 @@ var keepFirst = function() {
 module.exports = {
     direction: filterDirection,
     intersection: filterIntersection,
+    movement: filterMovement,
     firstKeeper: keepFirst,
     factory: filterFactory
 };
