@@ -1,19 +1,10 @@
 var gulp = require('gulp');
-var csv = require('csv');
-var fs = require('fs');
+var csvFilter = require('./csvFilter.js');
+var ngsimFilters = require('./ngsimFilters.js');
 var array_interval = require('./array_interval.js');
 var mean = require('./mean.js');
 var performGoodnessOfFit = require('./performGoodnessOfFit.js');
 var histogram = require('./histogram.js');
-
-/**
- * Helper method for querying the CSV file
- */
-var getCsv = function() {
-    // return a stream filtered and transformed into a new format
-    return fs.createReadStream('data.csv')
-        .pipe(csv.parse());
-};
 
 /**
  * Helper method for only getting the first appearances of the cars
@@ -32,40 +23,45 @@ var keepFirst = function() {
         return row;
     };
 
-    return csv.transform(firstTracker);
+    return firstTracker;
 };
 
 gulp.task('northbound-input-distribution', function(taskDone) {
 
     var startTimes = [];
 
-    getCsv()
-        .pipe(csv.transform(function(row) {
-            // Filter only rows that are northbound, and in the intersection
-            if(row[16] != '3' || row[18] != '2') {
-                return;
-            }
+    var filters = [];
 
-            return row;
-        }))
-        .pipe(keepFirst())
-        .pipe(csv.transform(function(row) {
-            startTimes.push(Number(row[3]));
-            return row;
-        }))
-        .on('finish', function() {
-            // calculate the intervals between arrivals (in seconds)
-            var startOffsets = array_interval(startTimes).map(function(interval) {
-                return interval / 1000;
-            });
+    // Only northbound
+    filters.push(ngsimFilters.direction(ngsimFilters.direction.NORTH));
 
-            var chiSquaredResults = performGoodnessOfFit(startOffsets, 25);
-            console.log('N = ' + startOffsets.length);
-            console.log("Chi-Squared Test : p = " + chiSquaredResults.probability + " chi^2 = " + chiSquaredResults.chiSquared);
-            console.log(histogram(startOffsets, { }));
+    // only through our intersection
+    filters.push(ngsimFilters.intersection('3'));
 
-            taskDone();
+    // only keep the first occurrences
+    filters.push(keepFirst());
+
+    // track the start times
+    filters.push(function(row) {
+        startTimes.push(Number(row[3]));
+        return row;
+    });
+
+    var finish = function() {
+        // calculate the intervals between arrivals (in seconds)
+        var startOffsets = array_interval(startTimes).map(function(interval) {
+            return interval / 1000;
         });
+
+        var chiSquaredResults = performGoodnessOfFit(startOffsets, 25);
+        console.log('N = ' + startOffsets.length);
+        console.log("Chi-Squared Test : p = " + chiSquaredResults.probability + " chi^2 = " + chiSquaredResults.chiSquared);
+        console.log(histogram(startOffsets, { }));
+
+        taskDone();
+    };
+
+    csvFilter(filters, finish);
 });
 
 gulp.task('default', ['northbound-input-distribution']);
