@@ -1,4 +1,6 @@
-
+/**
+ * The exponential distribution
+ */
 module.exports = {
     pdf: function(x, lambda) {
         return lambda * Math.exp(-lambda * x);

@@ -1,6 +1,13 @@
 var histogram = require('ascii-histogram');
 var Bin = require('./bin.js');
 
+/**
+ * Repeats a string
+ *
+ * @param string  The string to repeat
+ * @param percent The percentage of the full width to stretch
+ * @param width   The size that 100% means
+ */
 var repeatString = function(string, percent, width) {
     var count = Math.round(percent * width);
     var outputString = "";

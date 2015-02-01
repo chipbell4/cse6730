@@ -1,3 +1,6 @@
+/**
+ * Helper class for binning a list of items (a frequency distribution calculator)
+ */
 var Bin = function(items, binCount) {
     this.rawItems = items;
     this.binCount = binCount || 25;
@@ -19,10 +22,16 @@ var Bin = function(items, binCount) {
     });
 };
 
+/**
+ * Returns the bin index that a value would fall into
+ */
 Bin.prototype.whichBin = function(value) {
     return Math.floor((value - this.minValue) / this.binWidth);
 };
 
+/**
+ * Determines a "pretty name" for a bin
+ */
 Bin.prototype.binName = function(index) {
     var min = index * this.binWidth + this.minValue;
     var max = min + this.binWidth;

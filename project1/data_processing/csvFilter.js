@@ -19,11 +19,12 @@ module.exports = function(filters, finishCode) {
 
     var stream = getCsv();
 
+    // tag on all of the filters
     for(var i = 0; i < filterCount; i++) {
         stream = stream.pipe(csv.transform(filters[i]));
     }
 
-    // now add the end stream
+    // now add the end stream listener
     stream.on('finish', finishCode);
 
     return stream;

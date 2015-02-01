@@ -1,3 +1,7 @@
+/**
+ * Helper function to take an array and take the difference with
+ * previous elements. For instance [1, 2, 4, 4] would become [1, 2, 0]
+ */
 module.exports = function(items) {
     // first sort the items numerically
     items.sort(function(a, b) {

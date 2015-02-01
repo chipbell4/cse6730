@@ -3,6 +3,10 @@ var mean = require('./mean.js');
 var Bin = require('./bin.js');
 var chiSquaredTest = require('chi-squared-test');
 
+/**
+ * Performs an exponential goodness-of-fit test to determine how good a fit some raw data is. Essentially performs a
+ * chi-squared test
+ */
 module.exports = function(rawData, binCount) {
     var binnedData = new Bin(rawData, binCount);
 
