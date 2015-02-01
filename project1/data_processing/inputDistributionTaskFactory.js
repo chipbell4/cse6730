@@ -5,6 +5,9 @@ var mean = require('./mean.js');
 var performGoodnessOfFit = require('./performGoodnessOfFit.js');
 var histogram = require('./histogram.js');
 
+/**
+ * Helper for appending all filters to the csv file
+ */
 var getFilters = function(options) {
     var filters = [];
 
