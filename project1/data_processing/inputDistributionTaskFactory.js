@@ -5,6 +5,17 @@ var mean = require('./mean.js');
 var performGoodnessOfFit = require('./performGoodnessOfFit.js');
 var histogram = require('./histogram.js');
 
+var getFilters = function(options) {
+    var filters = [];
+
+    // loop over all of the config options provided
+    for(var key in options) {
+        filters.push(ngsimFilters[key](options[key]));
+    }
+
+    return filters;
+};
+
 /**
  * Factory function for building a gulp task for filtering the NGSIM data for a certain direction and intersection of the road
  */
@@ -12,17 +23,7 @@ module.exports = function(options) {
     return function(taskDone) {
         var startTimes = [];
 
-        var filters = [];
-
-        // Only one direction
-        if(options.direction) {
-            filters.push(ngsimFilters.direction(options.direction));
-        }
-
-        // only through our intersection
-        if(options.intersection) {
-            filters.push(ngsimFilters.intersection(options.intersection));
-        }
+        var filters = getFilters(options);
 
         // only keep the first occurrences
         filters.push(ngsimFilters.firstKeeper());
