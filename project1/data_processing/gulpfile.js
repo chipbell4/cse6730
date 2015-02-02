@@ -21,9 +21,18 @@ var readIntervals = function(path) {
     return array_interval(timestamps);
 };
 
-gulp.task('default', function(cb) {
+gulp.task('northbound-inliers', function(cb) {
     var intervals = readIntervals('data/all_northbound.csv');
     var inliers = onevar.inliers(intervals);
     console.log(histogram(inliers));
     cb();
 });
+
+gulp.task('northbound-outliers', function(cb) {
+    var intervals = readIntervals('data/all_northbound.csv');
+    var outliers = onevar.outliers(intervals);
+    console.log(histogram(outliers));
+    cb();
+});
+
+gulp.task('default', ['northbound-inliers', 'northbound-outliers']);
