@@ -141,7 +141,28 @@ discretionary lane changes and traffic is evened out between lanes. Also, we wil
 in the left lane already. Similarly, right turning drivers will already be in the right lane.
 
 \section{Simulation Software Architecture}
-The simulation software attempts to utilize 
+Because of the event-driven architecture, the system can be though of as a set of event emitters and event listeners.
+In some cases, an object may both emit and listen for events.
+
+The first event emitter to consider is the \texttt{CarEmitter}. The \texttt{CarEmitter} uses the measured input
+distribution we have for cars and generates a set of cars randomly. It then emits these cars as individual
+\texttt{car:arrived} event. There will generally be two \texttt{CarEmitter}s, one for the North and South direction.
+
+The second emitter will be the \texttt{LightSignal}. It will emit \texttt{light:changed} events, passing the light color.
+Also, instead of enqueueing these events upfront, it will also listen for \texttt{light:changed} so that its
+changing duration can modified on the fly (using the UI).
+
+The \texttt{IntersectionQueue} holds a list of cars lined up at the intersection. It also maintains the
+current signal state, so that it can send cars directly through the intersection if the light is green. It responds
+to pretty much every event mentioned above. When the light changes, it will need update it's current signal state.
+This may mean sending some cars off of the queue and stop holding cars, or to no longer let cars through and make them
+wait. Furthermore, when a car arrives it will handle that event by deciding whether the car can pass through or needs
+to wait on the light. Also, this class emits events. Whenever a car finally crosses the intersection, it emits
+a \texttt{car:exited} event.
+
+Since we want to gather metrics regarding the throughput of cars, we'll also provide a listener class
+\texttt{ThroughputStatistics} that will listen for cars to complete their journey through the system. This will
+be reported in the UI in real time.
 
 \section{Current Build}
 Current Build
