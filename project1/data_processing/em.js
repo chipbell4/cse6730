@@ -94,7 +94,7 @@ var refitData = function(fitFunction, assignments) {
  *                          also how the al
  * @param xList             The list of data to fit
  */
-module.exports = function(pdf, fitData, initialParameters) {
+module.exports = function(pdf, fitData, initialParameters, xList) {
     var maxSteps = 1000;
 
     var assignments;
