@@ -16,15 +16,13 @@ gulp.task('clean', function(cb) {
 
 
 gulp.task('default', ['clean'], function(cb) {
-    var latex = 'latex -halt-on-error main';
+    var latex = 'pdflatex -halt-on-error main';
     var bibtex = 'bibtex main';
-    var dvipdf = 'dvipdf main.dvi main.pdf';
     
     async.series([
         asyncCommand(latex),
         asyncCommand(bibtex),
         asyncCommand(latex),
-        asyncCommand(latex),
-        asyncCommand(dvipdf)
+        asyncCommand(latex)
     ], cb);
 });

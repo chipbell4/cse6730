@@ -1,6 +1,6 @@
 \documentclass[a4paper,12pt]{article}
 
-\usepackage{url, hyperref}
+\usepackage{url, hyperref, graphicx}
 
 \begin{document}
 
@@ -81,7 +81,22 @@ consider basic aspects of a car: when it enters the system, and it's intended de
 12th street or going straight). We will assume that all cars have the same speed entering the system, and that they
 have the same length. These values can be calculated from the NGSIM data set \cite{ngsim}.
 
-The distribution of car arrival is very important, but has been difficult to model.
+\begin{figure}
+\begin{center}  
+\includegraphics[width=4in]{../northbound.png}  
+\caption{\small \sl Northbound Arrival Intervals \label{fig:northbound_arrival}}  
+\end{center}  
+\end{figure} 
+
+\begin{figure}  
+\begin{center}
+\includegraphics[width=4in]{../southbound.png}  
+\caption{\small \sl Southbound Arrival Intervals \label{fig:southbound_arrival}}  
+\end{center}  
+\end{figure} 
+
+The distribution of car arrival is very important, but has been difficult to model. The arrival intervals between 
+northbound and southbound cars are provided in \ref{fig:northbound_arrival} and \ref{fig:southbound_arrival}. 
 
 \subsection{Simulation Output}
 
