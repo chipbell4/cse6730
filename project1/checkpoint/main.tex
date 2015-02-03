@@ -77,9 +77,11 @@ concerned, and the light timing of the system. The combination of these two vari
 of traffic flow to the actual drivers in the system.
 
 We first concern ourselves with finding an input distribution for cars entering the system. In our model, we'll only
-consider the car arrival time, and car length when modeling cars. Due to the discrete nature of the application, we'll
-ignore some of the more "continuous" aspects, such car velocity and acceleration and encompass them into calculation
-of event times.
+consider basic aspects of a car: when it enters the system, and it's intended destination (turning left or right at
+12th street or going straight). We will assume that all cars have the same speed entering the system, and that they
+have the same length. These values can be calculated from the NGSIM data set \cite{ngsim}.
+
+The distribution of car arrival is very important, but has been difficult to model.
 
 \subsection{Simulation Output}
 
