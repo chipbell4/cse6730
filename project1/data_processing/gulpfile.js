@@ -4,6 +4,9 @@ var array_interval = require('./array_interval.js');
 var histogram = require('./histogram.js');
 var onevar = require('./one_var_stats.js');
 var goodnessOfFit = require('./performGoodnessOfFit.js');
+
+var gammaPdf = require('gamma-distribution').pdf;
+var em = require('./em.js');
 var fit = require('gamma-distribution').fit;
 
 var readIntervals = function(path) {
@@ -36,6 +39,20 @@ gulp.task('northbound-inliers', function(cb) {
     console.log('k = ' + fittedValues.k + ' theta = ' + fittedValues.theta);
     console.log('chi-squared = ' + chiSquaredResults.chiSquared);
     console.log('p = ' + chiSquaredResults.probability);
+
+    console.log('Mixture Model Chi-Squared Fit');
+    var emFit = function(data) {
+        var result = fit(data);
+        return [result.k, result.theta]; // since EM wants an array
+    };
+
+    var initialParams = [
+        [1, 2],
+        [7.5, 1],
+    ];
+
+    var result = em(gammaPdf, emFit, initialParams, intervals);
+    console.log(result);
 
     cb();
 });
