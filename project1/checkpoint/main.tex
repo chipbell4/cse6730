@@ -21,9 +21,13 @@ we explore the effects that light timing has on traffic flow, given a source inp
 \section{The Conceptual Model}
 In order to create a representative software simulation of the aforementioned system, we first begin by designing a
 conceptual version of this model from which we can plan our implementation. Data from \cite{cts12} was used extensively % TODO: Put this somewhere else
-for modeling purposes in this project. Our first step will be to identify the entities present in our model, and then consider their interactions (or the
-inherent ``activies'') within the simulation. 
+for modeling purposes in this project. Our architecture will be event driven, prioritizing events by timestamp. Furthermore,
+we'll utilize the publisher-subscriber pattern (see \cite{pubsub}) to promote better decoupling.
+Given this architecture, our first step will be to identify the entities present in our model, and then consider their
+interactions (or the inherent ``activies'') within the simulation. This will allow us to then design the events that
+are important
 
+\subsection{Entities}
 The first entity, unsurprisingly, is a single car. Our representation of a car is clearly less detailed than the real
 thing, but rather focuses on variables that influence it's travel time from its starting location to destination, along
 with the variables that influence neighboring cars. For our simulation, we'll track the position and destination of the
@@ -38,10 +42,34 @@ are optimal, but because we'll have a computer simulation in the end we have fre
 values and observing the outcome. Perhaps the timings are \emph{not} optimal. Perhaps, our model grossly oversimplifies
 some crucial interaction within the system. This is perhaps the most exciting part of the project.
 
+\subsection{Basic Interactions}
 From the intersection entity, we can glean an important interaction that occurs: The changing of light signal. When a
 signal changes, each car in-queue will be forced to change it's state, whether it's waiting or currently in motion.
 From an event-driven perspective, this means that any listener would need to be able to know \emph{how} the light
 changed in order to act accordingly.
+
+An intersection serves as holding point for cars traveling along the road so if a light is red, cars are forced to
+queue up at the intersection until green. This lends itself to a queue-style data structure that encorporates both
+position and acceleration. Car acceleration is a complex topic, but models have been constructed \cite{bonneson}
+\cite{herman_et_al}. These models are generally continuous, and can generally be represented as a differential equation
+due to the relationships between acceleration and velocity, as can be seen in \cite{briggs} \cite{deceleration} as well.
+Instead, we will
+simply consider the various events that trigger changes in behavior. For instance, if a car slows down, the car behind
+it will be notified and change it's driving patterns accordingly.
+
+\subsection{Events}
+Based on our observations from above, we can now construct a set of events that are pertinent to this application.
+
+First off, signal changes consititute the major event in the system. When a signal changes, the event must contain
+\emph{when} the signal changed, and \emph{what} the signal changed to. The light itself will listen for this event
+and will enqueue the next signal change based on the signal change time. These signal changes could be enqueued
+completely upfront, but allowing this to be done on the fly allows the user to tweak these values during the simulation.
+
+The car model will listen for this event as well. When a currently traveling car sees a red light, it will calculate
+\emph{where} it needs to stop, and \emph{when} it will come to a stop. This will be done using a deceleration model
+similar to \cite{deceleration}.
+
+
 
 \subsection{Simulation Input}
 The two main sources of input into this simulation are the cars entering the section of Peachtree St with which we are
