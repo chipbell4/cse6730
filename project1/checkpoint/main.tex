@@ -101,12 +101,19 @@ Model fitting was attempted for both $\Gamma$ and $\Gamma$ mixture models on the
 fits. Furthermore, pruning outliers via the common interquartile range approach, where values are rejected when
 they lie outside of $median + 1.5IQR$, where $IQR$ is the interquartile range $Q_3 - Q_1$.
 
-So, instead we'll take a simpler approach and assume the ``true distribution`` is modeled by what was observed,
+Given the difficulties with modelling we'll take a simpler approach and assume the ``true distribution`` is modeled by what was observed,
 and simply use the observed frequency distribution as our input distribution. As the project progresses we can
 refine this model.
 
 The current light timing of the system is known, and provided in \cite{ngsim}, but we'll allow the user to set
 those values dynamically via a UI.
+
+\subsubsection{Data Analysis}
+In the \texttt{data\_processing} folder, most of code used for distribution fitting and statistics can be found there.
+The data analysis code was written in Javascript, and runs completely in NodeJS \cite{nodejs}. NPM \cite{npm} was used
+to manage dependencies and those dependencies can be seen in the \texttt{package.json} file. Of those packages, I have
+authored the \texttt{chi-squared-test} module \cite{chiSquaredNpm}, and the \texttt{gamma-distribution}
+\cite{gammaDistributionNpm}. Gulp \cite{gulp} was used a build tool for automating tasks (including building this paper).
 
 \subsection{Simulation Output}
 The most important statistic we'll want to collect during the simulation is the thoughput of the simulation. We'll
@@ -134,7 +141,7 @@ discretionary lane changes and traffic is evened out between lanes. Also, we wil
 in the left lane already. Similarly, right turning drivers will already be in the right lane.
 
 \section{Simulation Software Architecture}
-Simulation Software
+The simulation software attempts to utilize 
 
 \section{Current Build}
 Current Build
