@@ -96,9 +96,23 @@ have the same length. These values can be calculated from the NGSIM data set \ci
 \end{figure} 
 
 The distribution of car arrival is very important, but has been difficult to model. The arrival intervals between 
-northbound and southbound cars are provided in \ref{fig:northbound_arrival} and \ref{fig:southbound_arrival}. 
+northbound and southbound cars are provided in \ref{fig:northbound_arrival} and \ref{fig:southbound_arrival}.
+Model fitting was attempted for both $\Gamma$ and $\Gamma$ mixture models on the raw data, but resulted in poor
+fits. Furthermore, pruning outliers via the common interquartile range approach, where values are rejected when
+they lie outside of $median + 1.5IQR$, where $IQR$ is the interquartile range $Q_3 - Q_1$.
+
+So, instead we'll take a simpler approach and assume the ``true distribution`` is modeled by what was observed,
+and simply use the observed frequency distribution as our input distribution. As the project progresses we can
+refine this model.
+
+The current light timing of the system is known, and provided in \cite{ngsim}, but we'll allow the user to set
+those values dynamically via a UI.
 
 \subsection{Simulation Output}
+The most important statistic we'll want to collect during the simulation is the thoughput of the simulation. We'll
+want to observe how the light timing affects the average travel time for cars. It will also to see how variable this
+is. For instance, do cars travelling on Peachtree St. have similar travel times, despite their arrival time, or does
+their arrival drastically lengthen their time to travel the stretch of road we are modeling. 
 
 \subsection{Simplifications and Assumptions}
 Probably the most obvious "flaw" in such a design are the simplifications made. Details can certainly be left out
@@ -112,6 +126,12 @@ lights, cars passing along 12th at that intersection, and even simply time of da
 perpetually between 4:00PM to 4:15PM in Atlanta (a frightening thought indeed), simply due to the fact that we only
 have data for that time range. All in all, we assume the conditions were fairly identical to that in which the 
 aforementioned CTS study was made.
+
+Another simplification to consider is lane changing. Lane changing models do exist \cite{lanechanging} \cite{lanechanging2},
+but can be complex, requiring modeling of driver choices and gap acceptance for drivers. Peachtree is a two lane road,
+so lane changes are possible. However, we will make the assumption that drivers by this point have already made any
+discretionary lane changes and traffic is evened out between lanes. Also, we will assume left turning drivers will be
+in the left lane already. Similarly, right turning drivers will already be in the right lane.
 
 \section{Simulation Software Architecture}
 Simulation Software
