@@ -3,6 +3,7 @@
     "ascii-histogram": "1.*",
     "chi-squared-test": "^1.0.0",
     "csv": "^0.4.1",
+    "gamma-distribution": "^1.0.0",
     "gulp": "^3.8.10"
   }
 }

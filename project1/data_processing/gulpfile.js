@@ -3,6 +3,7 @@ var fs = require('fs');
 var array_interval = require('./array_interval.js');
 var histogram = require('./histogram.js');
 var onevar = require('./one_var_stats.js');
+var goodnessOfFit = require('./performGoodnessOfFit.js');
 
 var readIntervals = function(path) {
     var timestamps = fs.readFileSync(path)
@@ -25,6 +26,10 @@ gulp.task('northbound-inliers', function(cb) {
     var intervals = readIntervals('data/all_northbound.csv');
     var inliers = onevar.inliers(intervals);
     console.log(histogram(inliers));
+
+    var chiSquaredResults = goodnessOfFit(inliers, 25);
+    console.log(chiSquaredResults.chiSquared);
+    console.log(chiSquaredResults.probability);
     cb();
 });
 
