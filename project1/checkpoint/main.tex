@@ -67,9 +67,9 @@ completely upfront, but allowing this to be done on the fly allows the user to t
 
 The car model will listen for this event as well. When a currently traveling car sees a red light, it will calculate
 \emph{where} it needs to stop, and \emph{when} it will come to a stop. This will be done using a deceleration model
-similar to \cite{deceleration}.
-
-
+similar to \cite{deceleration}. If the light turns to green, the car instead needs to start accelerating (using one of
+the models mentioned above). The model will adapt to light changes during movement by recalculating its estimated
+exit time of the system.
 
 \subsection{Simulation Input}
 The two main sources of input into this simulation are the cars entering the section of Peachtree St with which we are
