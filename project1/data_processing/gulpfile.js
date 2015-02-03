@@ -4,6 +4,7 @@ var array_interval = require('./array_interval.js');
 var histogram = require('./histogram.js');
 var onevar = require('./one_var_stats.js');
 var goodnessOfFit = require('./performGoodnessOfFit.js');
+var fit = require('gamma-distribution').fit;
 
 var readIntervals = function(path) {
     var timestamps = fs.readFileSync(path)
@@ -24,12 +25,18 @@ var readIntervals = function(path) {
 
 gulp.task('northbound-inliers', function(cb) {
     var intervals = readIntervals('data/all_northbound.csv');
-    var inliers = onevar.inliers(intervals);
-    console.log(histogram(inliers));
+    intervals = intervals.filter(function(item) {
+        return item > 0.001;
+    });
+    console.log(histogram(intervals));
 
-    var chiSquaredResults = goodnessOfFit(inliers, 25);
-    console.log(chiSquaredResults.chiSquared);
-    console.log(chiSquaredResults.probability);
+    console.log('Single Gamma Chi-Squared Fit');
+    var chiSquaredResults = goodnessOfFit(intervals, 25);
+    var fittedValues = fit(intervals);
+    console.log('k = ' + fittedValues.k + ' theta = ' + fittedValues.theta);
+    console.log('chi-squared = ' + chiSquaredResults.chiSquared);
+    console.log('p = ' + chiSquaredResults.probability);
+
     cb();
 });
 
