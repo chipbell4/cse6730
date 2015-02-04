@@ -3,6 +3,7 @@
     "backbone": "^1.1.2",
     "del": "^1.1.1",
     "gulp": "^3.8.10",
-    "gulp-coffeeify": "^0.1.2"
+    "gulp-coffeeify": "^0.1.2",
+    "jquery": "^2.1.3"
   }
 }
