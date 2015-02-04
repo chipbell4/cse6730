@@ -15,9 +15,10 @@ class LightSignal
         @listenTo(@eventQueue, 'light:changed', @onLightChange)
 
     getNextColor: ->
-        'green' if @currentColor == 'red'
-        'red' if @currentColor == 'yellow'
-        'yellow' if @currentColor == 'green'
+        return switch @currentColor
+            when 'red' then 'green'
+            when 'yellow' then 'red'
+            when 'green' then 'yellow'
 
     # Triggers the next light change
     triggerLightChange: (currentTimestamp) ->
@@ -31,6 +32,7 @@ class LightSignal
 
     onLightChange: (event) ->
         # change my color
+        console.log(event.toJSON());
         @currentColor = event.get('data')
 
         # Schedule the next change
