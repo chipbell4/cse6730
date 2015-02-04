@@ -1,8 +1,8 @@
-require './Car.coffee'
-require './CarEmitter.coffee'
-require './EventQueue.coffee'
-require './LightSignal.coffee'
-require './IntersectionQueue.coffee'
+Car = require './Car.coffee'
+CarEmitter = require './CarEmitter.coffee'
+EventQueue = require './EventQueue.coffee'
+LightSignal = require './LightSignal.coffee'
+IntersectionQueue = require './IntersectionQueue.coffee'
 
 $ = require 'jquery'
 
