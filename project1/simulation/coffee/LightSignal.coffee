@@ -1,7 +1,10 @@
 Backbone = require 'backbone'
+_ = require 'underscore'
 
-class LightSignal extends Backbone.Events
+class LightSignal
     constructor: (@eventQueue, redTime, yellowTime, greenTime) ->
+        # mix in eventing
+        _.extend @, Backbone.Events 
         @currentColor = 'red'
         @durations =
             red: redTime
@@ -9,7 +12,7 @@ class LightSignal extends Backbone.Events
             green: greenTime
 
         # Let the light listen for its own signal changes so it can push new changes on
-        @this.listenTo(@eventQueue, 'light:changed', @onLightChange)
+        @listenTo(@eventQueue, 'light:changed', @onLightChange)
 
     getNextColor: ->
         'green' if @currentColor == 'red'
