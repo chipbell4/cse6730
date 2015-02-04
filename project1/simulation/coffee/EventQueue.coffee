@@ -11,7 +11,7 @@ class EventQueue extends Backbone.Collection
         nextEvent = this.shift()
 
         # emit the event
-        this.trigger(nextEvent.get('name'), nextEvent.get('data'))
+        this.trigger(nextEvent.get('name'), nextEvent)
 
         # return it, just in case someone wants is
         return nextEvent
