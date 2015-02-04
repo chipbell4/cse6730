@@ -1,10 +1,12 @@
 var gulp = require('gulp');
 var del = require('del');
 var coffeeify = require('gulp-coffeeify');
+var uglify = require('gulp-uglify');
 
 gulp.task('bundle', function() {
     return gulp.src('coffee/main.coffee')
         .pipe(coffeeify())
+        .pipe(uglify())
         .pipe(gulp.dest('.'));
 });
 
