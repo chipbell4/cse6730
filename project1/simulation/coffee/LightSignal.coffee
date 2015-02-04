@@ -32,7 +32,6 @@ class LightSignal
 
     onLightChange: (event) ->
         # change my color
-        console.log(event.toJSON());
         @currentColor = event.get('data')
 
         # Schedule the next change
