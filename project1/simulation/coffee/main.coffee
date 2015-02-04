@@ -1,3 +1,3 @@
 # Hello world
 
-require './car.coffee'
+require './Car.coffee'
