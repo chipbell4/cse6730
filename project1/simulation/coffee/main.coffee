@@ -3,12 +3,15 @@ CarEmitter = require './CarEmitter.coffee'
 EventQueue = require './EventQueue.coffee'
 LightSignal = require './LightSignal.coffee'
 IntersectionQueue = require './IntersectionQueue.coffee'
+EventLog = require './EventLog.coffee'
+EventLogView = require './EventLogView.coffee'
 
 $ = require 'jquery'
 
 $ ->
     # create a global event queue
     eventQueue = new EventQueue
+    log = new EventLog
     # TODO: Use the values in the file here
     lightSignal = new LightSignal(eventQueue, 45, 10, 45)
 
