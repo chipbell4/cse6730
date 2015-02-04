@@ -14,3 +14,5 @@ class CarEmitter
         )
 
         return car
+
+module.exports = CarEmitter

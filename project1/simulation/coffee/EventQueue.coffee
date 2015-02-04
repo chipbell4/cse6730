@@ -19,3 +19,5 @@ class EventQueue extends Backbone.Collection
     # Events the next event in the queue if its due to run
     emitNextAt: (timestamp) ->
         this.emitNext() if this.first().get('timestamp') <= timestamp
+
+module.exports = EventQueue

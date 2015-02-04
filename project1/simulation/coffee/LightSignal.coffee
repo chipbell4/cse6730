@@ -32,3 +32,5 @@ class LightSignal extends Backbone.Events
 
         # Schedule the next change
         @triggerLightChange(event.get('timestamp'))
+
+module.exports = LightSignal

@@ -11,3 +11,5 @@ class IntersectionQueue extends Backbone.Collection
 
     onCarArrived: ->
         console.log 'Arived'
+
+module.exports = IntersectionQueue
