@@ -8,7 +8,7 @@ class IntersectionQueue extends Backbone.Collection
 
     initialize: (items, @eventQueue) ->
         @eventQueue.on('car:arrived', @onCarArrived.bind(@))
-        @eventQueue.on('car:exited', @onCarArrived.bind(@))
+        @eventQueue.on('car:exited', @onCarExited.bind(@))
         @eventQueue.on('light:changed', @onLightChanged.bind(@))
         @blockingCars = true
 
