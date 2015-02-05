@@ -12,6 +12,9 @@ class StatCollection extends Backbone.Collection
     exitedCars: ->
         @filter( (model) -> model.hasExited() )
 
+    waitingCars: ->
+        @filter( (model) -> not model.hasExited() )
+
     averageDuration: ->
         sum = (accumulator, model) -> accumulator + model.getDuration()
         @exitedCars().reduce(sum, 0) / @exitedCars().length
