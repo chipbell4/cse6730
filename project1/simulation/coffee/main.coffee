@@ -8,9 +8,22 @@ EventLogView = require './EventLogView.coffee'
 
 $ = require 'jquery'
 
+pushCars = (eventQueue) ->
+    emitter = new CarEmitter(eventQueue, 0)
+
+    emitter.triggerCar 10*k for k in [1..50]
+
+    return emitter
+
 $ ->
     # create a global event queue
     eventQueue = new EventQueue
+
+    # push some cars to be processed
+    pushCars eventQueue
+
+    # create the intersection queue to manage cars through the light
+    intersectionQueue = new IntersectionQueue([], eventQueue)
     
     # The listeners and display for that
     log = new EventLog([])
@@ -29,4 +42,4 @@ $ ->
     doAStep = ->
         evt = eventQueue.emitNext()
 
-    doAStep() for i in [1..10]
+    doAStep() for i in [1..100]

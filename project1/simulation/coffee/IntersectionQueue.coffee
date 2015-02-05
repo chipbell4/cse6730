@@ -6,15 +6,19 @@ class IntersectionQueue extends Backbone.Collection
     # sort by the timestamp
     comparator: 'position'
 
-    constructor: (@eventQueue) ->
-        @eventQueue.on('car:arrived', @onCarArrived)
-        @eventQueue.on('car:exited', @onCarArrived)
+    initialize: (items, @eventQueue) ->
+        @eventQueue.on('car:arrived', @onCarArrived.bind(@))
+        @eventQueue.on('car:exited', @onCarArrived.bind(@))
+        @eventQueue.on('light:changed', @onLightChanged.bind(@))
         @blockingCars = true
 
-    onCarArrived: ->
-        console.log 'Arived'
+    onCarArrived: (event) ->
+        @push event.get('data')
 
     releaseCar: (currentTimestamp) ->
+        if @length == 0
+            return
+
         @eventQueue.add(
             data: @pop()
             timestamp: currentTimestamp + 2 # TODO: Make this variable
@@ -33,6 +37,8 @@ class IntersectionQueue extends Backbone.Collection
             @blockingCars = true
         else
             @blockingCars = false
+
+        console.log('Are we blocking cars? ' + @blockingCars)
 
         if @blockingCars
             return
