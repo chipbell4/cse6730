@@ -9,10 +9,11 @@ class EventLogView extends Backbone.View
         displayText = event.get('name') + '\n'
         displayText += "\tAt " + event.get('timestamp') + " \n"
         
+        data = event.get('data')
         if event.get('data') instanceof Backbone.Model
-            displayText += "\tData = " + event.get('data').toJSON()
-        else
-            displayText += "\tData = " + JSON.stringify(event.get('data'))
+            data = data.toJSON()
+
+        displayText += "\tData = " + JSON.stringify(data)
 
         return displayText
 
