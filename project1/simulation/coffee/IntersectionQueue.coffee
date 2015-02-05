@@ -38,8 +38,6 @@ class IntersectionQueue extends Backbone.Collection
         else
             @blockingCars = false
 
-        console.log('Are we blocking cars? ' + @blockingCars)
-
         if @blockingCars
             return
 
