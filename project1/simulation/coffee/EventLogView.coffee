@@ -19,5 +19,6 @@ class EventLogView extends Backbone.View
     render: ->
         logString = @collection.map(@singleEventAsString).join('\n')
         @$el.html logString
+        @$el.scrollTop @el.scrollHeight
 
 module.exports = EventLogView
