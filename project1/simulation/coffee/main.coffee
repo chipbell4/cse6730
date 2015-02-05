@@ -50,6 +50,10 @@ $ ->
 
     currentTime = 0
     doAStep = ->
-        evt = eventQueue.emitNext()
+        evt = eventQueue.emitNextAt(currentTime)
+        currentTime += 1
+        setTimeout(doAStep, 100)
 
-    doAStep() for i in [1..100]
+     doAStep()
+        
+
