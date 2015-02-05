@@ -6,10 +6,18 @@ class EventLogView extends Backbone.View
         @listenTo(@collection, 'add', @render)
 
     singleEventAsString: (event) ->
-        return "#{ event.get('name') } at #{ event.get('timestamp') }"
+        displayText = event.get('name') + '\n'
+        displayText += "\tAt " + event.get('timestamp') + " \n"
+        
+        if event.get('data') instanceof Backbone.Model
+            displayText += "\tData = " + event.get('data').toJSON()
+        else
+            displayText += "\tData = " + JSON.stringify(event.get('data'))
+
+        return displayText
 
     render: ->
-        logString = @collection.map(@singleEventAsString).join('\n');
+        logString = @collection.map(@singleEventAsString).join('\n')
         @$el.html logString
 
 module.exports = EventLogView
