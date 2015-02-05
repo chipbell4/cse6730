@@ -10,10 +10,10 @@ StatsView = require './StatsView.coffee'
 
 $ = require 'jquery'
 
-pushCars = (eventQueue) ->
+pushCars = (eventQueue, carCount) ->
     emitter = new CarEmitter(eventQueue, 0)
 
-    emitter.triggerCar 10*k for k in [1..50]
+    emitter.triggerCar 10*k for k in [1..carCount]
 
     return emitter
 
@@ -22,7 +22,7 @@ $ ->
     eventQueue = new EventQueue
 
     # push some cars to be processed
-    pushCars eventQueue
+    pushCars(eventQueue, 2000)
 
     # create the intersection queue to manage cars through the light
     intersectionQueue = new IntersectionQueue([], eventQueue)
