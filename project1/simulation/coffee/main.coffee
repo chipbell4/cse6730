@@ -11,7 +11,15 @@ $ = require 'jquery'
 $ ->
     # create a global event queue
     eventQueue = new EventQueue
-    log = new EventLog
+    
+    # The listeners and display for that
+    log = new EventLog([])
+    log.watchEventQueue eventQueue
+    eventLogView = new EventLogView(
+        collection: log
+        el: $('textarea').get(0)
+    )
+
     # TODO: Use the values in the file here
     lightSignal = new LightSignal(eventQueue, 45, 10, 45)
 
@@ -19,9 +27,6 @@ $ ->
 
     currentTime = 0
     doAStep = ->
-        console.log('t = ' + currentTime)
-        console.log('Color ' + lightSignal.currentColor)
         evt = eventQueue.emitNext()
-        currentTime = evt.get('timestamp')
 
     doAStep() for i in [1..10]
