@@ -5,6 +5,8 @@ LightSignal = require './LightSignal.coffee'
 IntersectionQueue = require './IntersectionQueue.coffee'
 EventLog = require './EventLog.coffee'
 EventLogView = require './EventLogView.coffee'
+StatCollection = require './StatCollection.coffee'
+StatsView = require './StatsView.coffee'
 
 $ = require 'jquery'
 
@@ -25,12 +27,20 @@ $ ->
     # create the intersection queue to manage cars through the light
     intersectionQueue = new IntersectionQueue([], eventQueue)
     
-    # The listeners and display for that
+    # Log Events
     log = new EventLog([])
     log.watchEventQueue eventQueue
     eventLogView = new EventLogView(
         collection: log
         el: $('textarea').get(0)
+    )
+
+    # Keep track of stats
+    statCollection = new StatCollection
+    statCollection.watchEventQueue eventQueue
+    statsView = new StatsView(
+        collection: statCollection
+        el: $('#stats').get(0)
     )
 
     # TODO: Use the values in the file here
