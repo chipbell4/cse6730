@@ -164,6 +164,14 @@ Since we want to gather metrics regarding the throughput of cars, we'll also pro
 \texttt{ThroughputStatistics} that will listen for cars to complete their journey through the system. This will
 be reported in the UI in real time.
 
+The simulation is written in CoffeeScript \cite{coffeescript}, which is a small language that compiles to JavaScript.
+CoffeeScripts removes some of the boilerplate associated with setting up prototype chains and other object-oriented
+concepts in JavaScript.
+Backbone \cite{backbone} along with Underscore \cite{underscore} and jQuery \cite{jquery} were used to provide some
+application structure, like basic eventing, and the sorted
+collections that are used to form the basis for the event queue and \texttt{IntersectionQueue}. Lastly, Browserify
+\cite{browserify} was used to bundle the code into a single file. Minification was done with Uglify.js \cite{uglify}.
+
 \section{Current Build}
 Current Build
 
