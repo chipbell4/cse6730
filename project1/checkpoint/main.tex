@@ -14,17 +14,17 @@ Traffic simulation is becoming increasing important due to the expansion and gro
 infrastructure is forced to adapt in order to accomodate greater amounts of traffic, despite the fact that in many
 cases the roads cannot be modified. This can be a result of legislation, existing buildings, and private property among
 other things. So as a result, cities must instead optimize the variables they can control. In this case, we consider
-signal light timing for the 12th St. and Peachtree Street intersection due to
-time constraints, and the sheer difficulty with modeling traffic in general between multiple intersections. In particular,
+signal light timing for the 12th St. and Peachtree Street intersection. In particular,
 we explore the effects that light timing has on traffic flow, given a source input distribution of cars.
 
 \section{The Conceptual Model}
 In order to create a representative software simulation of the aforementioned system, we first begin by designing a
-conceptual version of this model from which we can plan our implementation. Data from \cite{cts12} was used extensively % TODO: Put this somewhere else
-for modeling purposes in this project. Our architecture will be event driven, prioritizing events by timestamp. Furthermore,
+conceptual version of this model from which we can plan our implementation. We'll borrow heavily from the results and data
+in \cite{cts12} when formulating our model.
+Our architecture will be event driven, prioritizing events by timestamp. Furthermore,
 we'll utilize the publisher-subscriber pattern (see \cite{pubsub}) to promote better decoupling.
 Given this architecture, our first step will be to identify the entities present in our model, and then consider their
-interactions (or the inherent ``activies'') within the simulation. This will allow us to then design the events that
+interactions (or the inherent ``activies'') within the simulation. This will allow us then to design the events that
 are important
 
 \subsection{Entities}
@@ -72,8 +72,8 @@ the models mentioned above). The model will adapt to light changes during moveme
 exit time of the system.
 
 \subsection{Simulation Input}
-The two main sources of input into this simulation are the cars entering the section of Peachtree St with which we are
-concerned, and the light timing of the system. The combination of these two variables are what influence the smoothness
+The two main sources of input into this simulation are the cars entering out section of Peachtree St, and the light
+timing of the system. The combination of these two variables are what influence the smoothness
 of traffic flow to the actual drivers in the system.
 
 We first concern ourselves with finding an input distribution for cars entering the system. In our model, we'll only
@@ -84,25 +84,25 @@ have the same length. These values can be calculated from the NGSIM data set \ci
 \begin{figure}
 \begin{center}  
 \includegraphics[width=4in]{../northbound.png}  
-\caption{\small \sl Northbound Arrival Intervals \label{fig:northbound_arrival}}  
+\caption{\small \sl Northbound Arrival Intervals by Order of Occurrence\label{fig:northbound_arrival}}  
 \end{center}  
 \end{figure} 
 
 \begin{figure}  
 \begin{center}
-\includegraphics[width=4in]{../southbound.png}  
-\caption{\small \sl Southbound Arrival Intervals \label{fig:southbound_arrival}}  
+\includegraphics[width=4in]{../southbound.png}
+\caption{\small \sl Southbound Arrival Intervals by Order of Occurrence\label{fig:southbound_arrival}}  
 \end{center}  
 \end{figure} 
 
 The distribution of car arrival is very important, but has been difficult to model. The arrival intervals between 
 northbound and southbound cars are provided in \ref{fig:northbound_arrival} and \ref{fig:southbound_arrival}.
-Model fitting was attempted for both $\Gamma$ and $\Gamma$ mixture models on the raw data, but resulted in poor
+Model fitting was attempted for both $\Gamma$ and $\Gamma$-mixture models on the raw data, but resulted in poor
 fits. Furthermore, pruning outliers via the common interquartile range approach, where values are rejected when
 they lie outside of $median + 1.5IQR$, where $IQR$ is the interquartile range $Q_3 - Q_1$.
 
 Given the difficulties with modelling we'll take a simpler approach and assume the ``true distribution`` is modeled by what was observed,
-and simply use the observed frequency distribution as our input distribution. As the project progresses we can
+and simply plan to use the observed frequency distribution as our input distribution. As the project progresses we can
 refine this model.
 
 The current light timing of the system is known, and provided in \cite{ngsim}, but we'll allow the user to set
@@ -110,10 +110,12 @@ those values dynamically via a UI.
 
 \subsubsection{Data Analysis}
 In the \texttt{data\_processing} folder, most of code used for distribution fitting and statistics can be found there.
-The data analysis code was written in Javascript, and runs completely in NodeJS \cite{nodejs}. NPM \cite{npm} was used
+The data analysis code was written in JavaScript, and runs completely in NodeJS \cite{nodejs}. NPM \cite{npm} was used
 to manage dependencies and those dependencies can be seen in the \texttt{package.json} file. Of those packages, I have
 authored the \texttt{chi-squared-test} module \cite{chiSquaredNpm}, and the \texttt{gamma-distribution}
 \cite{gammaDistributionNpm}. Gulp \cite{gulp} was used a build tool for automating tasks (including building this paper).
+To run some of the data analysis code I wrote, you'll need to install and run gulp. Instructions for doing so are
+provided in the final section of this paper.
 
 \subsection{Simulation Output}
 The most important statistic we'll want to collect during the simulation is the thoughput of the simulation. We'll
@@ -165,16 +167,19 @@ Since we want to gather metrics regarding the throughput of cars, we'll also pro
 be reported in the UI in real time.
 
 The simulation is written in CoffeeScript \cite{coffeescript}, which is a small language that compiles to JavaScript.
-CoffeeScripts removes some of the boilerplate associated with setting up prototype chains and other object-oriented
+CoffeeScript removes some of the boilerplate associated with setting up prototype chains and other object-oriented
 concepts in JavaScript.
 Backbone \cite{backbone} along with Underscore \cite{underscore} and jQuery \cite{jquery} were used to provide some
 application structure, like basic eventing, and the sorted
 collections that are used to form the basis for the event queue and \texttt{IntersectionQueue}. Lastly, Browserify
 \cite{browserify} was used to bundle the code into a single file. Minification was done with Uglify.js \cite{uglify}.
 
-\section{Current Build}
+\section{Current Build and Running Instructions}
 The simulation is currently deployed at \cite{aprilandchip} and currently runs a fixed number of cars through stepping
 at 1 second real time being equal to 100ms. Eventually, this will be adjustable in real-time, and better visualized.
+Cars are generated regularly at 10 (+ an uniformly random number between 0 and 1) second intervals. Light timings are
+currently hard-coded as well. Currently, we're only modeling a single direction, and ignoring turns, and variations
+between cars.
 
 To build the application locally, you'll need to install a version of Node.js \cite{nodejs} at 0.10.0 or higher. This will be bundled
 with npm. Since this project uses gulp for a task runner, you'll need to install it globally via
