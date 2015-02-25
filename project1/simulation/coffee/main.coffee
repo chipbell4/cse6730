@@ -1,6 +1,8 @@
+Backbone = require 'backbone'
 Car = require './Car.coffee'
 CarEmitter = require './CarEmitter.coffee'
 EventQueue = require './EventQueue.coffee'
+LightTimingView = require './LightTimingView.coffee'
 LightSignal = require './LightSignal.coffee'
 IntersectionQueue = require './IntersectionQueue.coffee'
 EventLog = require './EventLog.coffee'
@@ -23,6 +25,11 @@ $ ->
 
     # push some cars to be processed
     pushCars(eventQueue, 2000)
+
+    # handle input from the light timing
+    lightTiming = new LightTimingView(
+        el: $('#light-timings')[0]
+    )
 
     # create the intersection queue to manage cars through the light
     intersectionQueue = new IntersectionQueue([], eventQueue)
