@@ -1,3 +1,5 @@
 *.swp
-bundle.tar.gz
+**/*.tar.gz
+**/*.gz
+**/*.tgz
 **/.DS_Store
