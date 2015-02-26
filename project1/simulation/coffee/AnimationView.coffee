@@ -1,4 +1,5 @@
 Backbone = require 'backbone'
+Time = require './Time.coffee'
 
 class AnimationView extends Backbone.View
     colors:
@@ -47,7 +48,7 @@ class AnimationView extends Backbone.View
         @$('svg').get(0).appendChild(rectangle)
 
         label = document.createElementNS('http://www.w3.org/2000/svg', 'text')
-        label.textContent = '20'
+        label.textContent = Number(Time.current() - car.get('arrivalTime')).toPrecision(2)
         label.setAttribute('x', x + width / 5)
         label.setAttribute('y', y + height / 2)
         @$('svg').get(0).appendChild(label)

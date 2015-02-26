@@ -24,9 +24,11 @@ class CarEmitter
         return Math.random() * (binRight - binLeft) + binLeft
 
     triggerCar: (currentTime) ->
-        car = new Car()
-
         timestamp = currentTime + @sampleHistogram()
+        
+        car = new Car(
+            arrivalTime: timestamp
+        )
 
         @eventQueue.add(
             data: car
