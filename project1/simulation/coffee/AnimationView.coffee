@@ -8,7 +8,7 @@ class AnimationView extends Backbone.View
 
     initialize: ->
         @currentColor = 'red'
-        @render
+        @render()
 
     removeOldElements: ->
         svg = @$('svg').get(0)
