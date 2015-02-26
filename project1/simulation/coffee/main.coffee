@@ -37,18 +37,19 @@ $ ->
         el: $('#light-timings')[0]
     )
 
+    # create the intersection queue to manage cars through the light
+    intersectionQueue = new IntersectionQueue([], eventQueue)
+
     # add an animation for the light change, and cars passing through
     animation = new AnimationView(
         el: $('#animation')[0]
+        collection: intersectionQueue
     )
     animation.listenTo(eventQueue, 'light:changed', animation.onLightChanged.bind(animation))
 
     simulationSpeed = new SimulationSpeedView(
         el: $('#simulation-speed')[0]
     )
-
-    # create the intersection queue to manage cars through the light
-    intersectionQueue = new IntersectionQueue([], eventQueue)
     
     # Log Events
     log = new EventLog([])
