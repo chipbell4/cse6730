@@ -7,6 +7,7 @@ class EventLogView extends Backbone.View
 
     initialize: ->
         @listenTo(@collection, 'add', @render)
+        @filterText = ''
 
     updateFilter: ->
         @filterText = @$('[name=event-filter]').val()
