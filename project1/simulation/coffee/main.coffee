@@ -15,16 +15,31 @@ Time = require './Time.coffee'
 
 $ = require 'jquery'
 
+resolveHash = ->
+    if window.location.hash not in ['#Northbound', '#Southbound']
+        window.location.hash = '#Northbound'
+
+    $('#direction').html window.location.hash.substring(1)
+
 pushCars = (eventQueue, carCount) ->
 
     # This is simply summary data collected from my files in the data_processing folder
     northboundProbabilities = [ 0.582677165, 0.204724409, 0.015748031, 0.007874016, 0.007874016, 0.015748031, 0, 0.007874016,
         0.007874016, 0.007874016, 0.039370079, 0.007874016, 0.015748031, 0, 0.015748031, 0.039370079, 0.007874016, 0,
         0.007874016, 0, 0.007874016 ]
-    northboundBinWidth = 47.5 / 20 
+    northboundBinWidth = 47.5 / 20
 
+    southboundProbabilities = [ 0.766467066, 0.107784431, 0.005988024, 0.011976048, 0.02994012, 0.011976048,
+        0.011976048, 0.011976048, 0, 0, 0.005988024, 0.005988024, 0.017964072, 0, 0, 0.005988024, 0, 0, 0, 0,
+        0.005988024 ]
+    southboundBinWidth = 73.8 / 20
+
+    # Set the emitter to use the correct empirical data, based on the location hash
     emitter = new CarEmitter(eventQueue, northboundProbabilities, northboundBinWidth)
+    if window.location.hash == '#Southbound'
+        emitter = new CarEmitter(eventQueue, southboundProbabilities, southboundBinWidth)
 
+    # Spit out some cars
     timestamp = 0
     cars = 0
     while cars < carCount
@@ -34,11 +49,16 @@ pushCars = (eventQueue, carCount) ->
     return emitter
 
 $ ->
+    # Make sure the hash is set correctly
+    resolveHash()
+
     # create a global event queue
     eventQueue = new EventQueue
 
     # push some cars to be processed
     pushCars(eventQueue, 500)
+
+    # Let the user know what 
 
     # handle input from the light timing
     lightTiming = new LightTimingView(
