@@ -1,3 +1,4 @@
+AnimationView = require './AnimationView.coffee'
 Backbone = require 'backbone'
 Car = require './Car.coffee'
 CarEmitter = require './CarEmitter.coffee'
@@ -30,6 +31,12 @@ $ ->
     lightTiming = new LightTimingView(
         el: $('#light-timings')[0]
     )
+
+    # add an animation for the light change, and cars passing through
+    animation = new AnimationView(
+        el: $('#animation')[0]
+    )
+    animation.listenTo(eventQueue, 'light:changed', animation.onLightChanged.bind(animation))
 
     # create the intersection queue to manage cars through the light
     intersectionQueue = new IntersectionQueue([], eventQueue)
