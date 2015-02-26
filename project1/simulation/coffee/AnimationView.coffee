@@ -21,7 +21,7 @@ class AnimationView extends Backbone.View
         circle.setAttribute('fill', @colors[color])
         circle.setAttribute('r', '25')
         circle.setAttribute('cx', '50%')
-        circle.setAttribute('cy', '0')
+        circle.setAttribute('cy', '50%')
 
         @$('svg').get(0).appendChild(circle)
 
