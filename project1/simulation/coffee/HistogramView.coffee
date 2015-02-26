@@ -57,6 +57,14 @@ class HistogramView extends Backbone.View
 
         @render()
 
+    buildLabel: (text, percentageWidth, percentageHeight) ->
+        $svg = @$('svg')
+        label = document.createElementNS('http://www.w3.org/2000/svg', 'text')
+        label.textContent = text
+        label.setAttribute('x', $svg.width() * percentageWidth)
+        label.setAttribute('y', $svg.height() * (1 - percentageHeight))
+        return label
+
     render: ->
         # build a SVG path from the current point set
         path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
@@ -69,5 +77,15 @@ class HistogramView extends Backbone.View
         svg = @$('svg').get(0)
         svg.removeChild(svg.firstChild) while svg.firstChild
         svg.appendChild(path)
+
+        # add labels at the edges and middle
+        oneQuarter = (@histogramSize.min * 3 + @histogramSize.max) / 4
+        oneHalf = (@histogramSize.min + @histogramSize.max) / 2
+        threeQuarter = (@histogramSize.min + @histogramSize.max * 3) / 4
+        svg.appendChild @buildLabel(@histogramSize.min, 0.1, 0)
+        svg.appendChild @buildLabel( (oneQuarter), 0.3, 0)
+        svg.appendChild @buildLabel( (oneHalf), 0.5, 0)
+        svg.appendChild @buildLabel( (threeQuarter), 0.7, 0)
+        svg.appendChild @buildLabel(@histogramSize.max, 0.9, 0)
 
 module.exports = HistogramView
