@@ -8,6 +8,7 @@ LightSignal = require './LightSignal.coffee'
 IntersectionQueue = require './IntersectionQueue.coffee'
 EventLog = require './EventLog.coffee'
 EventLogView = require './EventLogView.coffee'
+SimulationSpeedView = require './SimulationSpeedView.coffee'
 StatCollection = require './StatCollection.coffee'
 StatsView = require './StatsView.coffee'
 
@@ -38,6 +39,10 @@ $ ->
     )
     animation.listenTo(eventQueue, 'light:changed', animation.onLightChanged.bind(animation))
 
+    simulationSpeed = new SimulationSpeedView(
+        el: $('#simulation-speed')[0]
+    )
+
     # create the intersection queue to manage cars through the light
     intersectionQueue = new IntersectionQueue([], eventQueue)
     
@@ -67,7 +72,8 @@ $ ->
     doAStep = ->
         evt = eventQueue.emitNextAt(currentTime)
         currentTime += 1
-        setTimeout(doAStep, 100)
+        # sleep before stepping again. Base the sleep on the simulation speed
+        setTimeout(doAStep, 1000 / simulationSpeed.currentSpeed)
 
      doAStep()
         
