@@ -15,7 +15,7 @@ StatsView = require './StatsView.coffee'
 $ = require 'jquery'
 
 pushCars = (eventQueue, carCount) ->
-    emitter = new CarEmitter(eventQueue, 0)
+    emitter = new CarEmitter(eventQueue, [0, 0, 0.1, 0.2, 0.7], 10)
 
     timestamp = 0
     cars = 0
