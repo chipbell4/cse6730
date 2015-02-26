@@ -11,6 +11,7 @@ EventLogView = require './EventLogView.coffee'
 SimulationSpeedView = require './SimulationSpeedView.coffee'
 StatCollection = require './StatCollection.coffee'
 StatsView = require './StatsView.coffee'
+Time = require './Time.coffee'
 
 $ = require 'jquery'
 
@@ -73,10 +74,10 @@ $ ->
 
     lightSignal.triggerLightChange(0)
 
-    currentTime = 0
+    Time.reset()
     doAStep = ->
-        evt = eventQueue.emitNextAt(currentTime)
-        currentTime += 1
+        evt = eventQueue.emitNextAt(Time.current())
+        Time.step()
         # sleep before stepping again. Base the sleep on the simulation speed
         setTimeout(doAStep, 1000 / simulationSpeed.currentSpeed)
 
