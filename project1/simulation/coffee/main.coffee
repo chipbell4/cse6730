@@ -17,7 +17,11 @@ $ = require 'jquery'
 pushCars = (eventQueue, carCount) ->
     emitter = new CarEmitter(eventQueue, 0)
 
-    emitter.triggerCar 10*k for k in [1..carCount]
+    timestamp = 0
+    cars = 0
+    while cars < carCount
+        timestamp = emitter.triggerCar timestamp
+        cars += 1
 
     return emitter
 

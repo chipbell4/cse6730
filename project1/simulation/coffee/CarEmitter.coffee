@@ -7,12 +7,14 @@ class CarEmitter
         car = new Car()
 
         # TODO: Make this smarter
+        timestamp = currentTime + Math.random() * 10
+
         @eventQueue.add(
             data: car
             name: 'car:arrived'
-            timestamp: currentTime + Math.random() * 10
+            timestamp: timestamp
         )
 
-        return car
+        return timestamp
 
 module.exports = CarEmitter
