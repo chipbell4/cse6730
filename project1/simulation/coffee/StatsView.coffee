@@ -33,10 +33,9 @@ class StatsView extends Backbone.View
     onCarExited: (event) ->
         @render()
 
-        # reset the collection with the new values of car exits
         @outputHistogram.collection.reset @collection.exitedCars().map((car) ->
             obj = 
-                value: car.get('exitTime')
+                value: car.getDuration()
         )
 
     render: ->
