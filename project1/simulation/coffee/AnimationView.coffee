@@ -15,6 +15,7 @@ class AnimationView extends Backbone.View
         @render()
 
         @collection.on('add remove reset change', @render.bind(@))
+        Time.on('time:step time:reset', @render.bind(@))
 
     removeOldElements: ->
         svg = @$('svg').get(0)
