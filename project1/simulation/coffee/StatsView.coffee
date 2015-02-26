@@ -40,7 +40,7 @@ class StatsView extends Backbone.View
 
     render: ->
         @$('#car-throughput').html(@collection.exitedCars().length)
-        @$('#average-throughput').html(@collection.averageDuration())
+        @$('#average-throughput').html(@collection.averageDuration().toPrecision(4) + 's')
         @$('#cars-waiting').html(@collection.waitingCars().length)
 
 module.exports = StatsView
