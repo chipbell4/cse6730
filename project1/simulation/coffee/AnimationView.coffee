@@ -30,21 +30,26 @@ class AnimationView extends Backbone.View
 
         @$('svg').get(0).appendChild(circle)
 
-    drawCar: (car, x, y) ->
+    drawCar: (car, index) ->
         # create a rectangle, and add values to it
         rectangle = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
         rectangle.setAttribute('fill', @colors.orange)
         rectangle.setAttribute('stroke', @colors.black)
+
+        width = 40;
+        height = 30;
+        x = 100 + (index * (width + 10)) 
+        y = 25
         rectangle.setAttribute('x', x)
         rectangle.setAttribute('y', y)
-        rectangle.setAttribute('width', 40)
-        rectangle.setAttribute('height', 30)
+        rectangle.setAttribute('width', width)
+        rectangle.setAttribute('height', height)
         @$('svg').get(0).appendChild(rectangle)
 
         label = document.createElementNS('http://www.w3.org/2000/svg', 'text')
         label.textContent = '20'
-        label.setAttribute('x', x + 40 / 5)
-        label.setAttribute('y', y + 30 / 2)
+        label.setAttribute('x', x + width / 5)
+        label.setAttribute('y', y + height / 2)
         @$('svg').get(0).appendChild(label)
 
     onLightChanged: (event) ->
@@ -53,7 +58,12 @@ class AnimationView extends Backbone.View
 
     render: ->
         @removeOldElements()
-        @drawCar(null, 200, 30)
-        #@drawLight(@currentColor)
+        @drawLight(@currentColor)
+
+        carsToDraw = Math.min(@collection.length, 5)
+        if carsToDraw is 0
+            return
+
+        @drawCar(@collection.at(index), index) for index in [0..carsToDraw - 1]
 
 module.exports = AnimationView
