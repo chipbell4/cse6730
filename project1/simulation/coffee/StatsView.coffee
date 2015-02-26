@@ -1,9 +1,23 @@
 Backbone = require 'backbone'
+HistogramView = require './HistogramView.coffee'
 
 class StatsView extends Backbone.View
     initialize: ->
-        @listenTo(@collection, 'add', @render)
-        @listenTo(@collection, 'change', @render)
+        @listenTo(@collection, 'add', @onCarExited)
+        @listenTo(@collection, 'change', @onCarExited)
+
+        @histogram = new HistogramView(
+            el: @el
+        )
+
+    onCarExited: (event) ->
+        @render()
+
+        # reset the collection with the new values of car exits
+        @histogram.collection.reset @collection.exitedCars().map((car) ->
+            obj = 
+                value: car.get('exitTime')
+        )
 
     render: ->
         @$('#car-throughput').html(@collection.exitedCars().length)
