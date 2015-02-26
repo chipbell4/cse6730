@@ -30,7 +30,7 @@ $ ->
     eventQueue = new EventQueue
 
     # push some cars to be processed
-    pushCars(eventQueue, 4000)
+    pushCars(eventQueue, 500)
 
     # handle input from the light timing
     lightTiming = new LightTimingView(
