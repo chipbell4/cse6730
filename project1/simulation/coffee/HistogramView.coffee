@@ -5,15 +5,23 @@ class HistogramView extends Backbone.View
         @collection = @collection or new Backbone.Collection()
         @listenTo(@collection, 'change add reset', @rebuildHistogram.bind(@))
 
-        # Set a bin count
+        # Set a bin count and histogram size
         @binCount = 25
         if options? and options.binCount?
             @binCount = options.binCount
+        @histogramSize =
+            min: 0
+            max: 100
+        if options? and options.histogramSize?
+            @histogramSize = options.histogramSize
 
         @rebuildHistogram()
 
-    binNumber: (value, min, max) ->
-        Math.floor( (value - min) / (max - min) * @binCount )
+    binNumber: (value) ->
+        # Calculate the bin and then clamp it
+        rawBin = Math.floor( (value - @histogramSize.min) / (@histogramSize.max - @histogramSize.min) * @binCount )
+        Math.min(Math.max(0, rawBin), @binCount - 1)
+
 
     pointPosition: (binValue, binIndex, binCount) ->
         width = @$('svg').width()
@@ -35,12 +43,9 @@ class HistogramView extends Backbone.View
     rebuildHistogram: ->
         values = @collection.pluck('value')
 
-        minValue = Math.min.apply(Math, values)
-        maxValue = Math.max.apply(Math, values)
-
         # Build frequency distribution, looping over each value and pushing it into the correct bin
         bins = (0 for k in [0..@binCount])
-        bins[ @binNumber(value, minValue, maxValue) ] += 1 for value in values
+        bins[ @binNumber(value) ] += 1 for value in values
         if @collection.length > 1
             bins = (binValue / @collection.length for binValue in bins)
 
