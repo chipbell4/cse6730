@@ -23,14 +23,14 @@ class HistogramView extends Backbone.View
         Math.min(Math.max(0, rawBin), @binCount - 1)
 
 
-    pointPosition: (binValue, binIndex, binCount) ->
+    pointPosition: (binValue, binIndex, maxBinValue, binCount) ->
         width = @$('svg').width()
         height = @$('svg').height()
 
         # use a 10% margin on all sides. Also, remember y has to be mirrored
         point = 
             x: "#{ (0.1 + 0.8 * binIndex / binCount) * width }"
-            y: "#{ (0.9 - 0.8 * binValue) * height }"
+            y: "#{ (0.9 - 0.8 * binValue / maxBinValue) * height }"
 
     buildSvgPathString: (points) ->
         if points.length is 0
@@ -46,13 +46,15 @@ class HistogramView extends Backbone.View
         # Build frequency distribution, looping over each value and pushing it into the correct bin
         bins = (0 for k in [0..@binCount])
         bins[ @binNumber(value) ] += 1 for value in values
-        if @collection.length > 1
-            bins = (binValue / @collection.length for binValue in bins)
+
+        maxBinValue = Math.max.apply(Math, bins)
+        if bins.length == 0 or maxBinValue < 1
+            maxBinValue = 1
 
         # convert bins into positions for points
         pointPosition = @pointPosition.bind(@)
         @points = bins.map((binValue, index) ->
-            pointPosition(binValue, index, bins.length)
+            pointPosition(binValue, index, maxBinValue, bins.length)
         )
 
         @render()
