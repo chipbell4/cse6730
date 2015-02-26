@@ -6,7 +6,7 @@ class SimulationSpeedView extends Backbone.View
         'input #speed' : 'onSpeedChanged'
 
     initialize: ->
-        @$('#speed').val(1)
+        @$('#speed').val(25)
         @onSpeedChanged()
 
     onSpeedChanged: ->
