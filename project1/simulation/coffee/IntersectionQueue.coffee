@@ -15,6 +15,9 @@ class IntersectionQueue extends Backbone.Collection
     onCarArrived: (event) ->
         @push event.get('data')
 
+        if not @blockingCars
+            @releaseCar event.get('timestamp')
+
     releaseCar: (currentTimestamp) ->
         if @length == 0
             return
