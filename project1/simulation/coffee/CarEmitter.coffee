@@ -8,7 +8,6 @@ class CarEmitter
         # a little cryptic, but essentially does running sums to calculate the CDF
         pdf = @histogramPdf
         @histogramCdf = indices.map((index) -> sum(pdf[..index]))
-        console.log @histogramCdf
 
     sampleHistogram: ->
         # Figure out which bucket to sample from
