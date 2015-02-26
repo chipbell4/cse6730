@@ -10,7 +10,7 @@ class StatsView extends Backbone.View
             el: @$('#input-stats')[0]
             histogramSize:
                 min: 0
-                max: 50
+                max: 20
         )
 
         @outputHistogram = new HistogramView(
