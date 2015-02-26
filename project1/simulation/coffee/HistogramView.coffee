@@ -6,7 +6,7 @@ class HistogramView extends Backbone.View
         @listenTo(@collection, 'change add reset', @rebuildHistogram.bind(@))
 
         # Set a bin count
-        @binCount = 10
+        @binCount = 25
         if options? and options.binCount?
             @binCount = options.binCount
 
@@ -22,7 +22,7 @@ class HistogramView extends Backbone.View
         # use a 10% margin on all sides. Also, remember y has to be mirrored
         point = 
             x: "#{ (0.1 + 0.8 * binIndex / binCount) * width }"
-            y: "#{ (0.1 + 0.8 * binValue) * height }"
+            y: "#{ (0.9 - 0.8 * binValue) * height }"
 
     buildSvgPathString: (points) ->
         if points.length is 0
