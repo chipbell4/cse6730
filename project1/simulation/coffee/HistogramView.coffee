@@ -34,7 +34,11 @@ class HistogramView extends Backbone.View
 
     rebuildHistogram: ->
         values = @collection.pluck('value')
-        # handle empty list case here
+        if values.length < 2
+            return [
+                x: 0
+                y: 0
+            ]
 
         minValue = Math.min.apply(Math, values)
         maxValue = Math.max.apply(Math, values)
