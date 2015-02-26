@@ -69,7 +69,7 @@ $ ->
     )
 
     # Create a light signal. Whenever the timings change from the UI, update the actual simulation on the fly
-    lightSignal = new LightSignal(eventQueue, 45, 10, 45)
+    lightSignal = new LightSignal(eventQueue, 45, 45, 45)
     lightSignal.listenTo(lightTiming.model, 'change', lightSignal.updateTimings)
 
     lightSignal.triggerLightChange(0)
