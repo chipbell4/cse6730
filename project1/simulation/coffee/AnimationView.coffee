@@ -46,6 +46,8 @@ class AnimationView extends Backbone.View
         rectangle.setAttribute('y', y)
         rectangle.setAttribute('width', width)
         rectangle.setAttribute('height', height)
+        rectangle.setAttribute('rx', 4)
+        rectangle.setAttribute('ry', 4)
         @$('svg').get(0).appendChild(rectangle)
 
         label = document.createElementNS('http://www.w3.org/2000/svg', 'text')
