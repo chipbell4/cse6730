@@ -2,8 +2,15 @@ Backbone = require 'backbone'
 Backbone.$ = require 'jquery'
 
 class EventLogView extends Backbone.View
+    events:
+        'keyup [name=event-filter]' : 'updateFilter'
+
     initialize: ->
         @listenTo(@collection, 'add', @render)
+
+    updateFilter: ->
+        @filterText = @$('[name=event-filter]').val()
+        @render()
 
     singleEventAsString: (event) ->
         displayText = event.get('name') + '\n'
@@ -18,7 +25,10 @@ class EventLogView extends Backbone.View
         return displayText
 
     render: ->
-        logString = @collection.map(@singleEventAsString).join('\n')
+        filterText = @filterText
+        logString = @collection.filter((event) ->
+            event.get('name').indexOf(filterText) > -1
+        ).map(@singleEventAsString).join('\n')
 
         $textarea = @$('textarea')
         $textarea.html logString
