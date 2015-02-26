@@ -55,7 +55,7 @@ $ ->
     log.watchEventQueue eventQueue
     eventLogView = new EventLogView(
         collection: log
-        el: $('textarea').get(0)
+        el: $('#event-log').get(0)
     )
 
     # Keep track of stats
