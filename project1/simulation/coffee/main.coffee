@@ -16,7 +16,14 @@ Time = require './Time.coffee'
 $ = require 'jquery'
 
 pushCars = (eventQueue, carCount) ->
-    emitter = new CarEmitter(eventQueue, [0.9, 0, 0.1, 0.0, 0.0], 5)
+
+    # This is simply summary data collected from my files in the data_processing folder
+    northboundProbabilities = [ 0.582677165, 0.204724409, 0.015748031, 0.007874016, 0.007874016, 0.015748031, 0, 0.007874016,
+        0.007874016, 0.007874016, 0.039370079, 0.007874016, 0.015748031, 0, 0.015748031, 0.039370079, 0.007874016, 0,
+        0.007874016, 0, 0.007874016 ]
+    northboundBinWidth = 47.5 / 20 
+
+    emitter = new CarEmitter(eventQueue, northboundProbabilities, northboundBinWidth)
 
     timestamp = 0
     cars = 0
@@ -51,7 +58,7 @@ $ ->
     simulationSpeed = new SimulationSpeedView(
         el: $('#simulation-speed')[0]
     )
-    
+
     # Log Events
     log = new EventLog([])
     log.watchEventQueue eventQueue
@@ -82,5 +89,5 @@ $ ->
         setTimeout(doAStep, 1000 / simulationSpeed.currentSpeed)
 
      doAStep()
-        
+
 
