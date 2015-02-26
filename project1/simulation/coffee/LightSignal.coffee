@@ -37,4 +37,8 @@ class LightSignal
         # Schedule the next change
         @triggerLightChange(event.get('timestamp'))
 
+     updateTimings: (newTimings) ->
+        colors = ['red', 'yellow', 'green']
+        @durations[color] = Number newTimings.get(color) for color in colors
+
 module.exports = LightSignal

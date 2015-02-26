@@ -50,8 +50,9 @@ $ ->
         el: $('#stats').get(0)
     )
 
-    # TODO: Use the values in the file here
+    # Create a light signal. Whenever the timings change from the UI, update the actual simulation on the fly
     lightSignal = new LightSignal(eventQueue, 45, 10, 45)
+    lightSignal.listenTo(lightTiming.model, 'change', lightSignal.updateTimings)
 
     lightSignal.triggerLightChange(0)
 
