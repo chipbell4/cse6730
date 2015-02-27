@@ -127,9 +127,8 @@ fits. Furthermore, pruning outliers was attempted as well, but still yielded bad
 this determination is the common interquartile range approach, where values are rejected when
 they lie outside of $median + 1.5IQR$, where $IQR$ is the interquartile range $Q_3 - Q_1$.
 
-Given the difficulties with modelling we'll take a simpler approach and assume the ``true distribution`` is modeled by what was observed,
-and simply plan to use the observed frequency distribution as our input distribution. As the project progresses we can
-refine this model.
+Given the difficulties with modeling we'll take a simpler approach and assume the ``true distribution`` is modeled by what was observed,
+and simply plan to use the observed frequency distribution as our input distribution.
 
 The current light timing of the system is known, and provided in \cite{ngsim}, but we'll allow the user to set
 those values dynamically via a UI.
