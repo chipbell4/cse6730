@@ -77,8 +77,18 @@ intersection. Given our closed form above, in order to know how long it will be 
 p(t) = L(n-1)
 \]
 Unfortunately, this must be done numerically. The function is fairly well behaved, and will in general have two roots
-(only one positive). Using a positive initial guess (around 2 or so, judging by visual inspection), Newton's method will converge
-within only a few steps. (SHOW GRAPH)
+(only one positive). Using a positive initial guess (around 2 or so, judging by visual inspection), Newton's method
+will converge within only a few steps. \ref{fig:acceleration} demonstrates some properties of this function
+$0 = p(t) - L(n-1)$, one being
+that as we move further back in the queue, the timing between cars approaches a constant. This is a result of cars
+have more space to accerate to full speed.
+
+\begin{figure}
+\begin{center}  
+\includegraphics[width=4in]{../acceleration.pdf}  
+\caption{\small \sl $p(t) - L(n-1)$ for $n \in \{0, 1, 2, 3, 4\}$ \label{fig:acceleration}}  
+\end{center}  
+\end{figure} 
 
 Given this formulation, we can use this method to calculate when a given car will pass through the intersection,
 assuming it was at a complete stop. We'll use this information when enqueueing the "exit" event for a car.
