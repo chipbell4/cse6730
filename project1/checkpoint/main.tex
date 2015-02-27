@@ -234,20 +234,39 @@ Backbone \cite{backbone} along with Underscore \cite{underscore} and jQuery \cit
 application structure, like basic eventing, and the sorted
 collections that are used to form the basis for the event queue and \texttt{IntersectionQueue}. Lastly, Browserify
 \cite{browserify} was used to bundle the code into a single file. Minification was done with Uglify.js \cite{uglify}.
+Graphing is performed via inline SVG \cite{svg}.
 
 \section{Current Build and Running Instructions}
-The simulation is currently deployed at \cite{aprilandchip} and currently runs a fixed number of cars through stepping
-at 1 second real time being equal to 100ms. Eventually, this will be adjustable in real-time, and better visualized.
-Cars are generated regularly at 10 (+ an uniformly random number between 0 and 1) second intervals. Light timings are
-currently hard-coded as well. Currently, we're only modeling a single direction, and ignoring turns, and variations
-between cars.
+The simulation is currently deployed at \cite{aprilandchip} and provides a UI that allows the light change intervals to
+be updated in real time. Moreover, the simulation speed can be adjusted in real-time as well. Worth noting in the UI is
+a log of all events that are passing through the system. This is live filterable. Also, a visualization of the current
+signal state, along with the current wait times for the first 5 cars in line is provided. Statistics are provided in
+real-time, providing both the observed input distribution of car inter-arrival times, and the output distribution of
+car wait times.
 
 To build the application locally, you'll need to install a version of Node.js \cite{nodejs} at 0.10.0 or higher. This will be bundled
 with npm. Since this project uses gulp for a task runner, you'll need to install it globally via
 \texttt{npm install -g gulp}. Inside the \texttt{simulation} directory, you'll need to pull in packages with just
 \texttt{npm install}. Once that installs, running \texttt{gulp} will run the build for you and generate a
 \texttt{main.js} that's included in the \texttt{index.html} file. Opening this file in a browser should run the
-simulation.
+simulation. To rerun the simulation, simply refresh the browser
+
+\section{Results}
+Since light timing is adjustable in real-time, the actual average wait times can vary (even disregarding randomness).
+However, a few general trends tend to appear. First off, the distribution of wait times is bimodal. This can be
+somewhat observed in the NGSIM data set. This appears to be a result of the dichotomy of cars arriving when the light
+is green, versus when it is red. Cars that arrive during a green light in general do not have to wait long at all
+before they can cross the intersection. However, cars that arrive during a red light will be forced to wait, often
+behind other cars. This causes their wait time to be much higher since they actually had to queue up before they could
+exit the system. Unsurprisingly, most cars that catch the red light end up waiting around the duration of red time.
+
+A second observation is the system saturation. There is a point where the light timing is so terrible that the system
+cannot push cars through as fast as they come. In queueing theory terms, the system is referred to as being
+``oversaturated``. After tweaking some values, this can be triggered by setting the red duration to 60 seconds and
+slowing adjusting the yellow and green down (my testing resulted in oversaturation around yellow and green with 1 and
+25 second durations respectively).
+
+\section{Conclusion}
 
 \bibliographystyle{plain}
 \bibliography{main}
