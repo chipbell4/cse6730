@@ -142,6 +142,17 @@ authored the \texttt{chi-squared-test} module \cite{chiSquaredNpm}, and the \tex
 To run some of the data analysis code I wrote, you'll need to install and run gulp. Instructions for doing so are
 provided in the final section of this paper.
 
+Alongside the NGSIM data set \cite{ngsim}, we are also dependent on the browser for much of our runtime configuration.
+In particular, we rely on the random number generation capabilities of the browser for our entire source of randomness.
+JavaScript provides a built-in implementation \cite{ecmascriptmath} \texttt{Math.random()}, which provides a uniformly
+distributed random number between 0 and 1. The standard also specifies that the implementation is vendor-dependent.
+This means that the "randomness" of \texttt{Math.random()} is dependent on the browser. Because of this, I've provided
+a web page to calculate a simple $\chi^2$ statistic for a sample \cite{rngtester}. I've tested on Safari, Firefox, and
+Chrome with generally solid results, despite the fact that their implementations are different
+\cite{rngimplementation}. However, Hyland \cite{rngimplementation} does warn the reader about the caveats associated
+with the native browser implementation of random numbers. However, these issues are not terribly important for a
+simulation of this simplicity.
+
 \subsection{Simulation Output}
 The most important statistic we'll want to collect during the simulation is the thoughput of the simulation. We'll
 want to observe how the light timing affects the average travel time for cars. It will also to see how variable this
