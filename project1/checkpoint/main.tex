@@ -58,6 +58,31 @@ constantly observing their environment (hopefully) and making minute adjustments
 a greatly simplified approach and simply precalculate an estimate of how long a car takes to traverse the section of
 road, along with a model for accelerating from a stop.
 
+\subsubsection{Acceleration Model}
+Bonneson \cite{bonneson} noted a property of car platoon acceleration: Acceleration decreases linearly with velocity.
+The formulation he provides is a differential equation:
+\[
+\frac{dV}{dt} = A_{m} \left( 1 - \frac{V}{V_{m}} \right)
+\]
+Where $A_m$ and $V_m$ where the empirically calculated maximum acceleration and velocity of cars. The acceleration was
+determined to be roughly 6.63 $\frac{ft}{s^2}$ and the maximum velocity simply the speed limit in the area (30 mph).
+This equation is indeed solvable by hand and gives us a closed form for the position of car (assuming an initial velocity of 0):
+\[
+    p(t) = V_{m}t - \frac{V_{m}^2}{A_{m}} \left( 1 - e^{-\frac{A_{m}t}{V_{m}} } \right)
+\]
+
+Assuming all cars have length $L$, the $n$th car in the queue will have to travel $L(n-1)$ feet in order to cross the
+intersection. Given our closed form above, in order to know how long it will be before a car passes we'll need to solve
+\[
+p(t) = L(n-1)
+\]
+Unfortunately, this must be done numerically. The function is fairly well behaved, and will in general have two roots
+(only one positive). Using a positive initial guess (around 2 or so, judging by visual inspection), Newton's method will converge
+within only a few steps. (SHOW GRAPH)
+
+Given this formulation, we can use this method to calculate when a given car will pass through the intersection,
+assuming it was at a complete stop. We'll use this information when enqueueing the "exit" event for a car.
+
 \subsection{Events}
 Based on our observations from above, we can now construct a set of events that are pertinent to this application.
 
