@@ -17,7 +17,7 @@ class StatsView extends Backbone.View
             el: @$('#output-stats')[0]
             histogramSize:
                 min: 0
-                max: 20
+                max: 60
         )
 
     onCarArrived: (event) ->
