@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Traffic Sim</title>
+        <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.2/normalize.min.css" />
+    </head>
+    <body>
+        <h1>Random Number Testing</h1>
+
+        <p>
+        Sampling <span id="N" class="var"></span> uniformly distributed random numbers between 0 and 1. Using a bin size of
+        <span class="var" id="bins"></span>. In order to verify that the
+        distribution is "truly" uniform, we'll use a <i>&#967;</i> &#178; goodness of fit test. For our number of bin counts
+        the <i>&#967; &#178; </i> critical value is <b>67.5</b> at a 0.05 inference level.
+        </p>
+
+        <p>
+        The empirical value was <span id="empirical"></span>
+        </p>
+
+        <script>
+var bins = [];
+var binCount = 51;
+for (var i = 0; i < binCount; i++) {
+    bins.push(0)
+}
+
+var getBin = function(number) {
+    return Math.floor(number * binCount);
+};
+
+var N = 500000;
+for(var i = 0; i < N; i++) {
+    // pick a random number, figure out which bin it goes in and increment that bin
+    bins[ getBin(Math.random()) ]++;
+}
+var expectedCount = N / binCount;
+
+var chiSquared = bins.reduce(function(accumulator, binValue) {
+    return accumulator + Math.pow(binValue - expectedCount, 2) / expectedCount;
+}, 0);
+
+console.log(bins.map(function(binValue) {
+    return binValue - expectedCount;
+}));
+
+document.getElementById('bins').innerHTML = binCount;
+document.getElementById('N').innerHTML = N;
+document.getElementById('empirical').innerHTML = chiSquared.toPrecision(4);
+        </script>
+
+    </body>
+</html>
