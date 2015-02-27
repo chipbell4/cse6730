@@ -25,14 +25,14 @@ Our architecture will be event driven, prioritizing events by timestamp. Further
 we'll utilize the publisher-subscriber pattern (see \cite{pubsub}) to promote better decoupling.
 Given this architecture, our first step will be to identify the entities present in our model, and then consider their
 interactions (or the inherent ``activies'') within the simulation. This will allow us then to design the events that
-are important
+are important and relevant to the simulation.
 
 \subsection{Entities}
 The first entity, unsurprisingly, is a single car. Our representation of a car is clearly less detailed than the real
 thing, but rather focuses on variables that influence it's travel time from its starting location to destination, along
 with the variables that influence neighboring cars. For our simulation, we'll track the position and destination of the
-cars, along with the size of the car since that can influence the position of cars behind it. Also, we will track the
-current velocity of the car 
+cars. Probably the most primary value associated with a car is its arrival time, since that dictates when and where it
+will fall in the queue of cars at the intersection.
 
 Another entity to consider is the intersection itself. It's changing in time constantly, and those changes affect
 every entity within the simulation. The most important parameters to consider here are the light timings. This
@@ -53,9 +53,10 @@ queue up at the intersection until green. This lends itself to a queue-style dat
 position and acceleration. Car acceleration is a complex topic, but models have been constructed \cite{bonneson}
 \cite{herman_et_al}. These models are generally continuous, and can generally be represented as a differential equation
 due to the relationships between acceleration and velocity, as can be seen in \cite{briggs} \cite{deceleration} as well.
-Instead, we will
-simply consider the various events that trigger changes in behavior. For instance, if a car slows down, the car behind
-it will be notified and change it's driving patterns accordingly.
+Instead, we will simply consider the various events that trigger changes in behavior. For instance, a real driver is
+constantly observing their environment (hopefully) and making minute adjustments the entire time. However, we'll take
+a greatly simplified approach and simply precalculate an estimate of how long a car takes to traverse the section of
+road, along with a model for accelerating from a stop.
 
 \subsection{Events}
 Based on our observations from above, we can now construct a set of events that are pertinent to this application.
@@ -77,8 +78,7 @@ timing of the system. The combination of these two variables are what influence 
 of traffic flow to the actual drivers in the system.
 
 We first concern ourselves with finding an input distribution for cars entering the system. In our model, we'll only
-consider basic aspects of a car: when it enters the system, and it's intended destination (turning left or right at
-12th street or going straight). We will assume that all cars have the same speed entering the system, and that they
+consider basic aspects of a car: when it enters the system, and it's intended destination (north or south). We will assume that all cars have the same speed entering the system, and that they
 have the same length. These values can be calculated from the NGSIM data set \cite{ngsim}.
 
 \begin{figure}
@@ -98,7 +98,8 @@ have the same length. These values can be calculated from the NGSIM data set \ci
 The distribution of car arrival is very important, but has been difficult to model. The arrival intervals between 
 northbound and southbound cars are provided in \ref{fig:northbound_arrival} and \ref{fig:southbound_arrival}.
 Model fitting was attempted for both $\Gamma$ and $\Gamma$-mixture models on the raw data, but resulted in poor
-fits. Furthermore, pruning outliers via the common interquartile range approach, where values are rejected when
+fits. Furthermore, pruning outliers was attempted as well, but still yielded bad matches. The outlier critera used for
+this determination is the common interquartile range approach, where values are rejected when
 they lie outside of $median + 1.5IQR$, where $IQR$ is the interquartile range $Q_3 - Q_1$.
 
 Given the difficulties with modelling we'll take a simpler approach and assume the ``true distribution`` is modeled by what was observed,
@@ -121,7 +122,9 @@ provided in the final section of this paper.
 The most important statistic we'll want to collect during the simulation is the thoughput of the simulation. We'll
 want to observe how the light timing affects the average travel time for cars. It will also to see how variable this
 is. For instance, do cars travelling on Peachtree St. have similar travel times, despite their arrival time, or does
-their arrival drastically lengthen their time to travel the stretch of road we are modeling. 
+their arrival drastically lengthen their time to travel the stretch of road we are modeling. Furthermore, we might also
+ask if the light timing has that much of an effect at all, and if it does what is the ``critical point`` at which the
+system no longer can serve incoming cars fast enough?
 
 \subsection{Simplifications and Assumptions}
 Probably the most obvious "flaw" in such a design are the simplifications made. Details can certainly be left out
@@ -139,8 +142,21 @@ aforementioned CTS study was made.
 Another simplification to consider is lane changing. Lane changing models do exist \cite{lanechanging} \cite{lanechanging2},
 but can be complex, requiring modeling of driver choices and gap acceptance for drivers. Peachtree is a two lane road,
 so lane changes are possible. However, we will make the assumption that drivers by this point have already made any
-discretionary lane changes and traffic is evened out between lanes. Also, we will assume left turning drivers will be
-in the left lane already. Similarly, right turning drivers will already be in the right lane.
+discretionary lane changes and traffic is evened out between lanes. This allows us to consider only a single lane at a
+time, since the second lane is identical to the first after these assumptions.
+
+We also assume here that cars are entering at the same velocity, based off of the urban speed limit of 30 mph set by
+the state of Georgia (CITE). Furthermore, we assume a single sized car, based off of the average from the NGSIM data.
+Having a constant speed and length allows us to simplify the calculation of stop points for cars entering the
+intersection. Although these simplifications help, dealing with acceleration is an even more complex matter. In this
+case it is both a mixture of both discrete (the light signal) and continuous elements (the car's velocity). By choosing
+an event-driven approach we are forced to simplify acceleration, since we cannot accurately represent a continuous
+system in this manner.
+
+Due to our inability to map a common distribution to the data gathered in the NGSIM study, we are using an empircal
+distribution to model the input distribution of cars. Although this is an "easy" choice, it comes with the assumption
+that both the measured data is representative of the true input distribution of cars, and that there is no measurement
+error in the data collected. 
 
 \section{Simulation Software Architecture}
 Because of the event-driven architecture, the system can be though of as a set of event emitters and event listeners.
