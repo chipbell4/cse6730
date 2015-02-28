@@ -29,3 +29,16 @@ svg {
     height: 7em;
     font-size: 0.7em;
 }
+
+.direction-span {
+    color: #aaaaaa;
+}
+
+.direction-span:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.direction-span.active {
+    color: #111111;
+}

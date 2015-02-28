@@ -19,7 +19,13 @@ resolveHash = ->
     if window.location.hash not in ['#Northbound', '#Southbound']
         window.location.hash = '#Northbound'
 
-    $('#direction').html window.location.hash.substring(1)
+    $(window.location.hash).addClass('active')
+
+dataSetSwitchers = ->
+    $('.direction-span').on('click', () ->
+        window.location.hash = "##{@.id}"
+        window.location.reload()
+    )
 
 pushCars = (eventQueue, carCount) ->
 
@@ -51,6 +57,9 @@ pushCars = (eventQueue, carCount) ->
 $ ->
     # Make sure the hash is set correctly
     resolveHash()
+
+    # make sure that clicking the spans redirects you to the correct data set
+    dataSetSwitchers()
 
     # create a global event queue
     eventQueue = new EventQueue
