@@ -15,18 +15,32 @@ Time = require './Time.coffee'
 
 $ = require 'jquery'
 
+###
+# This is it, the main file. It's pretty ugly, so I'll try to be copious with the comments.
+###
+
+###
+# Makes sure that a hash is always set in the url, to reflect which data set we're working with. Also informs the user
+# (by way of adding a class) which data set we're looking at.
+###
 resolveHash = ->
     if window.location.hash not in ['#Northbound', '#Southbound']
         window.location.hash = '#Northbound'
 
     $(window.location.hash).addClass('active')
 
+###
+# Adds an event listener to handle clicks to switch to a different data set
+###
 dataSetSwitchers = ->
     $('.direction-span').on('click', () ->
         window.location.hash = "##{@.id}"
         window.location.reload()
     )
 
+###
+# Pushes a bunch of cars onto the event queue to be processed
+###
 pushCars = (eventQueue, carCount) ->
 
     # This is simply summary data collected from my files in the data_processing folder
@@ -61,13 +75,11 @@ $ ->
     # make sure that clicking the spans redirects you to the correct data set
     dataSetSwitchers()
 
-    # create a global event queue
+    # create the event queue
     eventQueue = new EventQueue
 
     # push some cars to be processed
     pushCars(eventQueue, 500)
-
-    # Let the user know what 
 
     # handle input from the light timing
     lightTiming = new LightTimingView(
@@ -82,8 +94,10 @@ $ ->
         el: $('#animation')[0]
         collection: intersectionQueue
     )
+    # also listen for light changes to update the animation
     animation.listenTo(eventQueue, 'light:changed', animation.onLightChanged.bind(animation))
 
+    # Add a view for changing simulation speed
     simulationSpeed = new SimulationSpeedView(
         el: $('#simulation-speed')[0]
     )
@@ -109,8 +123,10 @@ $ ->
     lightSignal = new LightSignal(eventQueue, 45, 45, 45)
     lightSignal.listenTo(lightTiming.model, 'change', lightSignal.updateTimings)
 
+    # go ahead and setup the first light change
     lightSignal.triggerLightChange(0)
 
+    # start the loop. This is sort of a tricky while true loop but uses setTimeout to prevent the UI from locking up
     Time.reset()
     doAStep = ->
         evt = eventQueue.emitNextAt(Time.current())
@@ -119,5 +135,3 @@ $ ->
         setTimeout(doAStep, 1000 / simulationSpeed.currentSpeed)
 
      doAStep()
-
-
