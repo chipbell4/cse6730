@@ -1,10 +1,12 @@
 Backbone = require 'backbone'
 HistogramView = require './HistogramView.coffee'
+Time = require './Time.coffee'
 
 class StatsView extends Backbone.View
     initialize: ->
         @listenTo(@collection, 'add change', @onCarExited)
         @listenTo(@collection, 'add', @onCarArrived)
+        @listenTo(Time, 'time:step', @render.bind(@))
 
         @inputHistogram = new HistogramView(
             el: @$('#input-stats')[0]
@@ -42,5 +44,11 @@ class StatsView extends Backbone.View
         @$('#car-throughput').html(@collection.exitedCars().length)
         @$('#average-throughput').html(@collection.averageDuration().toPrecision(4) + 's')
         @$('#cars-waiting').html(@collection.waitingCars().length)
+
+        seconds = '' + Time.current() % 60
+        if seconds.length < 2
+            seconds = '0' + seconds
+        minutes = Math.floor (Time.current() / 60)
+        @$('#current-time').html("#{minutes}:#{seconds}")
 
 module.exports = StatsView
