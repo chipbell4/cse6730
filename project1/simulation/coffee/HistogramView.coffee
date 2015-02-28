@@ -1,6 +1,13 @@
 Backbone = require 'backbone'
 
+###
+# Helper view for rendering a nice histogram
+###
 class HistogramView extends Backbone.View
+    ###
+    # Creates a new histogram, setting a couple of default options. Note that it builds the histogram "dynamically"
+    # from its internal collection. Furthermore, it listens for any change events, and re-renders itself if needed
+    ###
     initialize: (options) ->
         @collection = @collection or new Backbone.Collection()
         @listenTo(@collection, 'change add reset', @rebuildHistogram.bind(@))
@@ -17,12 +24,18 @@ class HistogramView extends Backbone.View
 
         @rebuildHistogram()
 
+    ###
+    # Figures out which bin a particular value falls into
+    ###
     binNumber: (value) ->
         # Calculate the bin and then clamp it
         rawBin = Math.floor( (value - @histogramSize.min) / (@histogramSize.max - @histogramSize.min) * @binCount )
         Math.min(Math.max(0, rawBin), @binCount - 1)
 
-
+    ###
+    # Figures out where a bin's value will appear in the SVG render. This is based on the index of the bin, which
+    # governs the X position, and the value in the bin which governs the Y value.
+    ###
     pointPosition: (binValue, binIndex, maxBinValue, binCount) ->
         width = @$('svg').width()
         height = @$('svg').height()
@@ -32,6 +45,10 @@ class HistogramView extends Backbone.View
             x: "#{ (0.1 + 0.8 * binIndex / binCount) * width }"
             y: "#{ (0.9 - 0.8 * binValue / maxBinValue) * height }"
 
+    ###
+    # Takes a string of points and converts them into a string representing the path. Generally looks something like
+    # this: "M100 20 L100 50 L50 50". This is kinda ugly, but it's how you do it...
+    ###
     buildSvgPathString: (points) ->
         if points.length is 0
             return ""
@@ -40,6 +57,9 @@ class HistogramView extends Backbone.View
         pathString = "M#{ points[0].x } #{ points[0].y } "
         pathString += "L#{ point.x } #{ point.y } " for point in points[1..]
 
+    ###
+    # Runs over the collection, rebuilding the histogram again by binning points together, and recalculating SVG stuff.
+    ###
     rebuildHistogram: ->
         values = @collection.pluck('value')
 
@@ -59,6 +79,9 @@ class HistogramView extends Backbone.View
 
         @render()
 
+    ###
+    # Helper function for spitting a SVG text on the page
+    ###
     buildLabel: (text, percentageWidth, percentageHeight) ->
         $svg = @$('svg')
         label = document.createElementNS('http://www.w3.org/2000/svg', 'text')
@@ -67,6 +90,9 @@ class HistogramView extends Backbone.View
         label.setAttribute('y', $svg.height() * (1 - percentageHeight))
         return label
 
+    ###
+    # Renders the histogram by adding the actual graph, along with some labels along the bottom
+    ###
     render: ->
         # build a SVG path from the current point set
         path = document.createElementNS('http://www.w3.org/2000/svg', 'path')

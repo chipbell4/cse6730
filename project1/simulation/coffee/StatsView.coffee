@@ -2,7 +2,13 @@ Backbone = require 'backbone'
 HistogramView = require './HistogramView.coffee'
 Time = require './Time.coffee'
 
+###
+# A view for representing the current statistics of the simulation
+###
 class StatsView extends Backbone.View
+    ###
+    # Listens for the collection to re-render, also keeping track of time. Sets up the histograms too
+    ###
     initialize: ->
         @listenTo(@collection, 'add change', @onCarExited)
         @listenTo(@collection, 'add', @onCarArrived)
@@ -23,6 +29,9 @@ class StatsView extends Backbone.View
                 max: 60
         )
 
+    ###
+    # A car arrived, get it's arrival time and push into the input histogram
+    ###
     onCarArrived: (event) ->
         # recalculate the interarrival times between cars, so we can display that distribution too
         arrivalTimes = @collection.pluck('arrivalTime')
@@ -33,6 +42,9 @@ class StatsView extends Backbone.View
                 value: time
         )
 
+    ###
+    # A car exited, re-render since we'll want to show updated averages. Also, update the output histogram
+    ###
     onCarExited: (event) ->
         @render()
 
@@ -41,6 +53,9 @@ class StatsView extends Backbone.View
                 value: car.getDuration()
         )
 
+    ###
+    # Render a couple of little useful tidbits of info.
+    ###
     render: ->
         @$('#car-throughput').html(@collection.exitedCars().length)
         @$('#average-throughput').html(@collection.averageDuration().toPrecision(4) + 's')

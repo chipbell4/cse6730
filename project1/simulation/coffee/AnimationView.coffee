@@ -1,7 +1,13 @@
 Backbone = require 'backbone'
 Time = require './Time.coffee'
 
+###
+# View for drawing the svg animation of the light signal and the first couple of cars waiting to go.
+###
 class AnimationView extends Backbone.View
+    ###
+    # Just a hash of "nice" colors. Borrowed from https://github.com/mrmrs/colors
+    ###
     colors:
         red: '#FF4136'
         yellow: '#FFDC00'
@@ -10,6 +16,11 @@ class AnimationView extends Backbone.View
         gray: '#AAAAAA'
         orange: '#FF851B'
 
+    ###
+    # Starts up the view, setting the current color to red. This view watches the global intersection queue for changes
+    # and re-renders if it has changed. This will cause a redraw if a car leaves or enters. Also, we're listening for
+    # Time steps, so we can update the displayed wait times for cars
+    ###
     initialize: ->
         @currentColor = 'red'
         @render()
@@ -17,10 +28,16 @@ class AnimationView extends Backbone.View
         @collection.on('add remove reset change', @render.bind(@))
         Time.on('time:step time:reset', @render.bind(@))
 
+    ###
+    # Removes all child elements from the svg encapsulated by this view
+    ###
     removeOldElements: ->
         svg = @$('svg').get(0)
         svg.removeChild(svg.firstChild) while svg.firstChild
 
+    ###
+    # Draws the current state of the light as colored circle.
+    ###
     drawLight: (color) ->
         # create a new one with the correct color, and add to the svg
         circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
@@ -32,6 +49,9 @@ class AnimationView extends Backbone.View
 
         @$('svg').get(0).appendChild(circle)
 
+    ###
+    # Draws a single car, assuming it's at the index in the intersection queue passed to the function
+    ###
     drawCar: (car, index) ->
         # create a rectangle, and add values to it
         rectangle = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
@@ -56,10 +76,16 @@ class AnimationView extends Backbone.View
         label.setAttribute('y', y + height / 2)
         @$('svg').get(0).appendChild(label)
 
+    ###
+    # A light changed. Update the color and re-render
+    ###
     onLightChanged: (event) ->
         @currentColor = event.get('data')
         @render()
 
+    ###
+    # Draws the animation, including the light state and the first 5 cars (or less if there isn't 5)
+    ###
     render: ->
         @removeOldElements()
         @drawLight(@currentColor)
