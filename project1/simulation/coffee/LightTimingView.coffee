@@ -2,12 +2,8 @@ Backbone = require 'backbone'
 
 class LightTimingView extends Backbone.View
     events:
-        'change #red' : 'onTimingChanged'
-        'change #yellow' : 'onTimingChanged'
-        'change #green' : 'onTimingChanged'
-        'input #red' : 'onTimingChanged'
-        'input #yellow' : 'onTimingChanged'
-        'input #green' : 'onTimingChanged'
+        'change input[type=range]' : 'onTimingChanged'
+        'input input[type=range]' : 'onTimingChanged'
 
     initialize: ->
         @colors = ['red', 'yellow', 'green']
