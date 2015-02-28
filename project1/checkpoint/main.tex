@@ -37,7 +37,7 @@ will fall in the queue of cars at the intersection.
 Another entity to consider is the intersection itself. It's changing in time constantly, and those changes affect
 every entity within the simulation. The most important parameters to consider here are the light timings. This
 intersection's timings are time-based, rather than sensor-based, which can be seen in the data set provided with the
-project description and is also available online \cite{ngsim}. We assume that the current light timing provided here
+project description and is also available online \cite{ngsim}. We assume that the current light timings provided here
 are optimal, but because we'll have a computer simulation in the end we have free reign in experimenting with these
 values and observing the outcome. Perhaps the timings are \emph{not} optimal. Perhaps, our model grossly oversimplifies
 some crucial interaction within the system. This is perhaps the most exciting part of the project.
@@ -64,7 +64,7 @@ The formulation he provides is a differential equation:
 \[
 \frac{dV}{dt} = A_{m} \left( 1 - \frac{V}{V_{m}} \right)
 \]
-Where $A_m$ and $V_m$ where the empirically calculated maximum acceleration and velocity of cars. The acceleration was
+where $A_m$ and $V_m$ are the empirically calculated maximum acceleration and velocity of cars. The acceleration was
 determined to be roughly 6.63 $\frac{ft}{s^2}$ and the maximum velocity simply the speed limit in the area (30 mph).
 This equation is indeed solvable by hand and gives us a closed form for the position of car (assuming an initial velocity of 0):
 \[
@@ -76,12 +76,12 @@ intersection. Given our closed form above, in order to know how long it will be 
 \[
 p(t) = L(n-1)
 \]
-Unfortunately, this must be done numerically. The function is fairly well behaved, and will in general have two roots
+Unfortunately, this has no closed form and must be done numerically. The function is fairly well behaved, and will in general have two roots
 (only one positive). Using a positive initial guess (around 2 or so, judging by visual inspection), Newton's method
-will converge within only a few steps. \ref{fig:acceleration} demonstrates some properties of this function
+will converge within only a few steps. Figure \ref{fig:acceleration} demonstrates some properties of this function
 $0 = p(t) - L(n-1)$, one being
 that as we move further back in the queue, the timing between cars approaches a constant. This is a result of cars
-have more space to accerate to full speed.
+have more space to accelerate to full speed.
 
 \begin{figure}
 \begin{center}  
@@ -101,14 +101,13 @@ First off, signal changes consititute the major event in the system. When a sign
 and will enqueue the next signal change based on the signal change time. These signal changes could be enqueued
 completely upfront, but allowing this to be done on the fly allows the user to tweak these values during the simulation.
 
-The car model will listen for this event as well. When a currently traveling car sees a red light, it will calculate
-\emph{where} it needs to stop, and \emph{when} it will come to a stop. This will be done using a deceleration model
-similar to \cite{deceleration}. If the light turns to green, the car instead needs to start accelerating (using one of
-the models mentioned above). The model will adapt to light changes during movement by recalculating its estimated
-exit time of the system.
+Furthermore, the queue at the intersection will need to listen for this event as well. In essense, when the light
+changes, the intersection will need to switch between holding cars and actually passing them through. If the light has
+turned to green, it will need to one-by-one discharge cars based on the above acceleration model. If the light is red,
+the queue will need to appropriate insert the car to await the car's turn to pass through the intersection.
 
 \subsection{Simulation Input}
-The two main sources of input into this simulation are the cars entering out section of Peachtree St, and the light
+The two main sources of input into this simulation are the cars entering our section of Peachtree St, and the light
 timing of the system. The combination of these two variables are what influence the smoothness
 of traffic flow to the actual drivers in the system.
 
@@ -133,11 +132,12 @@ have the same length. These values can be calculated from the NGSIM data set \ci
 The distribution of car arrival is very important, but has been difficult to model. The arrival intervals between 
 northbound and southbound cars are provided in \ref{fig:northbound_arrival} and \ref{fig:southbound_arrival}.
 Model fitting was attempted for both $\Gamma$ and $\Gamma$-mixture models on the raw data, but resulted in poor
-fits. Furthermore, pruning outliers was attempted as well, but still yielded bad matches. The outlier critera used for
+fits (verified by $\chi^2$ goodness-of-fit tests. Furthermore, pruning outliers was attempted as well, but still
+yielded bad matches. The outlier critera used for
 this determination is the common interquartile range approach, where values are rejected when
 they lie outside of $median + 1.5IQR$, where $IQR$ is the interquartile range $Q_3 - Q_1$.
 
-Given the difficulties with modeling we'll take a simpler approach and assume the ``true distribution`` is modeled by what was observed,
+Given the difficulties with modeling we'll take a simpler approach and assume the true distribution is modeled by what was observed,
 and simply plan to use the observed frequency distribution as our input distribution.
 
 The current light timing of the system is known, and provided in \cite{ngsim}, but we'll allow the user to set
@@ -148,18 +148,18 @@ In the \texttt{data\_processing} folder, most of code used for distribution fitt
 The data analysis code was written in JavaScript, and runs completely in NodeJS \cite{nodejs}. NPM \cite{npm} was used
 to manage dependencies and those dependencies can be seen in the \texttt{package.json} file. Of those packages, I have
 authored the \texttt{chi-squared-test} module \cite{chiSquaredNpm}, and the \texttt{gamma-distribution}
-\cite{gammaDistributionNpm}. Gulp \cite{gulp} was used a build tool for automating tasks (including building this paper).
+\cite{gammaDistributionNpm}. Gulp \cite{gulp} was used as a build tool for automating tasks (including building this paper).
 To run some of the data analysis code I wrote, you'll need to install and run gulp. Instructions for doing so are
 provided in the final section of this paper.
 
 Alongside the NGSIM data set \cite{ngsim}, we are also dependent on the browser for much of our runtime configuration.
 In particular, we rely on the random number generation capabilities of the browser for our entire source of randomness.
 JavaScript provides a built-in implementation \cite{ecmascriptmath} \texttt{Math.random()}, which provides a uniformly
-distributed random number between 0 and 1. The standard also specifies that the implementation is vendor-dependent.
-This means that the "randomness" of \texttt{Math.random()} is dependent on the browser. Because of this, I've provided
-a web page to calculate a simple $\chi^2$ statistic for a sample \cite{rngtester}. I've tested on Safari, Firefox, and
-Chrome with generally solid results, despite the fact that their implementations are different
-\cite{rngimplementation}. However, Hyland \cite{rngimplementation} does warn the reader about the caveats associated
+distributed random number between 0 and 1. The standard specifies that the implementation is vendor-dependent.
+This means that the ``randomness'' of \texttt{Math.random()} is dependent on the browser. Because of this, I've provided
+a web page to calculate a simple $\chi^2$ statistic for a sample of \texttt{Math.random()} \cite{rngtester}. I've tested
+\texttt{Math.random()} on Safari, Firefox, and Chrome with generally solid results, despite the fact that their implementations
+are different \cite{rngimplementation}. However, Hyland \cite{rngimplementation} does warn the reader about the caveats associated
 with the native browser implementation of random numbers. However, these issues are not terribly important for a
 simulation of this simplicity.
 
@@ -198,8 +198,8 @@ case it is both a mixture of both discrete (the light signal) and continuous ele
 an event-driven approach we are forced to simplify acceleration, since we cannot accurately represent a continuous
 system in this manner.
 
-Due to our inability to map a common distribution to the data gathered in the NGSIM study, we are using an empircal
-distribution to model the input distribution of cars. Although this is an "easy" choice, it comes with the assumption
+Due to our inability to map a common distribution to the data gathered in the NGSIM study, we are using an empirical
+distribution to model the input distribution of cars. Although this is an ``easy'' choice, it comes with the assumption
 that both the measured data is representative of the true input distribution of cars, and that there is no measurement
 error in the data collected. 
 
@@ -224,7 +224,7 @@ to wait on the light. Also, this class emits events. Whenever a car finally cros
 a \texttt{car:exited} event.
 
 Since we want to gather metrics regarding the throughput of cars, we'll also provide a listener class
-\texttt{ThroughputStatistics} that will listen for cars to complete their journey through the system. This will
+\texttt{StatCollection} that will listen for cars to complete their journey through the system. This will
 be reported in the UI in real time.
 
 The simulation is written in CoffeeScript \cite{coffeescript}, which is a small language that compiles to JavaScript.
@@ -249,7 +249,7 @@ with npm. Since this project uses gulp for a task runner, you'll need to install
 \texttt{npm install -g gulp}. Inside the \texttt{simulation} directory, you'll need to pull in packages with just
 \texttt{npm install}. Once that installs, running \texttt{gulp} will run the build for you and generate a
 \texttt{main.js} that's included in the \texttt{index.html} file. Opening this file in a browser should run the
-simulation. To rerun the simulation, simply refresh the browser
+simulation. To rerun the simulation, simply refresh the page.
 
 \section{Results}
 Since light timing is adjustable in real-time, the actual average wait times can vary (even disregarding randomness).
