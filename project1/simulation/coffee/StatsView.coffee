@@ -6,6 +6,7 @@ class StatsView extends Backbone.View
     initialize: ->
         @listenTo(@collection, 'add change', @onCarExited)
         @listenTo(@collection, 'add', @onCarArrived)
+        @listenTo(@collection, 'reset', @render.bind(@))
         @listenTo(Time, 'time:step', @render.bind(@))
 
         @inputHistogram = new HistogramView(

@@ -31,6 +31,10 @@ class StatCollection extends Backbone.Collection
             carId: event.get('data').cid
         )
 
+        # if we can't find one, that means that we've reset statistics. We'll just ignore it
+        if not carStat?
+            return
+
         carStat.set('exitTime', event.get('timestamp'))
         
 module.exports = StatCollection

@@ -90,6 +90,7 @@ $ ->
     # Keep track of stats
     statCollection = new StatCollection
     statCollection.watchEventQueue eventQueue
+    statCollection.listenTo(lightTiming.model, 'change', () -> (statCollection.reset()))
     statsView = new StatsView(
         collection: statCollection
         el: $('#stats').get(0)
