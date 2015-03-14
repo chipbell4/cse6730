@@ -23,5 +23,8 @@ done
 # format the current date+time
 output_file=`date +"%s.json"`
 
+# make sure the output directory is there
+mkdir -p $output_dir
+
 # Hit the api, using my subscription key, and get ALL stations.
 curl -X GET "https://api.wmata.com/StationPrediction.svc/json/GetPrediction/All?api_key=$subscription_key" > $output_dir/$output_file
