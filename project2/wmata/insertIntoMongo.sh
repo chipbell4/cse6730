@@ -9,7 +9,10 @@ fi
 
 # convert the json by appending the timestamp of the file on first
 timestamp=`echo $fileToInsert | cut -d'.' -f1`
-document=`cat $fileToInsert | sed "s/^{/{\"timestamp\":$timestamp,/"`
+cat $fileToInsert | sed "s/^{/{\"timestamp\":$timestamp,/" > document.json
 
 # now append into mongo
-echo "use metro; db.trains.insert($document);" | mongo
+mongoimport --db metro --collection trains < document.json
+
+# cleanup
+rm document.json
