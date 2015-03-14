@@ -12,7 +12,7 @@ timestamp=`echo $fileToInsert | cut -d'.' -f1`
 cat $fileToInsert | python appendTimestamp.py $timestamp > documents.json
 
 # now append into mongo
-mongoimport --db metro --collection trains < documents.json
+mongoimport --db metro --collection trains --jsonArray < documents.json
 
 # cleanup
 rm documents.json
