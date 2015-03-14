@@ -15,4 +15,4 @@ cat $fileToInsert | python appendTimestamp.py $timestamp > documents.json
 mongoimport --db metro --collection trains < documents.json
 
 # cleanup
-rm document.json
+rm documents.json
