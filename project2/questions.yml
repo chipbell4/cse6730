@@ -1,0 +1,7 @@
+Questions
+- How often do trains really run? Do trains operate as often as WMATA says?
+- Is there a particular pattern to when trains run?
+- How long does it take for a particular train to move between each pair of stations?
+- Given the time to next station can I determine roughly where a train is (i.e. 2 minutes to Farragut West means 20% away).
+- How can I capture delays from the data that I have? What can I learn about how train delays work?
+- Can I capture single track behavior? Even if not, can I predict it?
