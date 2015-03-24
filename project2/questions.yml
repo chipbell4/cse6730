@@ -1,7 +1,15 @@
 Questions
 - How often do trains really run? Do trains operate as often as WMATA says?
+    - Since theres a potential of missing the BRD or ARR state on a train, its best to look for the 1 min mark
+    - Look for an arrival in 1min on all directions from the end spots. That should give an idea of when trains first appear near a station
 - Is there a particular pattern to when trains run?
+    - Using the same 1min criteria, we can find the order that the trains arrive. This may, or may not be useful
 - How long does it take for a particular train to move between each pair of stations?
+    - For a particular station in a direction and line, query for the 1 min mark. The station down SHOULD be listing a
+      time of arrival for the same color. Pick the minimum (there may be more than 1), and subtract 1. Thats the
+      estimated time between the two stations
 - Given the time to next station can I determine roughly where a train is (i.e. 2 minutes to Farragut West means 20% away).
+    - Easy, build a statistical model for train times, which then gives a simple to do fractional distance between the
+      stations
 - How can I capture delays from the data that I have? What can I learn about how train delays work?
 - Can I capture single track behavior? Even if not, can I predict it?
