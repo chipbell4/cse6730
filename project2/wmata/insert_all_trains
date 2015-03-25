@@ -12,7 +12,7 @@ fi
 # 4) sed adds back the .json
 files_to_add=`find $@ | cut -d'.' -f1 | ./weekday_metro | sed 's/$/.json/g'`
 
-total_files=`echo $files_to_add | wc -l`
+total_files=`echo $files_to_add | wc -w`
 file_index=1
 for file in $files_to_add; do
     echo "Importing $file. $file_index of $total_files..."
