@@ -19,4 +19,4 @@ query() {
     done
 }
 
-query trainFrequencies
+query train_frequencies
