@@ -10,7 +10,7 @@ fi
 # 2) cut removes the file extension, leaving a timestamp
 # 3) weekday_metro filters out weekend times
 # 4) sed adds back the .json
-files_to_add=`find $1 | cut -d'.' -f1 | weekday_metro | sed 's/$/.json/g'`
+files_to_add=`find $1 | cut -d'.' -f1 | ./weekday_metro | sed 's/$/.json/g'`
 
 total_files=`echo $files_to_add | wc -l`
 file_index=1
