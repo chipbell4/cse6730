@@ -14,6 +14,7 @@ query() {
     query_file=$1/$1.js
 
     for property_file in `ls $1/*.properties`; do
+        echo "Running $1 with $property_file"
         output_file=`echo $property_file | sed 's/properties$/csv/g'`
         template $query_file $property_file | mongo metro > $output_file
     done
