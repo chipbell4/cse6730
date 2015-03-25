@@ -8,7 +8,7 @@ if [ -z "$fileToInsert" ]; then
 fi
 
 # convert the json by appending the timestamp of the file on first
-timestamp=`echo $fileToInsert | cut -d'.' -f1`
+timestamp=`basename $fileToInsert | cut -d'.' -f1`
 cat $fileToInsert | ./append_timestamp $timestamp > documents.json
 
 # now append into mongo
