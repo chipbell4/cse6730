@@ -5,5 +5,5 @@ var query = {
     DestinationCode: '${DestinationCode}'
 };
 db.trains.find(query, { timestamp: true }).sort({ timestamp: 1 }).forEach(function(train) {
-    print("#{train.timestamp}");
+    print(train.timestamp);
 });
