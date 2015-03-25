@@ -10,7 +10,6 @@ fi
 # 2) cut removes the file extension, leaving a timestamp
 # 3) weekday_metro filters out weekend times
 # 4) sed adds back the .json
-# TODO: Don't use find, since bash will unpack files *.json becomes 1.json, 2.json, etc...
 files_to_add=`find $@ | cut -d'.' -f1 | ./weekday_metro | sed 's/$/.json/g'`
 
 total_files=`echo $files_to_add | wc -l`
