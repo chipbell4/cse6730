@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# Templates a file with a given properties file
+#################################################
+# Templates a file with a given properties file #
+#################################################
 template () {
   # $1 is the template file
   # $2 is the properties file  
