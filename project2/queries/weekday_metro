@@ -1,0 +1,22 @@
+#!/usr/bin/env python
+from sys import stdin
+from datetime import datetime
+
+def timestampShouldBePrinted(timestamp):
+    date = datetime.fromtimestamp(timestamp)
+
+    # Ignore weekends
+    if date.weekday() is 5 or date.weekday() is 6:
+        return False
+
+    # Ignore when closed
+    if date.hour < 5:
+        return False
+
+    return True
+
+for line in stdin.readlines():
+    timestamp = int(line.strip())
+
+    if timestampShouldBePrinted(timestamp):
+        print(timestamp)
