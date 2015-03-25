@@ -6,11 +6,17 @@ set -e
 my_dir=$(dirname $0)
 . $my_dir/template.sh
 
+######################################################################################################
+# Runs all queries within a particular directory, assuming the query's name is the directory as well #
+######################################################################################################
 query() {
-    # $1 is the template
-    # $2 is the properties file
+    # $1 Is the query folder/query name
+    query_file=$1/$1.js
 
-    template $1 $2 | mongo metro
+    for property_file in `ls $1/*.properties`; do
+        output_file=`echo $property_file | sed 's/properties$/csv/g'`
+        template $query_file $property_file | mongo metro > $output_file
+    done
 }
 
-query trainFrequencies/trainFrequencies.js trainFrequencies/westboundBlue.properties
+query trainFrequencies
