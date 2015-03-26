@@ -16,7 +16,7 @@ total_files=`echo $files_to_add | wc -w`
 file_index=1
 for file in $files_to_add; do
     echo "Importing $file. $file_index of $total_files..."
-    ./insert_train_status $file > /dev/null
+    ./insert_train_status $file
 
     # increment
     file_index=$(($file_index + 1))
