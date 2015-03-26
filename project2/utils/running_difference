@@ -4,4 +4,4 @@ from sys import stdin
 lines = stdin.readlines()
 
 for i in range(1, len(lines)):
-    print( int(lines[i]) - int(lines[i-1]) )
+    print( float(lines[i]) - float(lines[i-1]) )
