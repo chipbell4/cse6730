@@ -1,0 +1,19 @@
+#!/usr/bin/env python
+from sys import stdin
+
+# Takes rows of TIMESTAMP,Min from a train estimate and converts to a single timestamp, suggesting when the train will
+# arrive
+
+def findTrainSuggestion(timestamp, minutes):
+    timestamp = int(timestamp)
+
+    # If the train is there, simply return the timestamp
+    if minutes in ('ARR', 'BRD'):
+        return timestamp
+
+    # otherwise, add on the minutes until arrival
+    return timestamp + int(minutes) * 60
+
+for line in stdin.readlines():
+    timestamp, minutes = line.strip().split(',')
+    print(findTrainSuggestion(timestamp, minutes))
