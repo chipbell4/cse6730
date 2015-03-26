@@ -1,0 +1,40 @@
+#!/usr/bin/env python
+import sys
+import math
+
+if len(sys.argv) == 1:
+    sys.stderr.write('Need a bin count\n')
+    sys.exit(-1)
+
+bin_count = int(sys.argv[1])
+
+# get stdin as a float
+numbers = list(map(float, sys.stdin.readlines()))
+
+# get boundaries
+min_number = min(numbers)
+max_number = max(numbers)
+
+# the width of a single bin
+bin_width = (max_number - min_number) / bin_count
+
+sys.stderr.write('BIN\n')
+sys.stderr.write('\tBounds are {0:.3f} to {1:.3f} with bin width {2:.3f}\n'.format(min_number, max_number, bin_width))
+
+# initialize empty bins
+bins = [0 for k in range(bin_count)]
+
+for number in numbers:
+    # calculate the bin index
+    set_position = (number - min_number) / (max_number - min_number)
+    bin_index = math.floor(set_position * bin_count)
+
+    # deal with a number being right at the max
+    if bin_index == bin_count:
+        bin_index -= 1
+
+    # add to the bin
+    bins[bin_index] += 1
+
+for frequency in bins:
+    print(frequency)
