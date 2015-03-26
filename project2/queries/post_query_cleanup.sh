@@ -3,7 +3,7 @@
 # For train frequencies, we want interarrival times, so we do running diffs
 for file in `ls train_frequencies/*.csv`; do
     parameter_set_name=`basename $file | sed 's/.csv//g'`
-    cat $file | ../utils/train_estimate | ../utils/cluster > ${parameter_set_name}_diffs.csv
+    cat $file | ../utils/train_estimate | ../utils/cluster 240 > ${parameter_set_name}_diffs.csv
 done
 
 # bundle them up
