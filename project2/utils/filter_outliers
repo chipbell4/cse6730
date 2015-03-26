@@ -23,6 +23,11 @@ M = median(data)
 Q1 = left_quartile(data)
 Q3 = right_quartile(data)
 IQR = Q3 - Q1
+sys.stderr.write('FILTER OUTLIERS\n')
+sys.stderr.write('\tMedian is {0:.3f}, Q1 = {1:.3f}, Q3 = {2:.3f}, with IQR = {3:.3f}\n'.format(M, Q1, Q3, IQR))
 
 for inlier in filter(lambda x : abs(x - M) < (IQR * 1.5), data):
     print(inlier)
+
+excluded = list(filter(lambda x : abs(x - M) > (IQR * 1.5), data))
+sys.stderr.write('\t{0:d} points excluded\n'.format(len(excluded)))
