@@ -1,0 +1,50 @@
+#!/usr/bin/env python
+import sys
+
+#######################################################################################################################
+# Converts a raw list of items into clusters. The argument passed on the command line is the minimum boundary B       #
+# between clusters. If two points x and y are further than B apart: |x - y| > B, then they do not belong in the same  #
+# cluster.                                                                                                            #
+#######################################################################################################################
+
+def average(L):
+    return sum(L) / len(L)
+
+# check that a threshold was provided
+if len(sys.argv) == 1:
+    sys.stderr.write('Need a boundary threshold')
+    sys.exit(-1)
+
+boundary_width = float(sys.argv[1])
+
+# First, convert stdin into floats, and sort
+values_to_cluster = sorted(map(lambda x : float(x.strip()), sys.stdin.readlines()))
+
+# Are there any values to cluster?
+if len(values_to_cluster) == 0:
+    sys.exit()
+
+clusters = []
+
+# Initialize the first cluster with the first data point
+clusters.append([])
+previous_data_point = values_to_cluster.pop(0)
+clusters[-1].append(previous_data_point)
+
+# now, build clusters from the remaining data
+while len(values_to_cluster) > 0:
+    current_data_point = values_to_cluster.pop(0)
+
+    # if it's not close enough, create the next cluster to start putting stuff in
+    if abs(current_data_point - previous_data_point) > boundary_width:
+        clusters.append([])
+
+    # either way, add it to the next cluster
+    clusters[-1].append(current_data_point)
+
+    # now, make the current point the previous
+    previous_data_point = current_data_point
+
+# now, average everything out
+for cluster_average in map(average, clusters):
+    print(cluster_average)
