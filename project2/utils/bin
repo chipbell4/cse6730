@@ -18,6 +18,9 @@ max_number = max(numbers)
 # the width of a single bin
 bin_width = (max_number - min_number) / bin_count
 
+sys.stderr.write('BIN\n')
+sys.stderr.write('\tBounds are {0:.3f} to {1:.3f} with bin width {2:.3f}\n'.format(min_number, max_number, bin_width))
+
 # initialize empty bins
 bins = [0 for k in range(bin_count)]
 
