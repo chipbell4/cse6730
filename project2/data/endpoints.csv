@@ -1,5 +1,6 @@
-G05,Largo
-J03,Franconia-Springfield
-K08,Vienna
-D13,New Carrolton
-N06,Wiehle-Reston East
+G05,Largo,East,BL
+J03,Franconia-Springfield,West,BL
+G05,Largo,East,SV
+N06,Wiehle-Reston East,East,SV
+K08,Vienna,East,OR
+D13,New Carrolton,West,OR
