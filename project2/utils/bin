@@ -27,7 +27,7 @@ bins = [0 for k in range(bin_count)]
 for number in numbers:
     # calculate the bin index
     set_position = (number - min_number) / (max_number - min_number)
-    bin_index = math.floor(set_position * bin_count)
+    bin_index = int(math.floor(set_position * bin_count))
 
     # deal with a number being right at the max
     if bin_index == bin_count:
