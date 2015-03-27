@@ -11,9 +11,12 @@ bar_size = int(sys.argv[1])
 # read input in
 data = list(map(float, sys.stdin.readlines()))
 
-# normalize to fit the bar size
-total_weight = sum(data)
-data = list(map(lambda x : int(round(x / total_weight * bar_size)), data))
+# normalize, so the largest value goes to 1
+largest_weight = max(data)
+data = list(map(lambda x : x / largest_weight, data))
+
+# now scale to figure out character count
+data = list(map(lambda x : int(round(x * bar_size)), data))
 
 # now print out the bars
 for single_bar_size in data:
