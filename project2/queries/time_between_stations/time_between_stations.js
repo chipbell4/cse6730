@@ -1,5 +1,17 @@
-db.trains.find({ Line: "BL", LocationCode: "C02", DestinationCode: "G05", Min: "1" }).forEach(function(localTrain) {
-    var neighborTrain = db.trains.find({ Line: "BL", LocationCode: "C01", DestinationCode: "G05", timestamp: train.timestamp })[0];
+var departingStation = {
+    Line: "${Line}",
+    LocationCode: "${DepartingStation}",
+    DestinationCode: "${DestinationCode}",
+    Min: "1"
+};
+
+var arrivingStation = {
+    Line: "${Line}",
+    LocationCode: "${ArrivingStation}",
+    DestinationCode: "${DestinationCode}"
+
+db.trains.find(departingStation).forEach(function(localTrain) {
+    arrivingStation.timestamp = localTrain.timestamp;
+    var neighborTrain = db.trains.find(arrivingStation)[0];
     print(parseInt(neighborTrain.Min) - 1);
 });
-
