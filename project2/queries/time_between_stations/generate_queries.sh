@@ -50,32 +50,36 @@ get_station_name_by_index() {
 station_count=`cat ../../data/stations.csv | wc -l | tr -d "[:blank:]"`
 track_section_count=`expr "$station_count" - 1`
 
+rm -f *.properties
+
 # for all stations
 for station_index in $(seq 0 $(($track_section_count-1))); do
     next_station_index=`expr "$station_index" + 1`
-    east_station=`get_station_name_by_index $station_index`
-    west_station=`get_station_name_by_index $next_station_index`
+    east_station_name=`get_station_name_by_index $station_index`
+    east_station_code=`get_station_code_by_index $station_index`
+    west_station_name=`get_station_name_by_index $next_station_index`
+    west_station_code=`get_station_code_by_index $next_station_index`
 
     # for all colors
     for line in BL SV OR; do
         west_destination=`get_train_endpoint West $line`
         # build the westbound properties file
-        westbound_file="${west_station}_west_${line}.properties"
+        westbound_file="${west_station_name}_west_${line}.properties"
         echo $westbound_file
         touch $westbound_file
         echo "Line=$line" >> $westbound_file
-        echo "DepartingStation=$east_station" >> $westbound_file
-        echo "ArrivingStation=$west_station" >> $westbound_file
+        echo "DepartingStation=$east_station_code" >> $westbound_file
+        echo "ArrivingStation=$west_station_code" >> $westbound_file
         echo "DestinationCode=$west_destination" >> $westbound_file
         
         east_destination=`get_train_endpoint East $line`
         # build the westbound properties file
-        eastbound_file="${west_station}_east_${line}.properties"
+        eastbound_file="${east_station_name}_east_${line}.properties"
         echo $eastbound_file
         touch $eastbound_file
         echo "Line=$line" >> $eastbound_file
-        echo "DepartingStation=$west_station" >> $eastbound_file
-        echo "ArrivingStation=$east_station" >> $eastbound_file
+        echo "DepartingStation=$west_station_code" >> $eastbound_file
+        echo "ArrivingStation=$east_station_code" >> $eastbound_file
         echo "DestinationCode=$east_destination" >> $eastbound_file
     done
 done
