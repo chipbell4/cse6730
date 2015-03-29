@@ -9,6 +9,7 @@ var arrivingStation = {
     Line: "${Line}",
     LocationCode: "${ArrivingStation}",
     DestinationCode: "${DestinationCode}"
+};
 
 db.trains.find(departingStation).forEach(function(localTrain) {
     arrivingStation.timestamp = localTrain.timestamp;
