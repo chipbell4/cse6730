@@ -11,7 +11,7 @@ var asyncCommand = function(commandText) {
 };
 
 gulp.task('clean', function(cb) {
-    del(['*.{aux,bbl,blg,dvi,log,pdf}'], cb);
+    del(['*.{aux,bbl,blg,dvi,log,pdf,out}'], cb);
 });
 
 
