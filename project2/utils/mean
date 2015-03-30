@@ -1,16 +1,12 @@
 #!/bin/bash
 
-# First unshift arguments to add exclusions
-exclusions="()"
+set -B
+
 file=""
 
 while :
 do
     case "$1" in
-        -e)
-            exclusions="$exclusions|($2)"
-            shift 2
-            ;;
         -f)
             file="$2"
             shift 2
@@ -20,7 +16,7 @@ do
     esac
 done
 
-total_lines=`cat $file | wc -l`
-sum_string=`cat $file | tr "\n" "+" | sed "s/+$//g"`
+total_lines=`cat $file | egrep "[0-9]+" | wc -l`
+sum_string=`cat $file | egrep "[0-9]+" | tr "\n" "+" | sed "s/+$//g"`
 
 echo "1.0 * ($sum_string) / $total_lines" | bc -l
