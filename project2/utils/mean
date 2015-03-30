@@ -1,22 +1,16 @@
-#!/bin/bash
+#!/usr/bin/env python
 
-set -B
+import sys
 
-file=""
+def is_float(word):
+    try:
+        float(word)
+    except ValueError:
+        return False
+    return True
 
-while :
-do
-    case "$1" in
-        -f)
-            file="$2"
-            shift 2
-            ;;
-        *)
-            break
-    esac
-done
+# skipping non-numbers, convert stdin into numbers
+numbers = list(map(float, filter(is_float, sys.stdin.readlines())))
 
-total_lines=`cat $file | egrep "[0-9]+" | wc -l`
-sum_string=`cat $file | egrep "[0-9]+" | tr "\n" "+" | sed "s/+$//g"`
-
-echo "1.0 * ($sum_string) / $total_lines" | bc -l
+# print the average
+print(sum(numbers) * 1.0 / len(numbers))
