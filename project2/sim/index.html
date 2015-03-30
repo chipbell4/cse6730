@@ -6,7 +6,43 @@
         <link rel="stylesheet" type="text/css" href="style.css" />
     </head>
     <body>
-        <h1>Traffic Simulation</h1>
+        <h1>Metro Simulation</h1>
+        <div class="half-column">
+            Left Column
+        </div>
+        <div class="half-column">
+            <div id="simulation-speed">
+                <h2>Simulation Speed</h2>
+                <div class="half-column">
+                    <label for="speed">Simulation Speed</label>
+                </div>
+                <div class="half-column">
+                    <input type="range" name="speed" id="speed" min="1" max="100" value="1" />
+                </div>
+                <div class="half-column">&nbsp;</div>
+                <div class="half-column">
+                    <span id="speed-value">1</span>
+                </div>
+                <div style="clear: both"></div>
+            </div>
+            <div id="stats">
+                <h2>Stats</h2>
+                <div id="input-stats">
+                    <h3>Interarrival Distribution</h3>
+                    <svg height="100" width="100" xmlns="http://www.w3.org/2000/svg">
+                    </svg>
+                </div>
+                <div id="output-stats">
+                    <h3>Wait Time Distribution</h3>
+                    <svg height="100" width="100" xmlns="http://www.w3.org/2000/svg">
+                    </svg>
+                </div>
+                Current Time is <span id="current-time"></span> <br/>
+                Cars through: <span id="car-throughput"></span> <br/>
+                Average Wait Time: <span id="average-throughput"></span> <br/>
+                Cars Waiting <span id="cars-waiting"></span>
+            </div>
+        </div>
         <div style="clear:both"></div>
     </body>
 </html>
