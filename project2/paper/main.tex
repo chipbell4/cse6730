@@ -117,8 +117,30 @@ the submission. Due to time constraints, we'll use an empirical distribution rat
 \end{center}
 \end{figure}
 
+Time between stations results were fairly predictable, and most stations averaged around a 2 minute travel time between
+stations. However, between Foggy Bottom and Rosslyn the times instead average around a minute higher. This is simply
+due to the distance between the stations, which is considerably greater between those stations.
 
 \section{Caveats and Limitations}
+With any sort of simulation there are simplications and assumptions that are made, and this project is of course no
+different. In some cases the reduction in detail does not harm accuracy but simply makes the model designer's and
+programmer's life easier. However, sometimes this is not the case and the simplifications greatly reduce the accuracy
+of the model. Thus, it is the modeler's job to judiciously choose which details to omit and leave in when building the
+model.
+
+One of the simplifications that we've made is that we've excluded all other stations in the metro system except those
+between Rosslyn and Stadium Armory. Other lines, the Red, Green, and Yellow lines, do not share track with any train,
+nor do they cross at any point. In this respect, they are isolated (regardless of the fact that they may share
+stations). However, ignoring Blue, Orange, and Silver stations beyond Stadium-Armory and Rosslyn could potentially
+reduce model accuracy here because train events at those stations can very easily influence the stations within D.C.
+We have chosen instead to model those exterior stations as a probability distribution which is based off of empirical
+data, but we still run a risk.
+
+That being said, choosing an empirical distribution like we have has the potential to be a wise or poor choice. If the
+"true distribution" of train interarrivals and between station times abides by what we have observed, then our choice
+of empirical distribution was smart, and we've saved ourselves some effort. However we don't know the true
+distribution, and it could be that our observations do not match that distribution at all.
+
 
 \section{Technology Used}
 
