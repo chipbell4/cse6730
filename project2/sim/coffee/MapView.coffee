@@ -20,4 +20,14 @@ class MapView extends Backbone.View
 
         circle.bindPopup(station.get('name'))
 
+    connectStations: (firstStation, secondStation) ->
+        positions = [
+            [firstStation.get('latitude'), firstStation.get('longitude')],
+            [secondStation.get('latitude'), secondStation.get('longitude')]
+        ]
+
+        line = L.polyline(positions,
+            color: 'red'
+        ).addTo(@map)
+
 module.exports = MapView 
