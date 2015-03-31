@@ -17,3 +17,7 @@ body {
     padding-right: 1em;
     float: left;
 }
+
+#map {
+    height: 10em;
+}
