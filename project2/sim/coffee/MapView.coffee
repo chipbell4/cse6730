@@ -6,7 +6,8 @@ Backbone.$ = require 'jquery'
 ###
 class MapView extends Backbone.View
     ###
-    # Sets up the map, by setting the image tiles to use for drawing roads and things
+    # Sets up the map, by setting the image tiles to use for drawing roads and things. For reference, see
+    # http://leafletjs.com/examples/quick-start.html
     ###
     initialize: ->
         @map = L.map(@el.id).setView([38.8941386,-77.0236192], 13)
