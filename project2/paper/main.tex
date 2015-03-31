@@ -92,6 +92,30 @@ same color in the middle that may lower the estimate. However, if we restrict ou
 a minute away, we are unlikely to have that problem since the stations are so close.
 
 \subsection{Query Results}
+A script was built to call the WMATA API for train estimates, and was setup as a cron job on server. The script
+essentially downloaded the estimates of train arrivals for every station into a single timestamped JSON file (see the
+JSON format \cite{json}. Cron \cite{crontab} was configured to run the script every minute for an entire week,
+resulting in a directory full of timestamped JSON files. These were then imported into a Mongo \cite{mongodb} database 
+to allow easier queries.
+
+Train interarrivals were measured by line and direction. \ref{fig:eastboundblueinterarrivals} demonstrates a case where
+the data appears to be normal. However, other cases such as \ref{fig:westboundsilverinterarrivals} show that this is
+not necessarily true. Graphs for the remaining directions and line colors were omitted for brevity, but are included in
+the submission. Due to time constraints, we'll use an empirical distribution rather than trying to fit anything.
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=4in]{../images/train_interarrivals/eastbound_blue_interarrivals.png}
+\caption{\small \sl Eastbound Blue Line Interarrivals at Rosslyn \label{fig:eastboundblueinterarrivals}}
+\end{center}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=4in]{../images/train_interarrivals/westbound_silver_interarrivals.png}
+\caption{\small \sl Westbound Silver Line Interarrivals at Stadium Armory \label{fig:westboundsilverinterarrivals}}
+\end{center}
+\end{figure}
 
 
 \section{Caveats and Limitations}
