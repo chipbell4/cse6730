@@ -141,8 +141,15 @@ That being said, choosing an empirical distribution like we have has the potenti
 of empirical distribution was smart, and we've saved ourselves some effort. However we don't know the true
 distribution, and it could be that our observations do not match that distribution at all.
 
+For individual trains, we'll also ignore some of the micro-effects of acceleration and deceleration and assume our
+between station times measurements captures that. For visualization purposes, we can simply draw trains as moving at a
+constant velocity through the system, although this is clearly not the case.
 
 \section{Technology Used}
+The simulation was built using CoffeeScript \cite{coffeescript}, using Backbone \cite{backbone}, Underscore
+\cite{underscore} and jQuery \cite{jQuery} to organize code some. Code was bundled via Browserify \cite{browserify},
+and minified with UglifyJS \cite{uglify}. Gulp \cite{gulp} was used as a build tool and package management was done
+via NPM \cite{npm}.
 
 \section{Current and Remaining Work}
 
