@@ -22,7 +22,8 @@ closures have on train throughput.
 \section{Previous Work}
 Many large cities have rapid transit systems, so considerable research time has been invested on building reliable
 subways. Commercial software such as OpenTrack \cite{opentrack} have been developed, and even video games such as Train
-Simulator \cite{trainsimulator} and Open Rails \cite{openrails}. Algorithms for handling single, double and tracks exist, such as the basic intuitive
+Simulator \cite{trainsimulator} and Open Rails \cite{openrails}. Algorithms for handling single, double and triple tracks exist,
+such as a basic
 algorithm for sharing tracks between trains presented by Fiorini and Botter \cite{fioroni}. Dessouky and Leachman
 \cite{dessouky_leachman_95} provide an event-driven algorithm for single and double track rail networks, incorporating
 acceleration. Lu et al \cite{quan_lu} expand the model to triple tracks while enhancing the acceleration model to
@@ -53,7 +54,17 @@ opposing tracks to share.
 Because of this, we can represent the entire metro as queuing network with sections between stations as the queue. In
 our case, we will only be modeling the section of track between Rosslyn and Stadium-Armory where the Orange, Blue, and
 Silver share a track (See \ref{fig:metromap}). Since there are no track crossovers, we can consider these three lines
-to be isolated from other lines.
+to be isolated from other lines. However, we do need to keep in mind that for two tracks, each track is devoted to a
+specific direction. Only in the case of a single track is when a track will handle both directions.
+
+Because this will be a discrete-event simulation, we will need to be mindful of the events that travel through our
+application. A first example that comes to mind is the \texttt{train:arrived} event, which will be received by the
+Rosslyn and Stadium-Armory stations when a train arrives. This event will need to contain which line, along with the
+direction its heading (although that is implied by the station in our case).
+
+Track sections will need to inform neighboring stations when they are free, or if they are occupied. This of course
+will influence when and where trains are sent in order to reach their destination. In this respect, track sections are
+the queues in this network.
 
 \begin{figure}
 \begin{center}
@@ -72,24 +83,25 @@ numerical models of motion, we can instead use the WMATA API \cite{wmataapi} to 
 The API provides data by station with an estimate at each station of the wait time until the next train. For instance,
 the API for a station on the blue line might list a train to Franconia-Springfield (westbound) in 1 minute. If there
 also happens to be an Orange that passes through that station, you may also see an estimate for the next Orange (if it
-close enough).
+is close enough).
 
 Given this information, we can calculate how often a train runs simply by marking the timestamp of the API call and
 offset by the estimated time until arrival provided by the API. For instance, if we query a station at 12:00 PM, and
-the API estimates a train arriving in 3 minutes. We can roughly estimate that the train will arrive at 12:03. This
-gives us our arrival rate Furthermore, we can query by train line as well to verify that trains run according to the
+the API estimates a train arriving in 3 minutes, we can roughly estimate that the train will arrive at 12:03. This
+gives us our arrival rate. Furthermore, we can query by train line as well to verify that trains run according to the
 schedule that WMATA provides on its website \cite{metroschedule}.
 
 To calculate service times for a particular section of track, we need an estimate of the time it takes for a train to
 travel between two stations. This is clearly station dependent, since some stations are closer than others. However,
 all but one of our stations are within the District of Columbia, so we expect the travel times to be small.
 
-We can still calculate an estimated travel time through the API as well. Given two neighboring stations $A$ and $B$, if
+We can still calculate an estimated travel time between two stations through the API as well. Given two neighboring stations $A$ and $B$, if
 we query $A$ for an upcoming trains of color $c$ in the direction of $B$, we will get some estimate for the arrival. We
-can query $B$ for the same color train in the same direction to obtain a second estimate. Subtracting these two numbers
-provides an estimate of the travel time between stations. This is making an assumption that there is no train of the
-same color in the middle that may lower the estimate. However, if we restrict our queries on $A$ to trains that are only
-a minute away, we are unlikely to have that problem since the stations are so close.
+can query $B$ for the same color train in the same direction to obtain a estimate of the arrival time at $B$.
+Subtracting these two numbers provides an estimate of the travel time between stations. This makes an assumption that
+there is no train of the same color in the middle that may skew the estimate. However, we can minimize the chance of
+this happening if we restrict our queries on $A$ to trains that are only a minute away. Given that the stations are so
+close, we minimize the likelihood that there is a ``middle train'' that causes inaccurate estimates.
 
 \subsection{Query Results}
 A script was built to call the WMATA API for train estimates, and was setup as a cron job on server. The script
@@ -101,7 +113,8 @@ to allow easier queries.
 Train interarrivals were measured by line and direction. \ref{fig:eastboundblueinterarrivals} demonstrates a case where
 the data appears to be normal. However, other cases such as \ref{fig:westboundsilverinterarrivals} show that this is
 not necessarily true. Graphs for the remaining directions and line colors were omitted for brevity, but are included in
-the submission. Due to time constraints, we'll use an empirical distribution rather than trying to fit anything.
+the submission. Due to time constraints, we'll use an empirical distribution rather than trying to fit any particular
+distribution.
 
 \begin{figure}
 \begin{center}
@@ -122,7 +135,7 @@ stations. However, between Foggy Bottom and Rosslyn the times instead average ar
 due to the distance between the stations, which is considerably greater between those stations.
 
 \section{Caveats and Limitations}
-With any sort of simulation there are simplications and assumptions that are made, and this project is of course no
+With any sort of simulation of a real-world system, there are simplications and assumptions that are made, and this project is of course no
 different. In some cases the reduction in detail does not harm accuracy but simply makes the model designer's and
 programmer's life easier. However, sometimes this is not the case and the simplifications greatly reduce the accuracy
 of the model. Thus, it is the modeler's job to judiciously choose which details to omit and leave in when building the
@@ -131,10 +144,11 @@ model.
 One of the simplifications that we've made is that we've excluded all other stations in the metro system except those
 between Rosslyn and Stadium Armory. Other lines, the Red, Green, and Yellow lines, do not share track with any train,
 nor do they cross at any point. In this respect, they are isolated (regardless of the fact that they may share
-stations). However, ignoring Blue, Orange, and Silver stations beyond Stadium-Armory and Rosslyn could potentially
+stations). So, in this case, the simplification hinders accuracy in no way whatsoever. However, ignoring Blue, Orange,
+and Silver stations beyond Stadium-Armory and Rosslyn could potentially
 reduce model accuracy here because train events at those stations can very easily influence the stations within D.C.
 We have chosen instead to model those exterior stations as a probability distribution which is based off of empirical
-data, but we still run a risk.
+data, but we still run a risk that we may have not captured an important interaction.
 
 That being said, choosing an empirical distribution like we have has the potential to be a wise or poor choice. If the
 "true distribution" of train interarrivals and between station times abides by what we have observed, then our choice
@@ -152,12 +166,14 @@ and minified with UglifyJS \cite{uglify}. Gulp \cite{gulp} was used as a build t
 via NPM \cite{npm}. Geo-mapping was done via Leaflet \cite{leaflet}.
 
 \section{Current and Remaining Work}
-Currently, the app is simply mapping stations and labeling them. The entirety of data analysis is complete, and can be
+Currently, the app is simply mapping stations and labeling them based on information provided by the API. The entirety
+of data analysis is complete, and can be
 viewed within the \texttt{queries} directory, along with the \texttt{utils}. A few data files are strewn about the
 codebase as well. The WMATA API query code is stored within the \texttt{wmata} folder.
 
 I have also copied some code over from the first project since it will be applicable, such as a discrete event queue.
-However, the \texttt{Track} class remains to be written and is integral to the application. Furthermore, the actual
+However, the \texttt{Track} class remains to be written and is integral to the application, along with the \texttt{Train}
+class. Furthermore, the actual
 train scheduling algorithm itself needs to be written. However, the current application is deployed here
 \cite{aprilandchip}.
 
