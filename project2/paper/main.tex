@@ -149,9 +149,16 @@ constant velocity through the system, although this is clearly not the case.
 The simulation was built using CoffeeScript \cite{coffeescript}, using Backbone \cite{backbone}, Underscore
 \cite{underscore} and jQuery \cite{jQuery} to organize code some. Code was bundled via Browserify \cite{browserify},
 and minified with UglifyJS \cite{uglify}. Gulp \cite{gulp} was used as a build tool and package management was done
-via NPM \cite{npm}.
+via NPM \cite{npm}. Geo-mapping was done via Leaflet \cite{leaflet}.
 
 \section{Current and Remaining Work}
+Currently, the app is simply mapping stations and labeling them. The entirety of data analysis is complete, and can be
+viewed within the \texttt{queries} directory, along with the \texttt{utils}. A few data files are strewn about the
+codebase as well. The WMATA API query code is stored within the \texttt{wmata} folder.
+
+I have also copied some code over from the first project since it will be applicable, such as a discrete event queue.
+However, the \texttt{Track} class remains to be written and is integral to the application. Furthermore, the actual
+train scheduling algorithm itself needs to be written.
 
 \bibliographystyle{plain}
 \bibliography{main}
