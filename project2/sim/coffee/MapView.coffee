@@ -11,4 +11,13 @@ class MapView extends Backbone.View
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(@map);
 
+    addStation: (station) ->
+        circle = L.circle([station.get('latitude'), station.get('longitude')], 100,
+            color: 'red',
+            fillColor: '#f03',
+            fillOpacity: 0.5
+        ).addTo(@map)
+
+        circle.bindPopup(station.get('name'))
+
 module.exports = MapView 
