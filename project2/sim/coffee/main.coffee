@@ -1,16 +1,15 @@
 $ = require 'jquery'
 Backbone = require 'backbone'
+stations = require './stations.coffee'
 MapView = require './MapView.coffee'
+
+importStations = (map) ->
+    stationModels = (new Backbone.Model(station) for station in stations)
+    (map.addStation(station) for station in stationModels) 
 
 $ ->
     map = new MapView(
         el: $('#map')
     )
 
-    station = new Backbone.Model(
-        name: 'McPherson Square'
-        latitude: 38.9013327968
-        longitude: -77.0336341721
-    )
-
-    map.addStation(station)
+    importStations(map)
