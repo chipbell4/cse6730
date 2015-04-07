@@ -17,5 +17,5 @@ gulp.task('clean', function(cb) {
 gulp.task('default', ['bundle']);
 
 gulp.task('watch', ['bundle'], function() {
-    gulp.watch('coffee/*', 'bundle');
+    return gulp.watch('coffee/*', ['bundle']);
 });
