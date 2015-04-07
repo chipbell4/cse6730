@@ -26,8 +26,9 @@ gulp.task('clean', function(cb) {
     del('main.js', cb);
 });
 
-gulp.task('default', ['bundle']);
+gulp.task('default', ['test', 'bundle']);
 
-gulp.task('watch', ['bundle'], function() {
-    return gulp.watch('coffee/*', ['bundle']);
+gulp.task('watch', ['test', 'bundle'], function() {
+    gulp.watch('coffee/*.coffee', ['test', 'bundle']);
+    gulp.watch('test/**/*', ['test']);
 });
