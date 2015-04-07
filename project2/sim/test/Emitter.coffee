@@ -11,7 +11,11 @@ describe 'Emitter', ->
         
         it 'should emit the correct type', ->
             eventQueue = new Backbone.Collection
-            emitter = new Emitter(eventQueue, Backbone.Model, [0.5, 0.5], 1)
+            emitter = new Emitter(eventQueue, Backbone.Model,
+                pdf: [0.5, 0.5],
+                min: 0,
+                max: 1
+            )
 
             emitter.emitNext()
 

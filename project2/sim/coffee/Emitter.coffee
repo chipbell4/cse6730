@@ -6,15 +6,15 @@ Time = require './Time.coffee'
 ###
 class Emitter
     ###
-    # Creates a new emitter, passing the event queue, the type to emit, an array of probabilities for the bins of the
-    # distribution, and the width of each bin
+    # Creates a new emitter, passing the event queue, the type to emit, and an object describing the histogram, with a
+    # pdf, min, and max keys
     ###
-    constructor: (@eventQueue, @emitType,  @histogramPdf, @histogramBinWidth) ->
+    constructor: (@eventQueue, @emitType,  @histogram) ->
         sum = (array) ->
             array.reduce( ((a,b) -> a + b), 0 )
-        indices = [0..@histogramPdf.length]
+        indices = [0..@histogram.pdf.length]
         # a little cryptic, but essentially does running sums to calculate the CDF
-        pdf = @histogramPdf
+        pdf = @histogram.pdf
         @histogramCdf = indices.map((index) -> sum(pdf[..index]))
 
     ###
