@@ -1,5 +1,6 @@
 Backbone = require 'backbone'
 Train = require './Train'
+Directions = require './Directions'
 
 ###
 # Represents a track segment, where trains can queue up to pass through. This is the limited resource in the
@@ -16,5 +17,19 @@ class TrackSegment extends Backbone.Collection
     ###
     releaseNextTrain: ->
         @shift()
+
+    ###
+    # Splits the collection into two separate collection, one for each direction a train might be heading
+    ###
+    splitByDirection: ->
+        splitTrains = {}
+        splitTrains.east = new TrackSegment(
+            @where(direction: Directions.EAST)
+        )
+        splitTrains.west = new TrackSegment(
+            @where(direction: Directions.WEST)
+        )
+
+        return splitTrains
 
 module.exports = TrackSegment
