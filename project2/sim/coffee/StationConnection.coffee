@@ -52,4 +52,7 @@ class StationConnection
          
          @waitingTrack.reset()
 
+     releaseNextTrains: () ->
+         # TODO Do something here
+
 module.exports = StationConnection
