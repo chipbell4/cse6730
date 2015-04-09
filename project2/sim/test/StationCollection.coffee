@@ -8,18 +8,10 @@ describe 'StationCollection', ->
         {
             code: 'A',
             name: 'Station A',
-            latitude: 38,
-            longitude: -76,
-            eastwardStationTime: 1,
-            westwardStationTime: 2
         },
         {
             code: 'B',
             name: 'Station B',
-            latitude: 38,
-            longitude: -77,
-            eastwardStationTime: 3,
-            westwardStationTime: 4
         },
     ]
 
