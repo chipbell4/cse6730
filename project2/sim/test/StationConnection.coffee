@@ -1,4 +1,5 @@
 expect = require('chai').expect
+Backbone = require 'backbone'
 StationConnection = require '../coffee/StationConnection'
 Directions = require '../coffee/Directions'
 
@@ -99,3 +100,17 @@ describe 'StationConnection', ->
             expect(connection.eastwardTrack.length).to.equal(1)
             expect(connection.westwardTrack.length).to.equal(2)
             expect(connection.waitingTrack.length).to.equal(0)
+
+    describe 'releaseNextTrains', ->
+        it 'should release a collection', ->
+            expect(connection.releaseNextTrains()).to.be.instanceof(Backbone.Collection)
+
+        it 'should release a train from the east direction if one is available', ->
+            connection.eastwardTrack.push({ id: 123 })
+            expect(connection.releaseNextTrains().length).to.equal(1)
+            expect(connection.eastwardTrack.length).to.equal(0)
+
+        it 'should release a train from the west direction if one is available', ->
+            connection.westwardTrack.push({ id: 123 })
+            expect(connection.releaseNextTrains().length).to.equal(1)
+            expect(connection.westwardTrack.length).to.equal(0)

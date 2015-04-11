@@ -1,5 +1,5 @@
+Backbone = require 'backbone'
 Directions = require './Directions.coffee'
-
 TrackSegment = require './TrackSegment.coffee'
 
 class StationConnection
@@ -53,6 +53,11 @@ class StationConnection
          @waitingTrack.reset()
 
      releaseNextTrains: () ->
-         # TODO Do something here
+         releasedTrains = new Backbone.Collection
+         if @eastwardTrack.length > 0
+             releasedTrains.push @eastwardTrack.shift()
+         if @westwardTrack.length > 0
+             releasedTrains.push @westwardTrack.shift()
+         return releasedTrains
 
 module.exports = StationConnection
