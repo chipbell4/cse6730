@@ -22,7 +22,6 @@ class StationConnection
         @realignTrains()
 
     enqueueTrain: (train) ->
-        console.log(train)
         @waitingTrack.add train
         @realignTrains()
 
