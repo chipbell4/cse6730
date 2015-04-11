@@ -6,7 +6,7 @@ Directions = require '../coffee/Directions'
 describe 'StationConnection', ->
     connection = null
     beforeEach ->
-        connection = new StationConnection(2)
+        connection = new StationConnection()
 
     describe 'disableTrack', ->
         it 'should by default have 0 tracks disabled', ->

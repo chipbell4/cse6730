@@ -3,7 +3,7 @@ Directions = require './Directions.coffee'
 TrackSegment = require './TrackSegment.coffee'
 
 class StationConnection
-    constructor: (@timeBetweenStations) ->
+    constructor: () ->
         @eastwardTrack = new TrackSegment
         @westwardTrack = new TrackSegment
         @waitingTrack = new TrackSegment
