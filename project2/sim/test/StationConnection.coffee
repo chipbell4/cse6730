@@ -1,12 +1,16 @@
 expect = require('chai').expect
+Train = require '../coffee/Train'
 Backbone = require 'backbone'
+Station = require '../coffee/Station'
 StationConnection = require '../coffee/StationConnection'
 Directions = require '../coffee/Directions'
 
 describe 'StationConnection', ->
     connection = null
+    eastStation = new Station(code: 'EAST')
+    westStation = new Station(code: 'WEST')
     beforeEach ->
-        connection = new StationConnection()
+        connection = new StationConnection(eastStation, westStation) 
 
     describe 'disableTrack', ->
         it 'should by default have 0 tracks disabled', ->
@@ -114,3 +118,38 @@ describe 'StationConnection', ->
             connection.westwardTrack.push({ id: 123 })
             expect(connection.releaseNextTrains().length).to.equal(1)
             expect(connection.westwardTrack.length).to.equal(0)
+
+    describe 'onTrainArrived', ->
+        it 'should push a train if its heading east and the station matches the western station', ->
+            train = new Train(direction: Directions.EAST)
+            connection.onTrainArrived(train, westStation)
+            expect(connection.eastwardTrack.length).to.equal(1)
+
+        it 'should push a train if its heading west and the station matches the eastern station', ->
+            train = new Train(direction: Directions.WEST)
+            connection.onTrainArrived(train, eastStation)
+            expect(connection.westwardTrack.length).to.equal(1)
+
+        it 'should not push a train if the station matches the west but is heading the wrong direction', ->
+            train = new Train(direction: Directions.WEST)
+            connection.onTrainArrived(train, westStation)
+            expect(connection.westwardTrack.length).to.equal(0)
+        
+        it 'should not push a train if the station matches the east but is heading the wrong direction', ->
+            train = new Train(direction: Directions.EAST)
+            connection.onTrainArrived(train, eastStation)
+            expect(connection.eastwardTrack.length).to.equal(0)
+
+        it 'should not push a train if the station mismatches', ->
+            train = new Train(direction: Directions.EAST)
+            connection.onTrainArrived(train, new Station)
+            expect(connection.eastwardTrack.length).to.equal(0)
+
+    describe 'onConnectionExit', ->
+        it 'should enqueue nothing if the connection mismatches'
+        it 'should enqueue nothing if the station mismatches'
+        it 'should enqueue nothing if both track segments are blocked'
+        it 'should dequeue the westward train if a westward train was released and no lines are blocked'
+        it 'should dequeue the eastward train if an eastward train was released and no lines are blocked'
+        it 'should dequeue the first available train if only a single lane is available'
+

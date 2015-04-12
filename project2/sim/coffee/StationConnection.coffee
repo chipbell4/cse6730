@@ -1,9 +1,11 @@
 Backbone = require 'backbone'
+Station = require './Station.coffee'
+EventQueueSingleton = require './EventQueueSingleton'
 Directions = require './Directions.coffee'
 TrackSegment = require './TrackSegment.coffee'
 
 class StationConnection
-    constructor: () ->
+    constructor: (@eastStation, @westStation) ->
         @eastwardTrack = new TrackSegment
         @westwardTrack = new TrackSegment
         @waitingTrack = new TrackSegment
@@ -58,5 +60,14 @@ class StationConnection
          if @westwardTrack.length > 0
              releasedTrains.push @westwardTrack.shift()
          return releasedTrains
+
+     onTrainArrived: (train, station) ->
+         if train.get('direction') == Directions.EAST and station.get('code') == @westStation.get('code')
+             @enqueueTrain(train)
+         else if train.get('direction') == Directions.WEST and station.get('code') == @eastStation.get('code')
+             @enqueueTrain(train)
+
+     onConnectionExit: (connection, train, station) ->
+        
 
 module.exports = StationConnection
