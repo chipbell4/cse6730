@@ -53,13 +53,13 @@ class StationConnection
          
          @waitingTrack.reset()
 
-     releaseNextTrains: () ->
-         releasedTrains = new Backbone.Collection
-         if @eastwardTrack.length > 0
-             releasedTrains.push @eastwardTrack.shift()
-         if @westwardTrack.length > 0
-             releasedTrains.push @westwardTrack.shift()
-         return releasedTrains
+     releaseNextTrain: (direction) ->
+         if @tracksDisabled == 2
+             return
+         if @tracksDisabled == 1 or direction is Directions.EAST
+             return @eastwardTrack.shift()
+         if direction is Directions.WEST
+             return @westwardTrack.shift()
 
      onTrainArrived: (train, station) ->
          if train.get('direction') == Directions.EAST and station.get('code') == @westStation.get('code')

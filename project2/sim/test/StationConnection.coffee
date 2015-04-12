@@ -105,19 +105,29 @@ describe 'StationConnection', ->
             expect(connection.westwardTrack.length).to.equal(2)
             expect(connection.waitingTrack.length).to.equal(0)
 
-    describe 'releaseNextTrains', ->
-        it 'should release a collection', ->
-            expect(connection.releaseNextTrains()).to.be.instanceof(Backbone.Collection)
-
+    describe 'releaseNextTrain', ->
         it 'should release a train from the east direction if one is available', ->
             connection.eastwardTrack.push({ id: 123 })
-            expect(connection.releaseNextTrains().length).to.equal(1)
+            expect(connection.releaseNextTrain(Directions.EAST).get('id')).to.equal(123)
             expect(connection.eastwardTrack.length).to.equal(0)
 
         it 'should release a train from the west direction if one is available', ->
             connection.westwardTrack.push({ id: 123 })
-            expect(connection.releaseNextTrains().length).to.equal(1)
+            expect(connection.releaseNextTrain(Directions.WEST).get('id')).to.equal(123)
             expect(connection.westwardTrack.length).to.equal(0)
+
+        it 'should return null if no tracks are available', ->
+            connection.westwardTrack.push({ id: 123 })
+            connection.eastwardTrack.push({ id: 234 })
+            connection.tracksDisabled = 2
+            expect(connection.releaseNextTrain(Directions.EAST)).to.equal(undefined)
+            expect(connection.releaseNextTrain(Directions.WEST)).to.equal(undefined)
+
+        it 'should return whatever is in the eastern track if there is one track', ->
+            connection.eastwardTrack.push({ id: 123 })
+            connection.tracksDisabled = 1
+            expect(connection.releaseNextTrain(Directions.WEST).get('id')).to.equal(123)
+            expect(connection.eastwardTrack.length).to.equal(0)
 
     describe 'onTrainArrived', ->
         it 'should push a train if its heading east and the station matches the western station', ->
