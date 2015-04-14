@@ -157,6 +157,15 @@ describe 'StationConnection', ->
             expect(connection.eastwardTrack.length).to.equal(0)
 
     describe 'onConnectionExit', ->
+        stubEvent = (connection, train, station) ->
+            new Backbone.Model(
+                timestamp: 0
+                name: 'train:exit'
+                data:
+                    connection: connection
+                    train: train
+                    station: station
+            )
         beforeEach ->
             EventQueueSingleton.reset()
 
@@ -164,38 +173,22 @@ describe 'StationConnection', ->
             anotherConnection = new StationConnection(eastStation, westStation)
             console.log 'About to do it!'
             EventQueueSingleton.reset()
-            connection.onConnectionExit(new Backbone.Model(
-                connection: anotherConnection,
-                train: new Train,
-                station: eastStation,
-            ))
+            connection.onConnectionExit(stubEvent(anotherConnection, new Train, eastStation))
             expect(EventQueueSingleton.length).to.equal(0)
 
         it 'should enqueue nothing if the station mismatches', ->
-            connection.onConnectionExit(new Backbone.Model(
-                connection: connection,
-                train: new Train,
-                station: new Station,
-            ))
+            connection.onConnectionExit(stubEvent(connection, new Train, new Station))
             expect(EventQueueSingleton.length).to.equal(0)
 
         it 'should enqueue nothing if both track segments are blocked', ->
             connection.tracksDisabled = 2
-            connection.onConnectionExit(new Backbone.Model(
-                connection: connection,
-                train: new Train,
-                station: eastStation,
-            ))
+            connection.onConnectionExit(stubEvent(connection, new Train, eastStation))
             expect(EventQueueSingleton.length).to.equal(0)
 
         it 'should dequeue the westward train if a westward train was released and no lines are blocked', ->
             train = new Train(direction: Directions.WEST)
             connection.westwardTrack.push(train)
-            connection.onConnectionExit(new Backbone.Model(
-                connection: connection,
-                train: new Train(direction: Directions.WEST),
-                station: westStation,
-            ))
+            connection.onConnectionExit(stubEvent(connection, new Train(direction: Directions.WEST), westStation))
             expect(EventQueueSingleton.length).to.equal(1)
             expect(EventQueueSingleton.first().get('train')).to.equal(train)
             expect(connection.westwardTrack.length).to.equal(0)
@@ -203,11 +196,7 @@ describe 'StationConnection', ->
         it 'should dequeue the eastward train if an eastward train was released and no lines are blocked', ->
             train = new Train(direction: Directions.EAST)
             connection.eastwardTrack.push(train)
-            connection.onConnectionExit(new Backbone.Model(
-                connection: connection,
-                train: new Train,
-                station: eastStation
-            ))
+            connection.onConnectionExit(stubEvent(connection, new Train, eastStation))
             expect(EventQueueSingleton.length).to.equal(1)
             expect(EventQueueSingleton.first().get('train')).to.equal(train)
             expect(connection.eastwardTrack.length).to.equal(0)
@@ -216,11 +205,7 @@ describe 'StationConnection', ->
             train = new Train(direction: Directions.EAST)
             connection.tracksDisabled = 1
             connection.eastwardTrack.push(train)
-            connection.onConnectionExit(new Backbone.Model(
-                connection: connection,
-                train: new Train,
-                station: westStation
-            ))
+            connection.onConnectionExit(stubEvent(connection, new Train, westStation))
             expect(EventQueueSingleton.length).to.equal(1)
             expect(EventQueueSingleton.first().get('train')).to.equal(train)
             expect(connection.eastwardTrack.length).to.equal(0)

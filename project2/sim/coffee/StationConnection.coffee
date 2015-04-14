@@ -70,15 +70,18 @@ class StationConnection
              @enqueueTrain(train)
 
      onConnectionExit: (event) ->
-         if event.get('connection').cid isnt @cid
+         connection = event.get('data').connection
+         station = event.get('data').station
+         train = event.get('data').train
+         if connection.cid isnt @cid
              return
-         if event.get('station').cid isnt @eastStation.cid and event.get('station').cid isnt @westStation.cid
+         if station.cid isnt @eastStation.cid and station.cid isnt @westStation.cid
              return
          if @tracksDisabled is 2
              return
 
          nextTrain = undefined
-         if event.get('train').get('direction') is Directions.WEST and @tracksDisabled is 0
+         if train.get('direction') is Directions.WEST and @tracksDisabled is 0
              nextTrain = @westwardTrack.shift()
          else
              nextTrain = @eastwardTrack.shift()
