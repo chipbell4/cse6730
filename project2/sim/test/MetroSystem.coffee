@@ -31,6 +31,8 @@ describe 'MetroSystem', ->
     describe 'nextConnectionForTrain', ->
         connection1 = new StationConnection()
         connection2 = new StationConnection()
+        connection1.off()
+        connection2.off()
         train = null
 
         beforeEach ->

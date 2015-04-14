@@ -26,6 +26,7 @@ describe 'StationConnection', ->
             westStation: westStation
             timeBetweenStations: 2
         )
+        connection.off()
 
     describe 'disableTrack', ->
         it 'should by default have 0 tracks disabled', ->

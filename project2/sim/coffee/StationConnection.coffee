@@ -4,7 +4,7 @@ EventQueueSingleton = require './EventQueueSingleton'
 Directions = require './Directions.coffee'
 TrackSegment = require './TrackSegment.coffee'
 
-class StationConnection
+class StationConnection extends Backbone.Model
     constructor: (options = {}) ->
         options.eastStation ?= new Station
         options.westStation ?= new Station
@@ -16,6 +16,11 @@ class StationConnection
         @westwardTrack = new TrackSegment
         @waitingTrack = new TrackSegment
         @tracksDisabled = 0
+        
+        # wire up events
+        @listenTo(EventQueueSingleton, 'train:arrive', @onTrainArrived)
+        @listenTo(EventQueueSingleton, 'train:enter', @onConnectionEnter)
+        @listenTo(EventQueueSingleton, 'train:exit', @onConnectionExit)
 
     disableTrack: () ->
         @tracksDisabled += 1
