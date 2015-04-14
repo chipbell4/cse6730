@@ -20,10 +20,12 @@ describe 'StationConnection', ->
                 station: station
         )
     beforeEach ->
-        options = 
+        EventQueueSingleton.reset()
+        connection = new StationConnection(
             eastStation: eastStation
             westStation: westStation
-        connection = new StationConnection(options) 
+            timeBetweenStations: 2
+        )
 
     describe 'disableTrack', ->
         it 'should by default have 0 tracks disabled', ->
@@ -169,12 +171,22 @@ describe 'StationConnection', ->
             expect(connection.eastwardTrack.length).to.equal(0)
 
     describe 'onConnectionEnter', ->
-        
+        it 'should emit an event with the same train, but at a later time', ->
+            event = stubEvent(connection, new Train, new Station)
+            event.set('timestamp', 1)
+            event.set('name', 'train:enter')
+            connection.onConnectionEnter(event)
+            expect(EventQueueSingleton.length).to.equal(1)
+            expect(EventQueueSingleton.first().get('data').train).to.equal(event.get('data').train)
+            expect(EventQueueSingleton.first().get('timestamp')).to.equal(3)
+
+        it 'should not emit an event if the connection does no match', ->
+            event = stubEvent(new StationConnection, new Train, new Station)
+            connection.onConnectionEnter(event)
+            expect(EventQueueSingleton.length).to.equal(0)
+
 
     describe 'onConnectionExit', ->
-        beforeEach ->
-            EventQueueSingleton.reset()
-
         it 'should enqueue nothing if the connection mismatches', ->
             anotherConnection = new StationConnection(
                 eastStation: eastStation

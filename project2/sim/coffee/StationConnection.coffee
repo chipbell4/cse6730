@@ -9,8 +9,10 @@ class StationConnection
     constructor: (options = {}) ->
         options.eastStation ?= new Station
         options.westStation ?= new Station
+        options.timeBetweenStations ?= 2
         @eastStation = options.eastStation
         @westStation = options.westStation
+        @timeBetweenStations = options.timeBetweenStations
         @eastwardTrack = new TrackSegment
         @westwardTrack = new TrackSegment
         @waitingTrack = new TrackSegment
@@ -74,7 +76,13 @@ class StationConnection
             @enqueueTrain(train)
 
     onConnectionEnter: (event) ->
-        return
+        if event.get('data').connection isnt @
+            return
+
+        exitEvent = event.clone()
+        exitEvent.set('name', 'train:exit')
+        exitEvent.set('timestamp', event.get('timestamp') + @timeBetweenStations)
+        EventQueueSingleton.add(exitEvent)
 
     onConnectionExit: (event) ->
         connection = event.get('data').connection
