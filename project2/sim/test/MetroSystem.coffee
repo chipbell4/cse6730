@@ -62,3 +62,9 @@ describe 'MetroSystem', ->
         it 'should return null if it cannot find the connection provided', ->
             expect(system.nextConnectionForTrain(train, new StationConnection)).to.equal(null)
 
+    describe 'onConnectionExit', ->
+        it 'should pass it to the next westward train if the train is heading west'
+        it 'should pass it to the next eastward train if the train is heading east'
+        it 'should trigger a train:finish if the train is westward, with no more stations'
+        it 'should trigger a train:finish if the train is eastward, with no more stations'
+
