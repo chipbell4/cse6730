@@ -1,3 +1,4 @@
+_ = require 'underscore'
 Backbone = require 'backbone'
 Station = require './Station.coffee'
 EventQueueSingleton = require './EventQueueSingleton'
@@ -10,6 +11,7 @@ class StationConnection
         @westwardTrack = new TrackSegment
         @waitingTrack = new TrackSegment
         @tracksDisabled = 0
+        @cid = _.uniqueId()
 
     disableTrack: () ->
         @tracksDisabled += 1
@@ -67,7 +69,24 @@ class StationConnection
          else if train.get('direction') == Directions.WEST and station.get('code') == @eastStation.get('code')
              @enqueueTrain(train)
 
-     onConnectionExit: (connection, train, station) ->
-        
+     onConnectionExit: (event) ->
+         if event.get('connection').cid isnt @cid
+             return
+         if event.get('station').cid isnt @eastStation.cid and event.get('station').cid isnt @westStation.cid
+             return
+         if @tracksDisabled is 2
+             return
+
+         nextTrain = undefined
+         if event.get('train').get('direction') is Directions.WEST and @tracksDisabled is 0
+             nextTrain = @westwardTrack.shift()
+         else
+             nextTrain = @eastwardTrack.shift()
+
+         # Push a new event with the next train, but at the same timestamp
+         newEvent = event.clone()
+         newEvent.set('train', nextTrain)
+         EventQueueSingleton.add(newEvent)
+             
 
 module.exports = StationConnection
