@@ -1,4 +1,3 @@
-_ = require 'underscore'
 Backbone = require 'backbone'
 Station = require './Station.coffee'
 EventQueueSingleton = require './EventQueueSingleton'
@@ -17,7 +16,6 @@ class StationConnection
         @westwardTrack = new TrackSegment
         @waitingTrack = new TrackSegment
         @tracksDisabled = 0
-        @cid = _.uniqueId()
 
     disableTrack: () ->
         @tracksDisabled += 1
@@ -88,9 +86,9 @@ class StationConnection
         connection = event.get('data').connection
         station = event.get('data').station
         train = event.get('data').train
-        if connection.cid isnt @cid
+        if connection isnt @
             return
-        if station.cid isnt @eastStation.cid and station.cid isnt @westStation.cid
+        if station isnt @eastStation and station isnt @westStation
             return
         if @tracksDisabled is 2
             return
