@@ -10,8 +10,20 @@ describe 'StationConnection', ->
     connection = null
     eastStation = new Station(code: 'EAST')
     westStation = new Station(code: 'WEST')
+    stubEvent = (connection, train, station) ->
+        new Backbone.Model(
+            timestamp: 0
+            name: 'train:exit'
+            data:
+                connection: connection
+                train: train
+                station: station
+        )
     beforeEach ->
-        connection = new StationConnection(eastStation, westStation) 
+        options = 
+            eastStation: eastStation
+            westStation: westStation
+        connection = new StationConnection(options) 
 
     describe 'disableTrack', ->
         it 'should by default have 0 tracks disabled', ->
@@ -82,7 +94,7 @@ describe 'StationConnection', ->
            expect(connection.eastwardTrack.length).to.equal(0)
            expect(connection.westwardTrack.length).to.equal(0)
            expect(connection.waitingTrack.length).to.equal(2)
-
+       
        it 'should push all trains from westward and waiting to eastward if a single track is available', ->
             connection.westwardTrack.push(direction: Directions.WEST)
             connection.waitingTrack.push(direction: Directions.EAST)
@@ -156,22 +168,18 @@ describe 'StationConnection', ->
             connection.onTrainArrived(train, new Station)
             expect(connection.eastwardTrack.length).to.equal(0)
 
+    describe 'onConnectionEnter', ->
+        
+
     describe 'onConnectionExit', ->
-        stubEvent = (connection, train, station) ->
-            new Backbone.Model(
-                timestamp: 0
-                name: 'train:exit'
-                data:
-                    connection: connection
-                    train: train
-                    station: station
-            )
         beforeEach ->
             EventQueueSingleton.reset()
 
         it 'should enqueue nothing if the connection mismatches', ->
-            anotherConnection = new StationConnection(eastStation, westStation)
-            console.log 'About to do it!'
+            anotherConnection = new StationConnection(
+                eastStation: eastStation
+                westStation: westStation
+            )
             EventQueueSingleton.reset()
             connection.onConnectionExit(stubEvent(anotherConnection, new Train, eastStation))
             expect(EventQueueSingleton.length).to.equal(0)

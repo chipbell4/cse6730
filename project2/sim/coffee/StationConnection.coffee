@@ -6,7 +6,11 @@ Directions = require './Directions.coffee'
 TrackSegment = require './TrackSegment.coffee'
 
 class StationConnection
-    constructor: (@eastStation, @westStation) ->
+    constructor: (options = {}) ->
+        options.eastStation ?= new Station
+        options.westStation ?= new Station
+        @eastStation = options.eastStation
+        @westStation = options.westStation
         @eastwardTrack = new TrackSegment
         @westwardTrack = new TrackSegment
         @waitingTrack = new TrackSegment
@@ -68,6 +72,9 @@ class StationConnection
              @enqueueTrain(train)
          else if train.get('direction') == Directions.WEST and station.get('code') == @eastStation.get('code')
              @enqueueTrain(train)
+
+     onConnectionEnter: (event) ->
+         return
 
      onConnectionExit: (event) ->
          connection = event.get('data').connection

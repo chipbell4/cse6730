@@ -6,7 +6,13 @@ StationConnection = require './StationConnection'
 ###
 class MetroSystem
     constructor: (@stationData, @eventQueue) ->
-        @connections = [ new StationConnection() for index in [1..@stationData.length-1]]
+        @connections = [ @stationConnectionFactory(index) for index in [1..@stationData.length-1]]
+
+    stationConnectionFactory: (index) ->
+        new StationConnection(
+            eastStation: @stationData[index - 1]
+            westStation: @stationData[index]
+        )
 
     connectionProcessedTrain: (train, connection) ->
 
