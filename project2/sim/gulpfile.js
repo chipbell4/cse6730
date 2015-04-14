@@ -19,7 +19,10 @@ gulp.task('test', function() {
         .pipe(mocha({
             reporter: 'spec',
             compilers: 'coffee:coffee-script'
-        }));
+        }))
+        .once('error', function(error) {
+            console.log(error.toString());
+        });
 });
 
 gulp.task('clean', function(cb) {
