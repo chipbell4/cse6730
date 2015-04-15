@@ -1,9 +1,10 @@
 expect = require('chai').expect
+Backbone = require 'backbone'
 Directions = require '../coffee/Directions'
 Train = require '../coffee/Train'
 StationConnection = require '../coffee/StationConnection'
 MetroSystem = require '../coffee/MetroSystem'
-EventQueue = require '../coffee/EventQueue'
+EventQueueSingleton = require '../coffee/EventQueueSingleton'
 
 describe 'MetroSystem', ->
     stationData = [
@@ -22,7 +23,7 @@ describe 'MetroSystem', ->
     ]
     system = null
     beforeEach ->
-        system = new MetroSystem(stationData, new EventQueue)
+        system = new MetroSystem(stationData)
 
     describe 'constructor', ->
         it 'should create the correct number of station connections', ->
@@ -63,8 +64,44 @@ describe 'MetroSystem', ->
             expect(system.nextConnectionForTrain(train, new StationConnection)).to.equal(null)
 
     describe 'onConnectionExit', ->
-        it 'should pass it to the next westward train if the train is heading west'
-        it 'should pass it to the next eastward train if the train is heading east'
-        it 'should trigger a train:finish if the train is westward, with no more stations'
-        it 'should trigger a train:finish if the train is eastward, with no more stations'
+        stubEvent = (direction, connection) ->
+            new Backbone.Model(
+                name: 'train:exit'
+                timestamp: 0
+                data:
+                    connection: connection
+                    station: new Backbone.Model
+                    train: new Train(direction: direction)
+            )
 
+        beforeEach ->
+            connection1 = new StationConnection()
+            connection2 = new StationConnection()
+            connection1.off()
+            connection2.off()
+            system.connections = [ connection1, connection2 ]
+            EventQueueSingleton.reset()
+
+        it 'should pass it to the next westward station if the train is heading west', ->
+            event = stubEvent(Directions.WEST, system.connections[0])
+            system.onConnectionExit(event)
+            expect(EventQueueSingleton.length).to.equal(1)
+            expect(EventQueueSingleton.first().get('name')).to.equal('train:arrive')
+            expect(EventQueueSingleton.first().get('data').connection).to.equal(system.connections[1])
+
+        it 'should pass it to the next eastward train if the train is heading east', ->
+            event = stubEvent(Directions.EAST, system.connections[1])
+            system.onConnectionExit(event)
+            expect(EventQueueSingleton.length).to.equal(1)
+            expect(EventQueueSingleton.first().get('name')).to.equal('train:arrive')
+            expect(EventQueueSingleton.first().get('data').connection).to.equal(system.connections[0])
+
+        it 'should trigger a train:finish if the train is westward, with no more stations', ->
+            event = stubEvent(Directions.EAST, system.connections[0])
+            system.onConnectionExit(event)
+            expect(EventQueueSingleton.length).to.equal(0)
+
+        it 'should trigger a train:finish if the train is eastward, with no more stations', ->
+            event = stubEvent(Directions.WEST, system.connections[1])
+            system.onConnectionExit(event)
+            expect(EventQueueSingleton.length).to.equal(0)
