@@ -11,6 +11,8 @@ class MetroSystem
         @connections = [ @stationConnectionFactory(index) for index in [1..@stationData.length-1]]
 
     stationConnectionFactory: (index) ->
+        # TODO: Set the between station time "timeBetweenStations" from @stationData
+
         new StationConnection(
             eastStation: @stationData[index - 1]
             westStation: @stationData[index]
