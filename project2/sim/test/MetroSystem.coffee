@@ -7,27 +7,44 @@ MetroSystem = require '../coffee/MetroSystem'
 EventQueueSingleton = require '../coffee/EventQueueSingleton'
 
 describe 'MetroSystem', ->
-    stationData = [
-        {
-            code: 'A',
-            name: 'A Station',
-            timeToNextEasternStation: 2.0,
-            timeToNextWesternStation: null,
-        },
-        {
-            code: 'B',
-            name: 'B Station',
-            timeToNextEasternStation: null,
-            timeToNextWesternStation: 2.1
-        }
-    ]
     system = null
     beforeEach ->
+        stationData = [
+            {
+                code: 'A',
+                name: 'A Station',
+                timeFromNextEasternStation: 2.0,
+                timeFromNextWesternStation: null,
+            },
+            {
+                code: 'B',
+                name: 'B Station',
+                timeFromNextEasternStation: null,
+                timeFromNextWesternStation: 2.1
+            }
+        ]
         system = new MetroSystem(stationData)
 
     describe 'constructor', ->
         it 'should create the correct number of station connections', ->
             expect(system.connections.length).to.equal(1)
+
+    describe 'stationConnectionFactory', ->
+        it 'should average the two values if they are both non-null', ->
+            system.stationData[0].timeFromNextEasternStation = 1
+            system.stationData[1].timeFromNextWesternStation = 2
+            expect(system.stationConnectionFactory(1).timeBetweenStations).to.be.closeTo(1.5, 0.001);
+
+        it 'should just use the timeFromNextEasternStation if no western is provided', ->
+            system.stationData[0].timeFromNextEasternStation = 1
+            system.stationData[1].timeFromNextWesternStation = null
+            expect(system.stationConnectionFactory(1).timeBetweenStations).to.be.closeTo(1, 0.001);
+        
+        it 'should just use the timeFromNextWesternStation if no eastern is provided', ->
+            system.stationData[0].timeFromNextEasternStation = null
+            system.stationData[1].timeFromNextWesternStation = 1
+            expect(system.stationConnectionFactory(1).timeBetweenStations).to.be.closeTo(1, 0.001);
+
 
     describe 'nextConnectionForTrain', ->
         connection1 = new StationConnection()

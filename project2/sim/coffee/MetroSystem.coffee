@@ -11,11 +11,21 @@ class MetroSystem
         @connections = [ @stationConnectionFactory(index) for index in [1..@stationData.length-1]]
 
     stationConnectionFactory: (index) ->
-        # TODO: Set the between station time "timeBetweenStations" from @stationData
+        eastwardTime = @stationData[index - 1].timeFromNextEasternStation
+        westwardTime = @stationData[index].timeFromNextWesternStation
+
+        timeBetweenStations = 0
+        if eastwardTime? and westwardTime?
+            timeBetweenStations = (eastwardTime + westwardTime) / 2
+        else if eastwardTime?
+            timeBetweenStations = eastwardTime
+        else
+            timeBetweenStations = westwardTime
 
         new StationConnection(
             eastStation: @stationData[index - 1]
             westStation: @stationData[index]
+            timeBetweenStations: timeBetweenStations
         )
 
     onConnectionExit: (event) ->
