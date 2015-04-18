@@ -147,28 +147,28 @@ describe 'StationConnection', ->
 
     describe 'onTrainArrived', ->
         it 'should push a train if its heading east and the station matches the western station', ->
-            train = new Train(direction: Directions.EAST)
-            connection.onTrainArrived(train, westStation)
+            event = stubEvent(connection, new Train(direction: Directions.EAST), westStation)
+            connection.onTrainArrived(event)
             expect(connection.get('eastwardTrack').length).to.equal(1)
 
         it 'should push a train if its heading west and the station matches the eastern station', ->
-            train = new Train(direction: Directions.WEST)
-            connection.onTrainArrived(train, eastStation)
+            event = stubEvent(connection, new Train(direction: Directions.WEST), eastStation)
+            connection.onTrainArrived(event)
             expect(connection.get('westwardTrack').length).to.equal(1)
 
         it 'should not push a train if the station matches the west but is heading the wrong direction', ->
-            train = new Train(direction: Directions.WEST)
-            connection.onTrainArrived(train, westStation)
+            event = stubEvent(connection, new Train(direction: Directions.WEST), westStation)
+            connection.onTrainArrived(event)
             expect(connection.get('westwardTrack').length).to.equal(0)
         
         it 'should not push a train if the station matches the east but is heading the wrong direction', ->
-            train = new Train(direction: Directions.EAST)
-            connection.onTrainArrived(train, eastStation)
+            event = stubEvent(connection, new Train(direction: Directions.EAST), eastStation)
+            connection.onTrainArrived(event)
             expect(connection.get('eastwardTrack').length).to.equal(0)
 
         it 'should not push a train if the station mismatches', ->
-            train = new Train(direction: Directions.EAST)
-            connection.onTrainArrived(train, new Station)
+            event = stubEvent(connection, new Train(direction: Directions.EAST), new Station)
+            connection.onTrainArrived(event)
             expect(connection.get('eastwardTrack').length).to.equal(0)
 
     describe 'onConnectionEnter', ->
