@@ -233,7 +233,7 @@ describe 'StationConnection', ->
             expect(EventQueueSingleton.first().get('data').train).to.equal(train)
             expect(connection.get('eastwardTrack').length).to.equal(0)
 
-    describe 'canForwardTrain', ->
+    describe 'preferredTrackForTrain', ->
         setConnectionState = (options) ->
             train = new Train(direction: options.direction)
             connection.get('eastwardTrack').isOccupied = -> options.eastwardTrackStatus
@@ -244,18 +244,18 @@ describe 'StationConnection', ->
 
         it 'should return true if the train is eastward and the the eastward track is unoccupied', ->
             train = setConnectionState(direction: Directions.EAST, eastwardTrackStatus: false, westwardTrackStatus: true, tracksDisabled: 0)
-            expect(connection.canForwardTrain(train)).to.equal(true)
+            expect(connection.preferredTrackForTrain(train)).to.equal(connection.get('eastwardTrack'))
 
         it 'should return true if the train is westward and the westward track is unoccupied, with no disabled tracks', ->
             train = setConnectionState(direction: Directions.WEST, eastwardTrackStatus: true, westwardTrackStatus: false, tracksDisabled: 0)
-            expect(connection.canForwardTrain(train)).to.equal(true)
+            expect(connection.preferredTrackForTrain(train)).to.equal(connection.get('westwardTrack'))
 
         it 'should return true if the train is westward and the eastward track is unoccupied with a single disabled track', ->
             train = setConnectionState(direction: Directions.WEST, eastwardTrackStatus: false, westwardTrackStatus: true, tracksDisabled: 1)
-            expect(connection.canForwardTrain(train)).to.equal(true)
+            expect(connection.preferredTrackForTrain(train)).to.equal(connection.get('eastwardTrack'))
 
         it 'should return false if there are no tracks available', ->
             train = setConnectionState(direction: Directions.WEST, eastwardTrackStatus: false, westwardTrackStatus: false, tracksDisabled: 2)
-            expect(connection.canForwardTrain(train)).to.equal(false)
+            expect(connection.preferredTrackForTrain(train)).to.equal(null)
             train.set('direction', Directions.EAST)
-            expect(connection.canForwardTrain(train)).to.equal(false)
+            expect(connection.preferredTrackForTrain(train)).to.equal(null)
