@@ -241,7 +241,6 @@ describe 'StationConnection', ->
             connection.set('tracksDisabled', options.tracksDisabled)
             return train
 
-
         it 'should return true if the train is eastward and the the eastward track is unoccupied', ->
             train = setConnectionState(direction: Directions.EAST, eastwardTrackStatus: false, westwardTrackStatus: true, tracksDisabled: 0)
             expect(connection.preferredTrackForTrain(train)).to.equal(connection.get('eastwardTrack'))
