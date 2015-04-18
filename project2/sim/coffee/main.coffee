@@ -10,23 +10,33 @@ MetroSystem = require './MetroSystem'
 MetroSystemView = require './MetroSystemView'
 Time = require './Time'
 
-stubWestEvent = (timestamp, metroSystem) ->
+stubEvent = (timestamp, metroSystem, direction) ->
     timestamp = timestamp + Math.random()
+
+    station = metroSystem.stationData[0]
+    connection = metroSystem.connections[0]
+    track = connection.get('westwardTrack')
+    if direction is Directions.EAST
+        station = metroSystem.stationData[metroSystem.stationData.length - 1]
+        connection = metroSystem.connections[metroSystem.connections.length - 1]
+        track = connection.get('eastwardTrack')
+
     return new Backbone.Model(
         timestamp: timestamp
         name: 'train:arrive'
         data:
             train: new Train(
-                direction: Directions.WEST
+                direction: direction
                 line: 'BL'
             )
-            station: metroSystem.stationData[0]
-            connection: metroSystem.connections[0]
-            track: metroSystem.connections[0].get('westwardTrack')
+            station: station
+            connection: connection
+            track: track
     )
 
 pushTrains = (metroSystem) ->
-    events = (stubWestEvent(timestamp, metroSystem) for timestamp in [1..121] by 60)
+    events = (stubEvent(timestamp, metroSystem, Directions.WEST) for timestamp in [1..421] by 10)
+    Array.prototype.push.apply(events, (stubEvent(timestamp, metroSystem, Directions.EAST) for timestamp in [1..421] by 10))
     EventQueueSingleton.push event for event in events
     return events
 
