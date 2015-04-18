@@ -18,6 +18,7 @@ stubEvent = (timestamp, metroSystem) ->
         data:
             train: new Train(
                 direction: Directions.WEST
+                line: 'BL'
             )
             station: metroSystem.stationData[0]
             connection: metroSystem.connections[0]

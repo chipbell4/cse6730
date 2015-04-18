@@ -12,6 +12,14 @@ class Train extends Backbone.Model
         )
 
     figureOutPosition: (currentTimestamp) ->
+        missing = []
+        if not @has('connection')
+            missing.push 'CONNECTION'
+        if not @has('previousStation')
+            missing.push 'PREVIOUS STATION'
+        if not @has('nextStation')
+            missing.push 'NEXT STATION'
+
         if not @has('connection') or not @has('previousStation') or not @has('nextStation')
             @set(
                 latitude: 0
