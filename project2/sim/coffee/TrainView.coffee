@@ -17,7 +17,7 @@ class TrainView extends Backbone.View
         )
 
     render: () ->
-        console.log 'Rerendering ' + @model.cid
+        console.log('Rerendering at ' + @model.get('latitude') + ', ' + @model.get('longitude'))
         @marker.setLatLng([ @model.get('latitude'), @model.get('longitude') ])
 
 module.exports = TrainView
