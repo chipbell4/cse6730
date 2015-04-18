@@ -5,7 +5,7 @@ StationConnectionView = require './StationConnectionView'
 # A class for rendering the full metro system
 ###
 class MetroSystemView extends Backbone.View
-    initialize: () ->
+    initialize: (options) ->
         @map = options.map
 
         @stationMarkers = (@markerFactory(station) for station in @model.stationData)
