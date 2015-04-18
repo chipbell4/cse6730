@@ -18,7 +18,7 @@ stubEvent = (timestamp, metroSystem) ->
         data:
             train: new Train(
                 direction: Directions.WEST
-                line: 'SV'
+                line: 'BL'
             )
             station: metroSystem.stationData[0]
             connection: metroSystem.connections[0]
@@ -26,7 +26,7 @@ stubEvent = (timestamp, metroSystem) ->
     )
 
 pushTrains = (metroSystem) ->
-    events = (stubEvent(timestamp, metroSystem) for timestamp in [1..1200] by 60)
+    events = (stubEvent(timestamp, metroSystem) for timestamp in [1..120] by 60)
     EventQueueSingleton.push event for event in events
     return events
 
@@ -49,7 +49,8 @@ $ ->
 
     printEvent = (event) ->
         console.log(event.get('name') + ' ' + event.get('timestamp'))
-        console.log(' ' + event.get('data').train.cid)
+        console.log(' Train ' + event.get('data').train.cid)
+        console.log(' Connecton ' + event.get('data').connection)
 
     doAStep = ->
         events = EventQueueSingleton.emitNextAt(Time.current())
