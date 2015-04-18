@@ -34,6 +34,11 @@ describe 'Train', ->
             expect(train.get('latitude')).to.be.closeTo(2, 0.01)
             expect(train.get('longitude')).to.be.closeTo(0, 0.01)
 
+        it 'should clamp to 1 if greater than 1', ->
+            train.interpolatePosition(station1, station2, 1.5)
+            expect(train.get('latitude')).to.be.closeTo(2, 0.01)
+            expect(train.get('longitude')).to.be.closeTo(0, 0.01)
+
         it 'should only throw one change event', ->
             callCount = 0
             train.on('change', () ->

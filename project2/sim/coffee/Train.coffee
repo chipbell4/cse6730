@@ -2,6 +2,9 @@ Backbone = require 'backbone'
 
 class Train extends Backbone.Model
     interpolatePosition: (station1, station2, percent) ->
+        if percent > 1
+            percent = 1
+
         latitude1 = station1.get('latitude')
         longitude1 = station1.get('longitude')
         latitude2 = station2.get('latitude')
