@@ -7,6 +7,7 @@ MapView = require './MapView.coffee'
 Train = require './Train'
 MetroSystem = require './MetroSystem'
 MetroSystemView = require './MetroSystemView'
+Time = require './Time'
 
 stubEvent = (timestamp, metroSystem) ->
     timestamp = timestamp + Math.random()
@@ -39,8 +40,8 @@ $ ->
     Time.reset()
 
     doAStep = ->
-        evt = EventQueueSingleton.emitNextAt(Time.current())
-        console.log evt
+        events = EventQueueSingleton.emitNextAt(Time.current())
+        console.log event.get('name') for event in events
         Time.step()
         setTimeout(doAStep, 1000)
 
