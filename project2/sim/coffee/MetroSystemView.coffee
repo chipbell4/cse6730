@@ -27,3 +27,5 @@ class MetroSystemView extends Backbone.View
             model: connection
             map: @map
         )
+
+module.exports = MetroSystemView
