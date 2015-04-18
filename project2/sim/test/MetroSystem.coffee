@@ -33,17 +33,17 @@ describe 'MetroSystem', ->
         it 'should average the two values if they are both non-null', ->
             system.stationData[0].timeFromNextEasternStation = 1
             system.stationData[1].timeFromNextWesternStation = 2
-            expect(system.stationConnectionFactory(1).timeBetweenStations).to.be.closeTo(1.5, 0.001);
+            expect(system.stationConnectionFactory(1).get('timeBetweenStations')).to.be.closeTo(1.5, 0.001);
 
         it 'should just use the timeFromNextEasternStation if no western is provided', ->
             system.stationData[0].timeFromNextEasternStation = 1
             system.stationData[1].timeFromNextWesternStation = null
-            expect(system.stationConnectionFactory(1).timeBetweenStations).to.be.closeTo(1, 0.001);
+            expect(system.stationConnectionFactory(1).get('timeBetweenStations')).to.be.closeTo(1, 0.001);
         
         it 'should just use the timeFromNextWesternStation if no eastern is provided', ->
             system.stationData[0].timeFromNextEasternStation = null
             system.stationData[1].timeFromNextWesternStation = 1
-            expect(system.stationConnectionFactory(1).timeBetweenStations).to.be.closeTo(1, 0.001);
+            expect(system.stationConnectionFactory(1).get('timeBetweenStations')).to.be.closeTo(1, 0.001);
 
 
     describe 'nextConnectionForTrain', ->

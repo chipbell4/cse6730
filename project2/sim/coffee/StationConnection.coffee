@@ -5,77 +5,74 @@ Directions = require './Directions.coffee'
 TrackSegment = require './TrackSegment.coffee'
 
 class StationConnection extends Backbone.Model
-    constructor: (options = {}) ->
-        options.eastStation ?= new Station
-        options.westStation ?= new Station
-        options.timeBetweenStations ?= 2
-        @eastStation = options.eastStation
-        @westStation = options.westStation
-        @timeBetweenStations = options.timeBetweenStations
-        @eastwardTrack = new TrackSegment
-        @westwardTrack = new TrackSegment
-        @waitingTrack = new TrackSegment
-        @tracksDisabled = 0
-        
+    defaults: () ->
+        {
+            eastwardTrack: new TrackSegment
+            westwardTrack: new TrackSegment
+            waitingTrack: new TrackSegment
+            tracksDisabled: 0
+        }
+
+    initialize: (options = {}) ->
         # wire up events
         @listenTo(EventQueueSingleton, 'train:arrive', @onTrainArrived)
         @listenTo(EventQueueSingleton, 'train:enter', @onConnectionEnter)
         @listenTo(EventQueueSingleton, 'train:exit', @onConnectionExit)
 
     disableTrack: () ->
-        @tracksDisabled += 1
-        if @tracksDisabled > 2
-            @tracksDisabled = 2
+        @set('tracksDisabled', @get('tracksDisabled') + 1)
+        if @get('tracksDisabled') > 2
+            @set('tracksDisabled', 2)
         @realignTrains()
 
     enableTrack: () ->
-        @tracksDisabled -= 1
-        if @tracksDisabled < 0
-            @tracksDisabled = 0
+        @set('tracksDisabled', @get('tracksDisabled') - 1)
+        if @get('tracksDisabled') < 0
+            @set('tracksDisabled', 0)
         @realignTrains()
 
     enqueueTrain: (train) ->
-        @waitingTrack.add train
+        @get('waitingTrack').add train
         @realignTrains()
 
     realignTrains: () ->
         # First, push all trains to the waiting track. We'll decide whether or not to split from there
-        @waitingTrack.add @eastwardTrack.toJSON()
-        @waitingTrack.add @westwardTrack.toJSON()
-        @eastwardTrack.reset()
-        @westwardTrack.reset()
+        @get('waitingTrack').add @get('eastwardTrack').toJSON()
+        @get('waitingTrack').add @get('westwardTrack').toJSON()
+        @get('eastwardTrack').reset()
+        @get('westwardTrack').reset()
 
         # If no tracks are available, there's nothing left to do
-        if @tracksDisabled is 2
+        if @get('tracksDisabled') is 2
             return
 
-        splitTrains = @waitingTrack.splitByDirection()
+        splitTrains = @get('waitingTrack').splitByDirection()
 
         # regardless, since a SINGLE track is at least available, we know that the eastbound trains get to use the
         # eastbound track
-        @eastwardTrack.add(splitTrains.east.toJSON())
+        @get('eastwardTrack').add(splitTrains.east.toJSON())
         
         # if we have a single track, the eastbound track will also take the west bound
-        if @tracksDisabled is 1
-            @eastwardTrack.add(splitTrains.west.toJSON())
+        if @get('tracksDisabled') is 1
+            @get('eastwardTrack').add(splitTrains.west.toJSON())
         # otherwise, west can handle itself (since both tracks are available)
         else
-            @westwardTrack.add(splitTrains.west.toJSON())
+            @get('westwardTrack').add(splitTrains.west.toJSON())
         
-        @waitingTrack.reset()
+        @get('waitingTrack').reset()
 
     releaseNextTrain: (direction) ->
-        if @tracksDisabled == 2
+        if @get('tracksDisabled') == 2
             return
-        if @tracksDisabled == 1 or direction is Directions.EAST
-            return @eastwardTrack.shift()
+        if @get('tracksDisabled') == 1 or direction is Directions.EAST
+            return @get('eastwardTrack').shift()
         if direction is Directions.WEST
-            return @westwardTrack.shift()
+            return @get('westwardTrack').shift()
 
     onTrainArrived: (train, station) ->
-        if train.get('direction') == Directions.EAST and station.get('code') == @westStation.get('code')
+        if train.get('direction') == Directions.EAST and station.get('code') == @get('westStation').get('code')
             @enqueueTrain(train)
-        else if train.get('direction') == Directions.WEST and station.get('code') == @eastStation.get('code')
+        else if train.get('direction') == Directions.WEST and station.get('code') == @get('eastStation').get('code')
             @enqueueTrain(train)
 
     onConnectionEnter: (event) ->
@@ -84,7 +81,7 @@ class StationConnection extends Backbone.Model
 
         exitEvent = event.clone()
         exitEvent.set('name', 'train:exit')
-        exitEvent.set('timestamp', event.get('timestamp') + @timeBetweenStations)
+        exitEvent.set('timestamp', event.get('timestamp') + @get('timeBetweenStations'))
         EventQueueSingleton.add(exitEvent)
 
     onConnectionExit: (event) ->
@@ -93,16 +90,16 @@ class StationConnection extends Backbone.Model
         train = event.get('data').train
         if connection isnt @
             return
-        if station isnt @eastStation and station isnt @westStation
+        if station isnt @get('eastStation') and station isnt @get('westStation')
             return
-        if @tracksDisabled is 2
+        if @get('tracksDisabled') is 2
             return
 
         nextTrain = undefined
-        if train.get('direction') is Directions.WEST and @tracksDisabled is 0
-            nextTrain = @westwardTrack.shift()
+        if train.get('direction') is Directions.WEST and @get('tracksDisabled') is 0
+            nextTrain = @get('westwardTrack').shift()
         else
-            nextTrain = @eastwardTrack.shift()
+            nextTrain = @get('eastwardTrack').shift()
 
         # Push a new event with the next train, but at the same timestamp
         newEvent = event.clone()
