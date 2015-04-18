@@ -43,7 +43,7 @@ $ ->
 
     doAStep = ->
         events = EventQueueSingleton.emitNextAt(Time.current())
-        console.log event.get('name') for event in events
+        console.log event.toJSON() for event in events
         Time.step()
         setTimeout(doAStep, 1000)
 
