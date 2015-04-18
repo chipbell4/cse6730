@@ -151,19 +151,24 @@ describe 'StationConnection', ->
             connection.preferredTrackForTrain = -> null
 
         it 'should not push a train if its not the same connection', ->
-            event = stubEvent(connection, new Train(direction: Directions.EAST), westStation)
-
-        it 'should push a train if its heading east and the station matches the western station', ->
             event = stubEvent(new StationConnection, new Train(direction: Directions.EAST), westStation)
-            connection.onTrainArrived(event)
             expect(connection.get('eastwardTrack').length).to.equal(0)
             expect(connection.get('westwardTrack').length).to.equal(0)
             expect(connection.get('waitingTrack').length).to.equal(0)
 
-        it 'should push a train if its heading west and the station matches the eastern station', ->
+        it 'should push a train if its heading east and the connection matches', ->
+            event = stubEvent(connection, new Train(direction: Directions.EAST), westStation)
+            connection.onTrainArrived(event)
+            expect(connection.get('eastwardTrack').length).to.equal(1)
+            expect(connection.get('westwardTrack').length).to.equal(0)
+            expect(connection.get('waitingTrack').length).to.equal(0)
+
+        it 'should push a train if its heading west and the connection matches', ->
             event = stubEvent(connection, new Train(direction: Directions.WEST), eastStation)
             connection.onTrainArrived(event)
             expect(connection.get('westwardTrack').length).to.equal(1)
+            expect(connection.get('eastwardTrack').length).to.equal(0)
+            expect(connection.get('waitingTrack').length).to.equal(0)
 
     describe 'onConnectionEnter', ->
         it 'should emit an event with the same train, but at a later time', ->
