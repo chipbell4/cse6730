@@ -37,8 +37,8 @@ class StationConnection extends Backbone.Model
 
     realignTrains: () ->
         # First, push all trains to the waiting track. We'll decide whether or not to split from there
-        @get('waitingTrack').add @get('eastwardTrack').toJSON()
-        @get('waitingTrack').add @get('westwardTrack').toJSON()
+        @get('waitingTrack').add @get('eastwardTrack').toArray()
+        @get('waitingTrack').add @get('westwardTrack').toArray()
         @get('eastwardTrack').reset()
         @get('westwardTrack').reset()
 
