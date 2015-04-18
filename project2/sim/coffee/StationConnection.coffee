@@ -77,6 +77,8 @@ class StationConnection extends Backbone.Model
         else if train.get('direction') == Directions.WEST and station.get('code') == @get('eastStation').get('code')
             @enqueueTrain(train)
 
+        console.log 'Train arrived between ' + @get('eastStation').get('name') + ' ' + @get('westStation').get('name')
+
         track = @preferredTrackForTrain(train)
         if track?
             event.get('data').track = track
@@ -104,6 +106,7 @@ class StationConnection extends Backbone.Model
             enterTime: event.get('timestamp')
             connection: @
         )
+        console.log 'Entering train for ' + event.get('data').train.cid
 
         exitEvent = event.clone()
         exitEvent.set('name', 'train:exit')
