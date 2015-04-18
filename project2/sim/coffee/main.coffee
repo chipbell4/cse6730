@@ -28,6 +28,8 @@ stubEvent = (timestamp, metroSystem) ->
 pushTrains = (metroSystem) ->
     events = (stubEvent(timestamp, metroSystem) for timestamp in [1..120] by 60)
     EventQueueSingleton.push event for event in events
+    console.log('TOTAL TRAINS: ')
+    console.log EventQueueSingleton.map((event) -> event.get('data').train.cid)
     return events
 
 $ ->
