@@ -117,8 +117,6 @@ class StationConnection extends Backbone.Model
         if station isnt @get('eastStation') and station isnt @get('westStation')
             return
 
-        console.log 'Exiting train'
-
         # free up the track
         track.occupy(null)
 
