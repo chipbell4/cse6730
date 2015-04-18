@@ -15,6 +15,9 @@ class MetroSystem
         # Build a list of connections from the station object list
         @connections = ( @stationConnectionFactory(index) for index in [1..@stationData.length-1])
 
+        # Wire up events
+        EventQueueSingleton.listenTo('train:exit', @onConnectionExit.bind(@))
+
     stationConnectionFactory: (index) ->
         eastwardTime = @stationData[index - 1].get('timeFromNextEasternStation')
         westwardTime = @stationData[index].get('timeFromNextWesternStation')
