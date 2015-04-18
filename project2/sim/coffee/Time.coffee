@@ -11,8 +11,8 @@ Time =
     ###
     # Steps forward a second
     ###
-    step: ->
-        currentTime += 1
+    step: (stepSize = 1) ->
+        currentTime += stepSize
         @trigger('time:step', currentTime)
         currentTime
 
