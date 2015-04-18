@@ -148,7 +148,7 @@ describe 'StationConnection', ->
 
     describe 'onTrainArrived', ->
         beforeEach ->
-            connection.canForwardTrain = -> false
+            connection.preferredTrackForTrain = -> null
         it 'should push a train if its heading east and the station matches the western station', ->
             event = stubEvent(connection, new Train(direction: Directions.EAST), westStation)
             connection.onTrainArrived(event)

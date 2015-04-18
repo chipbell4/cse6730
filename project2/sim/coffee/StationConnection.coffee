@@ -77,7 +77,9 @@ class StationConnection extends Backbone.Model
         else if train.get('direction') == Directions.WEST and station.get('code') == @get('eastStation').get('code')
             @enqueueTrain(train)
 
-        if @canForwardTrain(train)
+        track = @preferredTrackForTrain(train)
+        if track?
+            event.get('data').track = track
             @onConnectionExit(event)
 
     onConnectionEnter: (event) ->
