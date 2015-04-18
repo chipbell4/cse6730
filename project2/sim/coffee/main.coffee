@@ -37,7 +37,6 @@ stubEvent = (timestamp, metroSystem, direction) ->
 pushTrains = (metroSystem) ->
     events = (stubEvent(timestamp, metroSystem, Directions.WEST) for timestamp in [1..421] by 10)
     Array.prototype.push.apply(events, (stubEvent(timestamp, metroSystem, Directions.EAST) for timestamp in [1..421] by 10))
-    console.log events.length
     EventQueueSingleton.push event for event in events
     return events
 
