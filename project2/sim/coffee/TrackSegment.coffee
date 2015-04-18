@@ -32,4 +32,13 @@ class TrackSegment extends Backbone.Collection
 
         return splitTrains
 
+    occupy: (train) ->
+        if train?
+            @occupyingTrain = train
+        else
+            delete @occupyingTrain
+
+    isOccupied: () ->
+        @occupyingTrain?
+
 module.exports = TrackSegment

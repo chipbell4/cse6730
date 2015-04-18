@@ -50,3 +50,23 @@ describe 'TrackSegment', ->
             result = trackSegment.splitByDirection()
             expect(result.east.length).to.equal(0)
             expect(result.west.length).to.equal(1)
+
+    describe 'occupy', ->
+        it 'should by default not have an occupying train', ->
+            expect(trackSegment.isOccupied()).to.equal(false)
+            expect(trackSegment.occupyingTrain).to.equal(undefined)
+
+        it 'should save the train on the track segment', ->
+            train = new Train
+            trackSegment.occupy(train)
+            expect(trackSegment.isOccupied()).to.equal(true)
+            expect(trackSegment.occupyingTrain).to.equal(train)
+
+        it 'should remove the train if it is called with nothing', ->
+            train = new Train
+            trackSegment.occupy(train)
+            trackSegment.occupy(null)
+            expect(trackSegment.isOccupied()).to.equal(false)
+            expect(trackSegment.occupyingTrain).to.equal(undefined)
+
+
