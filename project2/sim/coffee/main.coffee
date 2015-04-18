@@ -59,7 +59,7 @@ $ ->
 
     doAStep = ->
         events = EventQueueSingleton.emitNextAt(Time.current())
-        Time.step()
+        Time.step(2)
         setTimeout(doAStep, 1000 / 1000)
 
     doAStep()
