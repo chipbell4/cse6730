@@ -5,8 +5,8 @@ class StationConnectionView extends Backbone.View
         @map = options.map
 
         positions = [
-            [@model.eastStation.get('latitude'), @model.eastStation.get('longitude')],
-            [@model.westStation.get('latitude'), @model.westStation.get('longitude')]
+            [@model.get('eastStation').get('latitude'), @model.get('eastStation').get('longitude')],
+            [@model.get('westStation').get('latitude'), @model.get('westStation').get('longitude')]
         ]
 
         @line = L.polyline(positions,
