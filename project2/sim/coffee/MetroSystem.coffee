@@ -1,5 +1,6 @@
 Backbone = require 'backbone'
 Directions = require './Directions'
+Station = require './Station'
 StationConnection = require './StationConnection'
 EventQueueSingleton = require './EventQueueSingleton'
 
@@ -8,11 +9,15 @@ EventQueueSingleton = require './EventQueueSingleton'
 ###
 class MetroSystem
     constructor: (@stationData) ->
+        # Map to an array of station objects
+        @stationData = (new Station(station) for station in @stationData)
+
+        # Build a list of connections from the station object list
         @connections = [ @stationConnectionFactory(index) for index in [1..@stationData.length-1]]
 
     stationConnectionFactory: (index) ->
-        eastwardTime = @stationData[index - 1].timeFromNextEasternStation
-        westwardTime = @stationData[index].timeFromNextWesternStation
+        eastwardTime = @stationData[index - 1].get('timeFromNextEasternStation')
+        westwardTime = @stationData[index].get('timeFromNextWesternStation')
 
         timeBetweenStations = 0
         if eastwardTime? and westwardTime?
