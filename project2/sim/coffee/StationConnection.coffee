@@ -142,7 +142,7 @@ class StationConnection extends Backbone.Model
             nextTrack = @get('westwardTrack')
         else
             nextTrain = @get('eastwardTrack').shift()
-            nextTrack = @get('westwardTrack')
+            nextTrack = @get('eastwardTrack')
 
          # if there is no next train, just wait for the next
          if not nextTrain?
