@@ -74,6 +74,7 @@ class StationConnection extends Backbone.Model
         station = event.get('data').station
         if event.get('data').connection isnt @
             return
+
         @enqueueTrain(train)
 
         # Go ahead and push the train through, if it's the only remaining train
