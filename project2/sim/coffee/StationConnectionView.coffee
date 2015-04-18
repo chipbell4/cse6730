@@ -23,3 +23,5 @@ class StationConnectionView extends Backbone.View
         @line.setStyle(
             color: color
         )
+
+module.exports = StationConnectionView
