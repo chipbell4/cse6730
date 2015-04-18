@@ -9,6 +9,7 @@ class TrainView extends Backbone.View
         @marker = L.circle([ @model.get('latitude'), @model.get('longitude') ], 40,
             color: Colors[@model.get('line')]
             fillColor: Colors[@model.get('line')]
+            opacity: 1
         )
         @marker.addTo(@map)
 
