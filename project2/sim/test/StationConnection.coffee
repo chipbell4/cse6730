@@ -233,7 +233,6 @@ describe 'StationConnection', ->
             expect(connection.get('eastwardTrack').length).to.equal(0)
 
     describe 'canForwardTrain', ->
-        
         setConnectionState = (options) ->
             train = new Train(direction: options.direction)
             connection.get('eastwardTrack').isOccupied = -> options.eastwardTrackStatus
