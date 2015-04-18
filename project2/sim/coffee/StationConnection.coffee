@@ -75,6 +75,11 @@ class StationConnection extends Backbone.Model
         if event.get('data').connection isnt @
             return
 
+        isRosslyn = false
+        if @get('westStation').get('code') is 'C05'
+            isRosslyn = true
+            console.log 'Rosslyn connector received'
+
         @enqueueTrain(train)
 
         # Go ahead and push the train through, if it's the only remaining train
