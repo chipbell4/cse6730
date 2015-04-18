@@ -18,6 +18,7 @@ describe 'StationConnection', ->
                 connection: connection
                 train: train
                 station: station
+                track: connection.get('eastwardTrack')
         )
     beforeEach ->
         EventQueueSingleton.reset()

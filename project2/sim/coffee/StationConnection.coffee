@@ -84,6 +84,9 @@ class StationConnection extends Backbone.Model
         if event.get('data').connection isnt @
             return
 
+        # mark the track as unavailable
+        event.get('data').track.occupy(event.get('data').train)
+
         # Mark the train's neighboring stations
         if event.get('data').train.get('direction') is Directions.EAST
             event.get('data').train.set('previousStation', @westStation)
@@ -98,25 +101,38 @@ class StationConnection extends Backbone.Model
         EventQueueSingleton.add(exitEvent)
 
     onConnectionExit: (event) ->
+        # pluck data off of the event
         connection = event.get('data').connection
         station = event.get('data').station
         train = event.get('data').train
+        track = event.get('data').track
+        
+        # now decide if the next train can be pushed along?
         if connection isnt @
             return
         if station isnt @get('eastStation') and station isnt @get('westStation')
             return
+
+        # free up the track
+        track.occupy(null)
+
         if @get('tracksDisabled') is 2
             return
+        
+        # clone the existing event. We're going to 
+        newEvent = event.clone()
 
         nextTrain = undefined
+        nextTrack = undefined
         if train.get('direction') is Directions.WEST and @get('tracksDisabled') is 0
             nextTrain = @get('westwardTrack').shift()
+            nextTrack = @get('westwardTrack')
         else
             nextTrain = @get('eastwardTrack').shift()
+            nextTrack = @get('westwardTrack')
 
         # Push a new event with the next train, but at the same timestamp
-        newEvent = event.clone()
-        newEvent.set('train', nextTrain)
+        newEvent.set(train: nextTrain, track: nextTrack)
         EventQueueSingleton.add(newEvent)
 
     canForwardTrain: (train) ->
