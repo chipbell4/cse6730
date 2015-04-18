@@ -13,7 +13,7 @@ stubEvent = (timestamp, metroSystem) ->
     timestamp = timestamp + Math.random()
     return new Backbone.Model(
         timestamp: timestamp
-        name: 'train:arrived'
+        name: 'train:arrive'
         data:
             train: new Train(
                 direction: Directions.WEST
