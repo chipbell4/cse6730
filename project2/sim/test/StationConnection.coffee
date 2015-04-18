@@ -186,7 +186,6 @@ describe 'StationConnection', ->
             connection.onConnectionEnter(event)
             expect(EventQueueSingleton.length).to.equal(0)
 
-
     describe 'onConnectionExit', ->
         it 'should enqueue nothing if the connection mismatches', ->
             anotherConnection = new StationConnection(
@@ -230,4 +229,3 @@ describe 'StationConnection', ->
             expect(EventQueueSingleton.length).to.equal(1)
             expect(EventQueueSingleton.first().get('train')).to.equal(train)
             expect(connection.get('eastwardTrack').length).to.equal(0)
-
