@@ -38,6 +38,7 @@ class MetroSystem
 
     onConnectionExit: (event) ->
         eventData = event.get('data')
+        console.log 'Metro System catches train leaving: ' + event.get('data').train.cid
         nextConnection = @nextConnectionForTrain(eventData.train, eventData.connection)
 
         if not nextConnection?

@@ -74,13 +74,14 @@ class StationConnection extends Backbone.Model
         station = event.get('data').station
         if event.get('data').connection isnt @
             return
-        if train.get('direction') == Directions.EAST and station.get('code') == @get('westStation').get('code')
-            @enqueueTrain(train)
-        else if train.get('direction') == Directions.WEST and station.get('code') == @get('eastStation').get('code')
-            @enqueueTrain(train)
+        @enqueueTrain(train)
 
+        # Go ahead and push the train through, if it's the only remaining train
         track = @preferredTrackForTrain(train)
         if track?
+            console.log track.toJSON()
+        if track? and track.length is 1
+            console.log 'Pushing train ' + train.cid
             event.get('data').track = track
             track.shift()
             @onConnectionEnter(event)
@@ -108,9 +109,16 @@ class StationConnection extends Backbone.Model
             connection: @
         )
 
-        exitEvent = event.clone()
-        exitEvent.set('name', 'train:exit')
-        exitEvent.set('timestamp', event.get('timestamp') + @get('timeBetweenStations'))
+        exitEvent = new Backbone.Model(
+            name: 'train:exit'
+            timestamp: event.get('timestamp') + @get('timeBetweenStations')
+            data:
+                station: nextStation
+                connection: @
+                train: event.get('data').train
+                track: event.get('data').track
+        )
+        console.log 'Scheduling exit for train ' + exitEvent.get('data').train.cid
         EventQueueSingleton.add(exitEvent)
 
     onConnectionExit: (event) ->
@@ -123,8 +131,7 @@ class StationConnection extends Backbone.Model
         # now decide if the next train can be pushed along?
         if connection isnt @
             return
-        if station isnt @get('eastStation') and station isnt @get('westStation')
-            return
+        console.log 'Exit for train ' + event.get('data').train.cid
 
         # free up the track
         track.occupy(null)
@@ -132,9 +139,6 @@ class StationConnection extends Backbone.Model
         if @get('tracksDisabled') is 2
             return
         
-        # clone the existing event. We're going to 
-        newEvent = event.clone()
-
         nextTrain = undefined
         nextTrack = undefined
         if train.get('direction') is Directions.WEST and @get('tracksDisabled') is 0
@@ -149,11 +153,15 @@ class StationConnection extends Backbone.Model
              return
 
         # Push a new event with the next train entering the connection, but at the same timestamp
-        data = newEvent.get('data')
-        data.train = nextTrain
-        data.track = nextTrack
-        newEvent.set('name', 'train:enter')
-        EventQueueSingleton.add(newEvent)
+        EventQueueSingleton.add(
+            name: 'train:enter'
+            timestamp: event.get('timestamp')
+            data:
+                train: nextTrain
+                track: nextTrack
+                connection: @
+                station: event.get('station')
+        )
 
     preferredTrackForTrain: (train) ->
         if @get('tracksDisabled') is 2
