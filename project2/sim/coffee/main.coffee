@@ -38,7 +38,7 @@ $ ->
     metroSystemView = new MetroSystemView(
         model: metroSystem
         map: map.map
-    ) 
+    )
 
     events = pushTrains(metroSystem)
 

@@ -72,21 +72,28 @@ class StationConnection extends Backbone.Model
     onTrainArrived: (event) ->
         train = event.get('data').train
         station = event.get('data').station
+        if event.get('data').connection isnt @
+            return
         if train.get('direction') == Directions.EAST and station.get('code') == @get('westStation').get('code')
             @enqueueTrain(train)
         else if train.get('direction') == Directions.WEST and station.get('code') == @get('eastStation').get('code')
             @enqueueTrain(train)
 
-        console.log 'Train arrived between ' + @get('eastStation').get('name') + ' ' + @get('westStation').get('name')
+        console.log 'Train arrived between ' + @toString() + ' at ' + event.get('timestamp')
+        console.log 'Event ID: ' + event.cid
 
         track = @preferredTrackForTrain(train)
         if track?
+            console.log 'Moving train in directly'
             event.get('data').track = track
-            @onConnectionExit(event)
+            event.get('data').train = train.clone()
+            track.shift()
+            @onConnectionEnter(event)
 
     onConnectionEnter: (event) ->
         if event.get('data').connection isnt @
             return
+
 
         # mark the track as unavailable
         event.get('data').track.occupy(event.get('data').train)
@@ -106,7 +113,8 @@ class StationConnection extends Backbone.Model
             enterTime: event.get('timestamp')
             connection: @
         )
-        console.log 'Entering train for ' + event.get('data').train.cid
+        console.log 'Entering ' + @toString() + ' at ' + event.get('timestamp') + ' with train ' + event.get('data').train.cid
+        console.log 'Exiting at ' + @get('timeBetweenStations') + event.get('timestamp')
 
         exitEvent = event.clone()
         exitEvent.set('name', 'train:exit')
@@ -119,12 +127,14 @@ class StationConnection extends Backbone.Model
         station = event.get('data').station
         train = event.get('data').train
         track = event.get('data').track
-        
+
         # now decide if the next train can be pushed along?
         if connection isnt @
             return
         if station isnt @get('eastStation') and station isnt @get('westStation')
             return
+
+        console.log 'Exiting ' + @toString()
 
         # free up the track
         track.occupy(null)
@@ -166,5 +176,8 @@ class StationConnection extends Backbone.Model
             else if @get('tracksDisabled') is 1 and not @get('eastwardTrack').isOccupied()
                 return @get('eastwardTrack')
         return null
+
+    toString: () ->
+        @get('eastStation').get('name') + ' to ' + @get('westStation').get('name')
 
 module.exports = StationConnection
