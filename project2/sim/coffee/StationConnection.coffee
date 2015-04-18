@@ -119,4 +119,16 @@ class StationConnection extends Backbone.Model
         newEvent.set('train', nextTrain)
         EventQueueSingleton.add(newEvent)
 
+    canForwardTrain: (train) ->
+        if @get('tracksDisabled') is 2
+            return false
+        else if train.get('direction') is Directions.EAST and not @get('eastwardTrack').isOccupied()
+            return true
+        else if train.get('direction') is Directions.WEST
+            if @get('tracksDisabled') is 0 and not @get('westwardTrack').isOccupied()
+                return true
+            else if @get('tracksDisabled') is 1 and not @get('eastwardTrack').isOccupied()
+                return true
+        return false
+
 module.exports = StationConnection
