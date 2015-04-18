@@ -146,6 +146,8 @@ describe 'StationConnection', ->
             expect(connection.get('eastwardTrack').length).to.equal(0)
 
     describe 'onTrainArrived', ->
+        beforeEach ->
+            connection.canForwardTrain = -> false
         it 'should push a train if its heading east and the station matches the western station', ->
             event = stubEvent(connection, new Train(direction: Directions.EAST), westStation)
             connection.onTrainArrived(event)
