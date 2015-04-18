@@ -5,6 +5,7 @@ EventQueueSingleton = require './EventQueueSingleton'
 Directions = require './Directions'
 MapView = require './MapView.coffee'
 Train = require './Train'
+TrainView = require './TrainView'
 MetroSystem = require './MetroSystem'
 MetroSystemView = require './MetroSystemView'
 Time = require './Time'
@@ -26,6 +27,7 @@ stubEvent = (timestamp, metroSystem) ->
 pushTrains = (metroSystem) ->
     events = (stubEvent(timestamp, metroSystem) for timestamp in [1..100] by 2)
     EventQueueSingleton.push event for event in events
+    return events
 
 $ ->
     map = new MapView(
@@ -38,7 +40,9 @@ $ ->
         map: map.map
     ) 
 
-    pushTrains(metroSystem)
+    events = pushTrains(metroSystem)
+
+    new TrainView(model: event.get('data').train, map: map.map) for event in events
 
     Time.reset()
 
