@@ -19,6 +19,8 @@ stubEvent = (timestamp, metroSystem) ->
                 direction: Directions.WEST
             )
             station: metroSystem.stationData[0]
+            connection: metroSystem.connections[0]
+            track: metroSystem.connections[0].get('westwardTrack')
     )
 
 pushTrains = (metroSystem) ->
