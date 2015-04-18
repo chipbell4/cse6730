@@ -86,14 +86,12 @@ class StationConnection extends Backbone.Model
         if track?
             console.log 'Moving train in directly'
             event.get('data').track = track
-            event.get('data').train = train.clone()
             track.shift()
             @onConnectionEnter(event)
 
     onConnectionEnter: (event) ->
         if event.get('data').connection isnt @
             return
-
 
         # mark the track as unavailable
         event.get('data').track.occupy(event.get('data').train)
@@ -102,19 +100,20 @@ class StationConnection extends Backbone.Model
         previousStation = null
         nextStation = null
         if event.get('data').train.get('direction') is Directions.EAST
-            previousStation = @westStation
-            nextStation = @eastStation
+            previousStation = @get('westStation')
+            nextStation = @get('eastStation')
         else
-            previousStation = @eastStation
-            nextStation = @westStation
+            previousStation = @get('eastStation')
+            nextStation = @get('westStation')
         event.get('data').train.set(
             previousStation: previousStation
             nextStation: nextStation
             enterTime: event.get('timestamp')
             connection: @
         )
+        console.log('Data set for train ' + event.get('data').train.cid)
         console.log 'Entering ' + @toString() + ' at ' + event.get('timestamp') + ' with train ' + event.get('data').train.cid
-        console.log 'Exiting at ' + @get('timeBetweenStations') + event.get('timestamp')
+        console.log 'Exiting at ' + (@get('timeBetweenStations') + event.get('timestamp'))
 
         exitEvent = event.clone()
         exitEvent.set('name', 'train:exit')
