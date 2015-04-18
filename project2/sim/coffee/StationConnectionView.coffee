@@ -13,6 +13,14 @@ class StationConnectionView extends Backbone.View
             color: 'green'
         ).addTo(@map)
 
+        @line.on('click', @onLineClicked.bind(@))
+
+
+    onLineClicked: () ->
+        currentTracksDisabled = @model.get('tracksDisabled')
+        @model.set('tracksDisabled', (currentTracksDisabled + 1) % 3)
+        @render
+
     render: () ->
         color = 'green'
         if @model.get('tracksDisabled') is 1
