@@ -89,13 +89,15 @@ class StationConnection extends Backbone.Model
         # mark the track as unavailable
         event.get('data').track.occupy(event.get('data').train)
 
-        # Mark the train's neighboring stations
+        # Mark the train's neighboring stations, and enter time
         if event.get('data').train.get('direction') is Directions.EAST
             event.get('data').train.set('previousStation', @westStation)
             event.get('data').train.set('nextStation', @eastStation)
         else
             event.get('data').train.set('previousStation', @eastStation)
             event.get('data').train.set('nextStation', @westStation)
+        event.get('data').train.set('enterTime', event.get('timestamp'))
+        event.get('data').train.set('connection', @)
 
         exitEvent = event.clone()
         exitEvent.set('name', 'train:exit')
