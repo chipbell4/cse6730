@@ -13,9 +13,9 @@ class MetroSystemView extends Backbone.View
         @connectionViews = (@connectionViewFactory(connection) for connection in @model.connections)
 
     markerFactory: (station) ->
-        circle = L.circle([station.get('latitude'), station.get('longitude')], 50,
-            color: 'red',
-            fillColor: '#f03',
+        circle = L.circle([station.get('latitude'), station.get('longitude')], 20,
+            color: 'white',
+            fillColor: '#fff',
             fillOpacity: 0.5
         ).addTo(@map)
 
