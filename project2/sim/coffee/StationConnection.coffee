@@ -50,14 +50,14 @@ class StationConnection extends Backbone.Model
 
         # regardless, since a SINGLE track is at least available, we know that the eastbound trains get to use the
         # eastbound track
-        @get('eastwardTrack').add(splitTrains.east.toJSON())
+        @get('eastwardTrack').add(splitTrains.east.toArray())
         
         # if we have a single track, the eastbound track will also take the west bound
         if @get('tracksDisabled') is 1
-            @get('eastwardTrack').add(splitTrains.west.toJSON())
+            @get('eastwardTrack').add(splitTrains.west.toArray())
         # otherwise, west can handle itself (since both tracks are available)
         else
-            @get('westwardTrack').add(splitTrains.west.toJSON())
+            @get('westwardTrack').add(splitTrains.west.toArray())
         
         @get('waitingTrack').reset()
 
