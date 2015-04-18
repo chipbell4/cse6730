@@ -75,19 +75,11 @@ class StationConnection extends Backbone.Model
         if event.get('data').connection isnt @
             return
 
-        isRosslyn = false
-        if @get('westStation').get('code') is 'C05'
-            isRosslyn = true
-            console.log 'Rosslyn connector received'
-
         @enqueueTrain(train)
 
         # Go ahead and push the train through, if it's the only remaining train
         track = @preferredTrackForTrain(train)
-        if track?
-            console.log track.toJSON()
         if track? and track.length is 1
-            console.log 'Pushing train ' + train.cid
             event.get('data').track = track
             track.shift()
             @onConnectionEnter(event)
@@ -124,7 +116,6 @@ class StationConnection extends Backbone.Model
                 train: event.get('data').train
                 track: event.get('data').track
         )
-        console.log 'Scheduling exit for train ' + exitEvent.get('data').train.cid
         EventQueueSingleton.add(exitEvent)
 
     onConnectionExit: (event) ->
@@ -137,7 +128,6 @@ class StationConnection extends Backbone.Model
         # now decide if the next train can be pushed along?
         if connection isnt @
             return
-        console.log 'Exit for train ' + event.get('data').train.cid
 
         # free up the track
         track.occupy(null)
