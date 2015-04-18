@@ -77,6 +77,9 @@ class StationConnection extends Backbone.Model
         else if train.get('direction') == Directions.WEST and station.get('code') == @get('eastStation').get('code')
             @enqueueTrain(train)
 
+        # TODO: How to know when to push the first train (train:enter). Trains arrive, but never get pushed into the
+        # tunnel. How does the connection know when to do this?
+
     onConnectionEnter: (event) ->
         if event.get('data').connection isnt @
             return
