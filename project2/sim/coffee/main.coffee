@@ -10,7 +10,7 @@ MetroSystem = require './MetroSystem'
 MetroSystemView = require './MetroSystemView'
 Time = require './Time'
 
-stubEvent = (timestamp, metroSystem) ->
+stubWestEvent = (timestamp, metroSystem) ->
     timestamp = timestamp + Math.random()
     return new Backbone.Model(
         timestamp: timestamp
@@ -26,7 +26,7 @@ stubEvent = (timestamp, metroSystem) ->
     )
 
 pushTrains = (metroSystem) ->
-    events = (stubEvent(timestamp, metroSystem) for timestamp in [1..121] by 60)
+    events = (stubWestEvent(timestamp, metroSystem) for timestamp in [1..121] by 60)
     EventQueueSingleton.push event for event in events
     return events
 
