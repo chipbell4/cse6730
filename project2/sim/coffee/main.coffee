@@ -24,7 +24,8 @@ stubEvent = (timestamp, metroSystem) ->
     )
 
 pushTrains = (metroSystem) ->
-    EventQueueSingleton.push(stubEvent(timestamp, metroSystem)) for timestamp in [1..100] by 2
+    events = (stubEvent(timestamp, metroSystem) for timestamp in [1..100] by 2)
+    EventQueueSingleton.push event for event in events
 
 $ ->
     map = new MapView(
