@@ -43,9 +43,9 @@ class MetroSystem
         if not nextConnection?
             return
 
-        arrivingStation = nextConnection.eastStation
-        if eventData.train.get('direction') is Directions.EAST
-            arrivingStation = nextConnection.westStation
+        arrivingStation = nextConnection.get('eastStation')
+        if eventData.train.get('direction') is Directions.WEST
+            arrivingStation = nextConnection.get('westStation')
 
         EventQueueSingleton.add(
             name: 'train:arrive'
