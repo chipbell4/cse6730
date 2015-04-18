@@ -113,6 +113,8 @@ class StationConnection extends Backbone.Model
         if station isnt @get('eastStation') and station isnt @get('westStation')
             return
 
+        console.log 'Exiting train'
+
         # free up the track
         track.occupy(null)
 
@@ -131,8 +133,15 @@ class StationConnection extends Backbone.Model
             nextTrain = @get('eastwardTrack').shift()
             nextTrack = @get('westwardTrack')
 
-        # Push a new event with the next train, but at the same timestamp
-        newEvent.set(train: nextTrain, track: nextTrack)
+         # if there is no next train, just wait for the next
+         if not nextTrain?
+             return
+
+        # Push a new event with the next train entering the connection, but at the same timestamp
+        data = newEvent.get('data')
+        data.train = nextTrain
+        data.track = nextTrack
+        newEvent.set('name', 'train:enter')
         EventQueueSingleton.add(newEvent)
 
     canForwardTrain: (train) ->

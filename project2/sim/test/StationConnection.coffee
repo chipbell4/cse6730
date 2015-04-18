@@ -213,7 +213,7 @@ describe 'StationConnection', ->
             connection.get('westwardTrack').push(train)
             connection.onConnectionExit(stubEvent(connection, new Train(direction: Directions.WEST), westStation))
             expect(EventQueueSingleton.length).to.equal(1)
-            expect(EventQueueSingleton.first().get('train')).to.equal(train)
+            expect(EventQueueSingleton.first().get('data').train).to.equal(train)
             expect(connection.get('westwardTrack').length).to.equal(0)
 
         it 'should dequeue the eastward train if an eastward train was released and no lines are blocked', ->
@@ -221,7 +221,7 @@ describe 'StationConnection', ->
             connection.get('eastwardTrack').push(train)
             connection.onConnectionExit(stubEvent(connection, new Train, eastStation))
             expect(EventQueueSingleton.length).to.equal(1)
-            expect(EventQueueSingleton.first().get('train')).to.equal(train)
+            expect(EventQueueSingleton.first().get('data').train).to.equal(train)
             expect(connection.get('eastwardTrack').length).to.equal(0)
 
         it 'should dequeue the first available train if only a single lane is available', ->
@@ -230,7 +230,7 @@ describe 'StationConnection', ->
             connection.get('eastwardTrack').push(train)
             connection.onConnectionExit(stubEvent(connection, new Train, westStation))
             expect(EventQueueSingleton.length).to.equal(1)
-            expect(EventQueueSingleton.first().get('train')).to.equal(train)
+            expect(EventQueueSingleton.first().get('data').train).to.equal(train)
             expect(connection.get('eastwardTrack').length).to.equal(0)
 
     describe 'canForwardTrain', ->
