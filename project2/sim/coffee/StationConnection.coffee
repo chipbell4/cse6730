@@ -79,6 +79,14 @@ class StationConnection extends Backbone.Model
         if event.get('data').connection isnt @
             return
 
+        # Mark the train's neighboring stations
+        if event.get('data').train.get('direction') is Directions.EAST
+            event.get('data').train.set('previousStation', @westStation)
+            event.get('data').train.set('nextStation', @eastStation)
+        else
+            event.get('data').train.set('previousStation', @eastStation)
+            event.get('data').train.set('nextStation', @westStation)
+
         exitEvent = event.clone()
         exitEvent.set('name', 'train:exit')
         exitEvent.set('timestamp', event.get('timestamp') + @get('timeBetweenStations'))
