@@ -1,3 +1,4 @@
+_ = require 'underscore'
 Random = require './Random.coffee'
 Time = require './Time.coffee'
 
@@ -10,7 +11,9 @@ class Emitter
     # Creates a new emitter, passing the event queue, the type to emit, and an object describing the histogram, with a
     # pdf, min, and max keys
     ###
-    constructor: (@eventQueue, @emitType,  @histogram) ->
+    constructor: (options) ->
+        { @eventQueue, @histogram } = options
+
         sum = (array) ->
             array.reduce( ((a,b) -> a + b), 0 )
         indices = [0..@histogram.pdf.length]
@@ -19,7 +22,7 @@ class Emitter
         @histogram.cdf = indices.map((index) -> sum(pdf[..index]))
 
     ###
-    # Chooses a bin randomly, based on the histgram's cdf
+    # Chooses a bin randomly, based on the histogram's cdf
     ###
     chooseBinRandomly: () ->
         r = Random.random()
@@ -55,18 +58,6 @@ class Emitter
     # Triggers the next item given the current timestamp
     ###
     emitNext: () ->
-        timestamp = Time.current() + @sampleHistogram()
-        
-        item = new @emitType(
-            arrivalTime: timestamp
-        )
-
-        @eventQueue.add(
-            data: item
-            name: 'item:arrived'
-            timestamp: timestamp
-        )
-
-        return timestamp
+        return Time.current() + @sampleHistogram()
 
 module.exports = Emitter
