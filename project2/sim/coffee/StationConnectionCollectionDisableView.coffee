@@ -1,5 +1,6 @@
 _ = require 'underscore'
 Backbone = require 'backbone'
+Time = require './Time'
 
 ###
 # Long name, but essentially renders a colleciton of station connections so that the user can disable/enable tracks
@@ -15,6 +16,8 @@ class StationConnectionCollectionDisableView extends Backbone.View
             connection.set('tracksDisabled', 2)
         else
             connection.set('tracksDisabled', 1)
+
+        connection.awakenLines(Time.current())
 
     render: () ->
         # Generate a checkbox for each station, and dump them all as html onto the element
