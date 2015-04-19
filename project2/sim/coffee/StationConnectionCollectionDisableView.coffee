@@ -23,7 +23,7 @@ class StationConnectionCollectionDisableView extends Backbone.View
     # Renders a single train connection display from a template. Essentially builds a checkbox
     ###
     renderSingleConnection: (connection) ->
-        templateFunc = _.template '<input type="checkbox" value="<%= cid %>"><%= name %><br/>'
+        templateFunc = _.template '<label><input type="checkbox" value="<%= cid %>"> <%= name %></label><br/>'
         return templateFunc(
             cid: connection.cid
             name: connection.toString()
