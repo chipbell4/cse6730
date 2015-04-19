@@ -8,6 +8,7 @@ Train = require './Train'
 TrainView = require './TrainView'
 MetroSystem = require './MetroSystem'
 MetroSystemView = require './MetroSystemView'
+SimulationSpeedView = require './SimulationSpeedView'
 Time = require './Time'
 
 stubEvent = (timestamp, metroSystem, direction) ->
@@ -57,9 +58,13 @@ $ ->
 
     Time.reset()
 
+    simulationSpeed = new SimulationSpeedView(
+        el: $('#simulation-speed')
+    )
+
     doAStep = ->
         events = EventQueueSingleton.emitNextAt(Time.current())
         Time.step(2)
-        setTimeout(doAStep, 1000 / 1000)
+        setTimeout(doAStep, 1000 / simulationSpeed.currentSpeed)
 
     doAStep()
