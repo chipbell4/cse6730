@@ -152,6 +152,11 @@ class StationConnection extends Backbone.Model
             return @get('eastwardTrack') if @get('tracksDisabled') is 1 and not @get('eastwardTrack').isOccupied()
         return null
 
+    ###
+    # If a line is blocked but then reopened, waiting trains may not have an event to trigger them to enter the connection.
+    ###
+    awakenLines: () ->
+
     toString: () ->
         @get('eastStation').get('name') + ' to ' + @get('westStation').get('name')
 

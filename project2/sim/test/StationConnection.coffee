@@ -254,3 +254,14 @@ describe 'StationConnection', ->
             expect(connection.preferredTrackForTrain(train)).to.equal(null)
             train.set('direction', Directions.EAST)
             expect(connection.preferredTrackForTrain(train)).to.equal(null)
+
+    describe 'awakenLines', ->
+        it 'should do nothing if all lines are blocked'
+
+        it 'should release only an east line train if one line is blocked'
+
+        it 'should release an east and west line train if no lines are blocked'
+
+        it 'should not release an east bound train if there are no more trains'
+
+        it 'should not release a west bound train if there are no more trains'
