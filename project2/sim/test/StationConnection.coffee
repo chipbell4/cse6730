@@ -1,4 +1,8 @@
-expect = require('chai').expect
+sinon = require 'sinon'
+chai = require 'chai'
+chai.use(require 'sinon-chai')
+expect = chai.expect
+
 Train = require '../coffee/Train'
 Backbone = require 'backbone'
 Station = require '../coffee/Station'
@@ -255,13 +259,39 @@ describe 'StationConnection', ->
             train.set('direction', Directions.EAST)
             expect(connection.preferredTrackForTrain(train)).to.equal(null)
 
-    describe 'awakenLines', ->
-        it 'should do nothing if all lines are blocked'
+    describe 'canAwakenInDirection', ->
+        it 'should return false regardless of direction if no lines are free', ->
+            connection.set('tracksDisabled', 2)
+            expect(connection.canAwakenInDirection(Directions.EAST)).to.equal(false)
+            expect(connection.canAwakenInDirection(Directions.WEST)).to.equal(false)
 
-        it 'should release only an east line train if one line is blocked'
+        it 'should return true if the direction is east and the east line is free', ->
+            connection.set('tracksDisabled', 0)
+            connection.get('eastwardTrack').isOccupied = () -> false
+            expect(connection.canAwakenInDirection(Directions.EAST)).to.equal(true)
 
-        it 'should release an east and west line train if no lines are blocked'
+        it 'should return false if the direciton is east but the east line is not free', ->
+            connection.set('tracksDisabled', 0)
+            connection.get('eastwardTrack').isOccupied = () -> true
+            expect(connection.canAwakenInDirection(Directions.EAST)).to.equal(false)
 
-        it 'should not release an east bound train if there are no more trains'
+        it 'should return true if the direction is west and the west line is free, with no tracks blocked', ->
+            connection.set('tracksDisabled', 0)
+            connection.get('westwardTrack').isOccupied = () -> false
+            expect(connection.canAwakenInDirection(Directions.WEST)).to.equal(true)
 
-        it 'should not release a west bound train if there are no more trains'
+        it 'should return true if the direction is west and east line is free, with one track blocked', ->
+            connection.set('tracksDisabled', 1)
+            connection.get('westwardTrack').isOccupied = () -> true
+            connection.get('eastwardTrack').isOccupied = () -> false
+            expect(connection.canAwakenInDirection(Directions.WEST)).to.equal(true)
+
+        it 'should return false if the direction is west and west line is blocked with no tracks blocked', ->
+            connection.set('tracksDisabled', 0)
+            connection.get('westwardTrack').isOccupied = () -> true
+            expect(connection.canAwakenInDirection(Directions.WEST)).to.equal(false)
+
+        it 'should return false if the diretion is west and the east line is blocked with one track blocked', ->
+            connection.set('tracksDisabled', 1)
+            connection.get('eastwardTrack').isOccupied = () -> true
+            expect(connection.canAwakenInDirection(Directions.WEST)).to.equal(false)

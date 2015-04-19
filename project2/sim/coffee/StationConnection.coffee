@@ -155,7 +155,36 @@ class StationConnection extends Backbone.Model
     ###
     # If a line is blocked but then reopened, waiting trains may not have an event to trigger them to enter the connection.
     ###
-    awakenLines: () ->
+    awakenLines: (timestamp) ->
+        if @canAwakenInDirection(Directions.EAST)
+            event = new Backbone.Model(
+                name: 'train:enter'
+                timestamp: timestamp
+                data:
+                    train: @get('eastwardTrack').shift()
+                    connection: @
+                    track: @get('eastwardTrack')
+            )
+            @onConnectionEnter(event)
+
+        if @canAwakenInDirection(Directions.WEST)
+            preferredTrack = @preferredTrackForTrain(new Backbone.Model(direction: Directions.WEST))
+            event = new Backbone.Model(
+                name: 'train:enter'
+                timestamp: timestamp
+                data:
+                    train: preferredTrack.shift()
+                    connection: @
+                    track: preferredTrack
+            )
+            @onConnectionEnter(event)
+
+    ###
+    # Decides if a direction is free to be awakened, i.e. starting trains on that line again
+    ###
+    canAwakenInDirection: (direction) ->
+        track = @preferredTrackForTrain(new Backbone.Model(direction: direction))
+        return track?
 
     toString: () ->
         @get('eastStation').get('name') + ' to ' + @get('westStation').get('name')
