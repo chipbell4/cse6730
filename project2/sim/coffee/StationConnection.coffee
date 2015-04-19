@@ -132,6 +132,7 @@ class StationConnection extends Backbone.Model
 
         # if there is no next train, just wait for the next
         return if not nextTrain?
+        return if not nextTrack?
 
         # Push a new event with the next train entering the connection, but at the same timestamp
         EventQueueSingleton.add(
