@@ -12,10 +12,26 @@ SimulationSpeedView = require './SimulationSpeedView'
 Time = require './Time'
 StationConnectionCollectionDisableView = require './StationConnectionCollectionDisableView'
 HistogramView = require './HistogramView'
+Emitter = require './Emitter'
+ArrivalData = require './arrival_data'
+
+generateTimestampList = (direction) ->
+   emitter = new Emitter(
+       eventQueue: EventQueueSingleton
+       histogram: ArrivalData[direction]
+   )
+
+   timestamps = []
+   latestTimestamp = 0
+   # for 10 hours
+   while latestTimestamp < 10 * 60 * 10
+       latestTimestamp = emitter.emitNext(latestTimestamp)
+       timestamps.push(latestTimestamp)
+
+   return timestamps
+
 
 stubEvent = (timestamp, metroSystem, direction) ->
-    timestamp = timestamp + Math.random()
-
     station = metroSystem.stationData[0]
     connection = metroSystem.connections[0]
     track = connection.get('westwardTrack')
@@ -30,7 +46,6 @@ stubEvent = (timestamp, metroSystem, direction) ->
         data:
             train: new Train(
                 direction: direction
-                line: 'BL'
             )
             station: station
             connection: connection
@@ -38,10 +53,13 @@ stubEvent = (timestamp, metroSystem, direction) ->
     )
 
 pushTrains = (metroSystem) ->
-    events = (stubEvent(timestamp, metroSystem, Directions.WEST) for timestamp in [1..421] by 10)
-    Array.prototype.push.apply(events, (stubEvent(timestamp, metroSystem, Directions.EAST) for timestamp in [1..421] by 10))
-    EventQueueSingleton.push event for event in events
-    return events
+    westwardTimestamps = generateTimestampList(Directions.WEST)
+    eastwardTimestamps = generateTimestampList(Directions.EAST)
+
+    EventQueueSingleton.push stubEvent(timestamp, metroSystem, Directions.WEST) for timestamp in westwardTimestamps
+    EventQueueSingleton.push stubEvent(timestamp, metroSystem, Directions.EAST) for timestamp in eastwardTimestamps
+
+    return EventQueueSingleton.toArray()
 
 $ ->
     map = new MapView(
