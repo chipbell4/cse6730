@@ -10,6 +10,8 @@ MetroSystem = require './MetroSystem'
 MetroSystemView = require './MetroSystemView'
 SimulationSpeedView = require './SimulationSpeedView'
 Time = require './Time'
+EventLog = require './EventLog'
+EventLogView = require './EventLogView'
 
 stubEvent = (timestamp, metroSystem, direction) ->
     timestamp = timestamp + Math.random()
@@ -61,6 +63,14 @@ $ ->
     # Allow the user to update simulation speed on the fly
     simulationSpeed = new SimulationSpeedView(
         el: $('#simulation-speed')
+    )
+
+    # Log events
+    log = new EventLog()
+    log.watchEventQueue(EventQueueSingleton)
+    logView = new EventLogView(
+        collection: log
+        el: $('#event-log')
     )
 
     doAStep = ->
