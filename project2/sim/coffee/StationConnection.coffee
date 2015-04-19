@@ -43,8 +43,7 @@ class StationConnection extends Backbone.Model
         @get('westwardTrack').reset()
 
         # If no tracks are available, there's nothing left to do
-        if @get('tracksDisabled') is 2
-            return
+        return if @get('tracksDisabled') is 2
 
         splitTrains = @get('waitingTrack').splitByDirection()
 
@@ -62,18 +61,14 @@ class StationConnection extends Backbone.Model
         @get('waitingTrack').reset()
 
     releaseNextTrain: (direction) ->
-        if @get('tracksDisabled') == 2
-            return
-        if @get('tracksDisabled') == 1 or direction is Directions.EAST
-            return @get('eastwardTrack').shift()
-        if direction is Directions.WEST
-            return @get('westwardTrack').shift()
+        return if @get('tracksDisabled') == 2
+        return @get('eastwardTrack').shift() if @get('tracksDisabled') == 1 or direction is Directions.EAST
+        return @get('westwardTrack').shift() if direction is Directions.WEST
 
     onTrainArrived: (event) ->
         train = event.get('data').train
         station = event.get('data').station
-        if event.get('data').connection isnt @
-            return
+        return if event.get('data').connection isnt @
 
         @enqueueTrain(train)
 
@@ -85,8 +80,7 @@ class StationConnection extends Backbone.Model
             @onConnectionEnter(event)
 
     onConnectionEnter: (event) ->
-        if event.get('data').connection isnt @
-            return
+        return if event.get('data').connection isnt @
 
         # mark the track as unavailable
         event.get('data').track.occupy(event.get('data').train)
@@ -126,21 +120,18 @@ class StationConnection extends Backbone.Model
         track = event.get('data').track
 
         # now decide if the next train can be pushed along?
-        if connection isnt @
-            return
+        return if connection isnt @
 
         # free up the track
         track.occupy(null)
 
-        if @get('tracksDisabled') is 2
-            return
+        return if @get('tracksDisabled') is 2
         
         nextTrack = @preferredTrackForTrain(train)
         nextTrain = @releaseNextTrain(train.get('direction'))
 
-         # if there is no next train, just wait for the next
-        if not nextTrain?
-            return
+        # if there is no next train, just wait for the next
+        return if not nextTrain?
 
         # Push a new event with the next train entering the connection, but at the same timestamp
         EventQueueSingleton.add(
@@ -154,15 +145,11 @@ class StationConnection extends Backbone.Model
         )
 
     preferredTrackForTrain: (train) ->
-        if @get('tracksDisabled') is 2
-            return null
-        else if train.get('direction') is Directions.EAST and not @get('eastwardTrack').isOccupied()
-            return @get('eastwardTrack')
-        else if train.get('direction') is Directions.WEST
-            if @get('tracksDisabled') is 0 and not @get('westwardTrack').isOccupied()
-                return @get('westwardTrack')
-            else if @get('tracksDisabled') is 1 and not @get('eastwardTrack').isOccupied()
-                return @get('eastwardTrack')
+        return null if @get('tracksDisabled') is 2
+        return @get('eastwardTrack') if train.get('direction') is Directions.EAST and not @get('eastwardTrack').isOccupied()
+        if train.get('direction') is Directions.WEST
+            return @get('westwardTrack') if @get('tracksDisabled') is 0 and not @get('westwardTrack').isOccupied()
+            return @get('eastwardTrack') if @get('tracksDisabled') is 1 and not @get('eastwardTrack').isOccupied()
         return null
 
     toString: () ->
