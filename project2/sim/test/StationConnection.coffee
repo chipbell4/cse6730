@@ -228,7 +228,7 @@ describe 'StationConnection', ->
             train = new Train(direction: Directions.EAST)
             connection.set('tracksDisabled', 1)
             connection.get('eastwardTrack').push(train)
-            connection.onConnectionExit(stubEvent(connection, new Train, westStation))
+            connection.onConnectionExit(stubEvent(connection, new Train(direction: Directions.WEST), westStation))
             expect(EventQueueSingleton.length).to.equal(1)
             expect(EventQueueSingleton.first().get('data').train).to.equal(train)
             expect(connection.get('eastwardTrack').length).to.equal(0)
