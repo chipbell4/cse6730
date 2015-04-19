@@ -58,6 +58,7 @@ $ ->
 
     Time.reset()
 
+    # Allow the user to update simulation speed on the fly
     simulationSpeed = new SimulationSpeedView(
         el: $('#simulation-speed')
     )
