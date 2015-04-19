@@ -44,11 +44,11 @@ class EventLogView extends Backbone.View
     # Redraws the view, by pretty printing ALL events into the log container
     ###
     render: ->
-        filterText = @filterText
+        filterText = @filterText.toLowerCase()
         logString = @collection.filter((event) ->
-            inName = event.get('name').indexOf(filterText) > -1
-            inTrain = event.get('data').train.cid.indexOf(filterText) > -1
-            inConnection = event.get('data').connection.toString().indexOf(filterText) > -1
+            inName = event.get('name').toLowerCase().indexOf(filterText) > -1
+            inTrain = event.get('data').train.cid.toLowerCase().indexOf(filterText) > -1
+            inConnection = event.get('data').connection.toString().toLowerCase().indexOf(filterText) > -1
             return inName or inTrain or inConnection
         ).map(@singleEventAsString).join('\n')
 
