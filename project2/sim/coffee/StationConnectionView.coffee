@@ -11,19 +11,15 @@ class StationConnectionView extends Backbone.View
 
         @line = L.polyline(positions,
             color: 'green'
-            weight: 8
+            weight: 10
         ).addTo(@map)
 
-        @line.on('click', @onLineClicked.bind(@))
+        @rebindPopup()
+        @listenTo(@model, 'change:tracksDisabled', @rebindPopup)
 
-
-    onLineClicked: () ->
-        if @model.get('tracksDisabled') is 2
-            @model.set('tracksDisabled', 1)
-        if @model.get('tracksDisabled') is 1
-            @model.set('tracksDisabled', 2)
-        console.log 'At ' + @model.toString() + ' tracks disabled are ' + @model.get('tracksDisabled')
-        @render()
+    rebindPopup: () ->
+        @line.unbindPopup()
+        @line.bindPopup(@model.toString() + ' has ' + @model.get('tracksDisabled') + ' track(s) disabled')
 
     render: () ->
         color = 'green'
