@@ -12,6 +12,7 @@ SimulationSpeedView = require './SimulationSpeedView'
 Time = require './Time'
 EventLog = require './EventLog'
 EventLogView = require './EventLogView'
+StationConnectionCollectionDisableView = require './StationConnectionCollectionDisableView'
 
 stubEvent = (timestamp, metroSystem, direction) ->
     timestamp = timestamp + Math.random()
@@ -64,6 +65,13 @@ $ ->
     simulationSpeed = new SimulationSpeedView(
         el: $('#simulation-speed')
     )
+
+    # Allow the user to disable tracks on the fly
+    disableView = new StationConnectionCollectionDisableView(
+        collection: metroSystem.connections
+        el: $('#track-disabling-control')
+    )
+    disableView.render()
 
     # Log events
     log = new EventLog()
