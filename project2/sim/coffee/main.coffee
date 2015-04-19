@@ -68,7 +68,7 @@ $ ->
 
     # Allow the user to disable tracks on the fly
     disableView = new StationConnectionCollectionDisableView(
-        collection: metroSystem.connections
+        collection: new Backbone.Collection(metroSystem.connections)
         el: $('#track-disabling-control')
     )
     disableView.render()
