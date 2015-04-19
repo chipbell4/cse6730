@@ -19,9 +19,9 @@ class Train extends Backbone.Model
 
     initialize: () ->
         if @get('direction') is Directions.EAST
-            @set('color', @sampleFromTrainColorDistribution([0.237652, 0.350751, 0.411597]))
-        else if @get('direction') is Directions.EAST
-            @set('color', @sampleFromTrainColorDistribution([0.274308, 0.374703, 0.350988]))
+            @set('line', @sampleFromTrainColorDistribution([0.237652, 0.350751, 0.411597]))
+        else if @get('direction') is Directions.WEST
+            @set('line', @sampleFromTrainColorDistribution([0.274308, 0.374703, 0.350988]))
 
     interpolatePosition: (station1, station2, percent) ->
         if percent > 1
