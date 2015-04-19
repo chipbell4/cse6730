@@ -9,8 +9,12 @@ class StationConnectionCollectionDisableView extends Backbone.View
     events:
         'click input[type=checkbox]' : 'toggleTrackAvailability'
 
-    toggleTrackAvailability: () ->
-        console.log 'TOGGLE!'
+    toggleTrackAvailability: (event) ->
+        connection = @collection.get(cid: event.target.value)
+        if connection.get('tracksDisabled') is 1
+            connection.set('tracksDisabled', 2)
+        else
+            connection.set('tracksDisabled', 1)
 
     render: () ->
         # Generate a checkbox for each station, and dump them all as html onto the element
