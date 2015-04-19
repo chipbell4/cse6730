@@ -215,7 +215,7 @@ describe 'StationConnection', ->
         it 'should dequeue the eastward train if an eastward train was released and no lines are blocked', ->
             train = new Train(direction: Directions.EAST)
             connection.get('eastwardTrack').push(train)
-            connection.onConnectionExit(stubEvent(connection, new Train, eastStation))
+            connection.onConnectionExit(stubEvent(connection, new Train(direction: Directions.EAST), eastStation))
             expect(EventQueueSingleton.length).to.equal(1)
             expect(EventQueueSingleton.first().get('data').train).to.equal(train)
             expect(connection.get('eastwardTrack').length).to.equal(0)
