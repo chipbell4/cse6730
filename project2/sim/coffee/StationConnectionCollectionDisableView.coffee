@@ -13,10 +13,11 @@ class StationConnectionCollectionDisableView extends Backbone.View
     toggleTrackAvailability: (event) ->
         connection = @collection.get(cid: event.target.value)
         if connection.get('tracksDisabled') is 1
-            connection.set('tracksDisabled', 2)
+            connection.set('tracksDisabled', 0)
         else
             connection.set('tracksDisabled', 1)
 
+        connection.realignTrains()
         connection.awakenLines(Time.current())
 
     render: () ->

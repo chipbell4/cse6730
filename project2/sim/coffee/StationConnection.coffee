@@ -156,7 +156,10 @@ class StationConnection extends Backbone.Model
     # If a line is blocked but then reopened, waiting trains may not have an event to trigger them to enter the connection.
     ###
     awakenLines: (timestamp) ->
-        if @canAwakenInDirection(Directions.EAST)
+        track = @preferredTrackForTrain(new Backbone.Model(direction: Directions.EAST))
+        if not track?
+            console.log 'No track available for EAST'
+        if @canAwakenInDirection(Directions.EAST) and track.length > 0
             event = new Backbone.Model(
                 name: 'train:enter'
                 timestamp: timestamp
@@ -167,15 +170,17 @@ class StationConnection extends Backbone.Model
             )
             @onConnectionEnter(event)
 
-        if @canAwakenInDirection(Directions.WEST)
-            preferredTrack = @preferredTrackForTrain(new Backbone.Model(direction: Directions.WEST))
+        track = @preferredTrackForTrain(new Backbone.Model(direction: Directions.WEST))
+        if not track?
+            console.log 'No track available for WEST'
+        if @canAwakenInDirection(Directions.WEST) and track.length > 0
             event = new Backbone.Model(
                 name: 'train:enter'
                 timestamp: timestamp
                 data:
-                    train: preferredTrack.shift()
+                    train: track.shift()
                     connection: @
-                    track: preferredTrack
+                    track: track
             )
             @onConnectionEnter(event)
 
