@@ -135,18 +135,12 @@ class StationConnection extends Backbone.Model
         if @get('tracksDisabled') is 2
             return
         
-        nextTrain = undefined
-        nextTrack = undefined
-        if train.get('direction') is Directions.WEST and @get('tracksDisabled') is 0
-            nextTrain = @get('westwardTrack').shift()
-            nextTrack = @get('westwardTrack')
-        else
-            nextTrain = @get('eastwardTrack').shift()
-            nextTrack = @get('eastwardTrack')
+        nextTrack = @preferredTrackForTrain(train)
+        nextTrain = @releaseNextTrain(train.get('direction'))
 
          # if there is no next train, just wait for the next
-         if not nextTrain?
-             return
+        if not nextTrain?
+            return
 
         # Push a new event with the next train entering the connection, but at the same timestamp
         EventQueueSingleton.add(
