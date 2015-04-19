@@ -1,6 +1,28 @@
 Backbone = require 'backbone'
+Directions = require './Directions'
 
 class Train extends Backbone.Model
+
+    ###
+    # Picks a color based on the train distribution. Colors are BL, OR, then SV in that order
+    ###
+    sampleFromTrainColorDistribution: (distribution) ->
+        r = Math.random()
+        totalProbabilitySeen = 0
+        index = 0
+        while r > totalProbabilitySeen
+            totalProbabilitySeen += distribution[index]
+            index += 1
+
+        colors = ['BL', 'OR', 'SV']
+        return colors[index - 1]
+
+    initialize: () ->
+        if @get('direction') is Directions.EAST
+            @set('color', @sampleFromTrainColorDistribution([0.237652, 0.350751, 0.411597]))
+        else if @get('direction') is Directions.EAST
+            @set('color', @sampleFromTrainColorDistribution([0.274308, 0.374703, 0.350988]))
+
     interpolatePosition: (station1, station2, percent) ->
         if percent > 1
             percent = 1
