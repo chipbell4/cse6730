@@ -158,8 +158,6 @@ class StationConnection extends Backbone.Model
     ###
     awakenLines: (timestamp) ->
         track = @preferredTrackForTrain(new Backbone.Model(direction: Directions.EAST))
-        if not track?
-            console.log 'No track available for EAST'
         if @canAwakenInDirection(Directions.EAST) and track.length > 0
             event = new Backbone.Model(
                 name: 'train:enter'
@@ -172,8 +170,6 @@ class StationConnection extends Backbone.Model
             @onConnectionEnter(event)
 
         track = @preferredTrackForTrain(new Backbone.Model(direction: Directions.WEST))
-        if not track?
-            console.log 'No track available for WEST'
         if @canAwakenInDirection(Directions.WEST) and track.length > 0
             event = new Backbone.Model(
                 name: 'train:enter'
