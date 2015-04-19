@@ -46,7 +46,10 @@ class EventLogView extends Backbone.View
     render: ->
         filterText = @filterText
         logString = @collection.filter((event) ->
-            event.get('name').indexOf(filterText) > -1
+            inName = event.get('name').indexOf(filterText) > -1
+            inTrain = event.get('data').train.cid.indexOf(filterText) > -1
+            inConnection = event.get('data').connection.toString().indexOf(filterText) > -1
+            return inName or inTrain or inConnection
         ).map(@singleEventAsString).join('\n')
 
         $textarea = @$('textarea')
