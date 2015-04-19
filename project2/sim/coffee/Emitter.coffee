@@ -57,7 +57,7 @@ class Emitter
     ###
     # Triggers the next item given the current timestamp
     ###
-    emitNext: () ->
-        return Time.current() + @sampleHistogram()
+    emitNext: (timestamp) ->
+        return timestamp + @sampleHistogram()
 
 module.exports = Emitter
