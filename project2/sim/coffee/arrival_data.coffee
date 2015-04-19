@@ -32,7 +32,7 @@ module.exports[Directions.WEST] = {
     max: 1680
 }
 
-module.exports[Directions.EAST] = [
+module.exports[Directions.EAST] = {
     pdf: [
         0.015206372,
         0.089065894,
@@ -62,4 +62,4 @@ module.exports[Directions.EAST] = [
     ],
     min: 36
     max: 816
-]
+}
