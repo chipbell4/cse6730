@@ -13,6 +13,7 @@ Time = require './Time'
 EventLog = require './EventLog'
 EventLogView = require './EventLogView'
 StationConnectionCollectionDisableView = require './StationConnectionCollectionDisableView'
+HistogramView = require './HistogramView'
 
 stubEvent = (timestamp, metroSystem, direction) ->
     timestamp = timestamp + Math.random()
@@ -79,6 +80,47 @@ $ ->
     logView = new EventLogView(
         collection: log
         el: $('#event-log')
+    )
+
+    # Listen for changes in the the output
+    westwardDistribution = new HistogramView(
+        el: $('#westward-distribution')
+        histogramSize:
+            min: 15
+            max: 165
+    )
+    westwardTrainStarts = { }
+    EventQueueSingleton.on('train:arrive', (event) ->
+        return if event.get('data').station.get('code') isnt 'D08'
+        return if event.get('data').train.get('direction') isnt Directions.WEST
+        westwardTrainStarts[event.get('data').train.cid] = event.get('timestamp')
+    )
+    EventQueueSingleton.on('train:arrive', (event) ->
+        return if event.get('data').station.get('code') isnt 'C05'
+        return if event.get('data').train.get('direction') isnt Directions.WEST
+        firstAppearance = westwardTrainStarts[event.get('data').train.cid]
+        durationInSystem = (event.get('timestamp') - firstAppearance) / 60
+        westwardDistribution.collection.add(value: durationInSystem)
+    )
+
+    eastwardDistribution = new HistogramView(
+        el: $('#eastward-distribution')
+        histogramSize:
+            min: 15
+            max: 165
+    )
+    eastwardTrainStarts = { }
+    EventQueueSingleton.on('train:arrive', (event) ->
+        return if event.get('data').station.get('code') isnt 'C05'
+        return if event.get('data').train.get('direction') isnt Directions.EAST
+        eastwardTrainStarts[event.get('data').train.cid] = event.get('timestamp')
+    )
+    EventQueueSingleton.on('train:arrive', (event) ->
+        return if event.get('data').station.get('code') isnt 'D08'
+        return if event.get('data').train.get('direction') isnt Directions.EAST
+        firstAppearance = eastwardTrainStarts[event.get('data').train.cid]
+        durationInSystem = (event.get('timestamp') - firstAppearance) / 60
+        eastwardDistribution.collection.add(value: durationInSystem)
     )
 
     doAStep = ->
