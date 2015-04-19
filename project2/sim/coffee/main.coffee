@@ -10,8 +10,6 @@ MetroSystem = require './MetroSystem'
 MetroSystemView = require './MetroSystemView'
 SimulationSpeedView = require './SimulationSpeedView'
 Time = require './Time'
-EventLog = require './EventLog'
-EventLogView = require './EventLogView'
 StationConnectionCollectionDisableView = require './StationConnectionCollectionDisableView'
 HistogramView = require './HistogramView'
 
@@ -73,14 +71,6 @@ $ ->
         el: $('#track-disabling-control')
     )
     disableView.render()
-
-    # Log events
-    log = new EventLog()
-    #log.watchEventQueue(EventQueueSingleton)
-    logView = new EventLogView(
-        collection: log
-        el: $('#event-log')
-    )
 
     # Listen for changes in the the output
     westwardDistribution = new HistogramView(
