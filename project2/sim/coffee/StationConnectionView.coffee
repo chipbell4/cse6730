@@ -16,10 +16,14 @@ class StationConnectionView extends Backbone.View
 
         @rebindPopup()
         @listenTo(@model, 'change:tracksDisabled', @rebindPopup)
+        @listenTo(@model.get('westwardTrack'), 'add remove', @rebindPopup)
+        @listenTo(@model.get('eastwardTrack'), 'add remove', @rebindPopup)
 
     rebindPopup: () ->
         @line.unbindPopup()
-        @line.bindPopup(@model.toString() + ' has ' + @model.get('tracksDisabled') + ' track(s) disabled')
+        message = @model.toString() + ' has ' + @model.get('tracksDisabled') + ' track(s) disabled, '
+        message += (@model.get('westwardTrack').length + @model.get('eastwardTrack').length + @model.get('waitingTrack').length) + ' total trains waiting'
+        @line.bindPopup(message)
 
     render: () ->
         color = 'green'
