@@ -75,7 +75,7 @@ $ ->
 
     # Log events
     log = new EventLog()
-    log.watchEventQueue(EventQueueSingleton)
+    #log.watchEventQueue(EventQueueSingleton)
     logView = new EventLogView(
         collection: log
         el: $('#event-log')
