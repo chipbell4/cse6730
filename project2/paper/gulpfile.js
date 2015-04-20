@@ -26,3 +26,7 @@ gulp.task('default', ['clean'], function(cb) {
         asyncCommand(latex)
     ], cb);
 });
+
+gulp.task('watch', ['default'], function() {
+    return gulp.watch(['main.bib', 'main.tex'], ['default']);
+});
