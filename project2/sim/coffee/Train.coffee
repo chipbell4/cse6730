@@ -1,6 +1,9 @@
 Backbone = require 'backbone'
 Directions = require './Directions'
 
+###
+# Model that represents a train
+###
 class Train extends Backbone.Model
 
     ###
@@ -17,12 +20,19 @@ class Train extends Backbone.Model
         colors = ['BL', 'OR', 'SV']
         return colors[index - 1]
 
+    ###
+    # Constructor for the model. Looks at the direction, and chooses the color for the train randomly based on an
+    # empirical distribution gathered from real data
+    ###
     initialize: () ->
         if @get('direction') is Directions.EAST
             @set('line', @sampleFromTrainColorDistribution([0.237652, 0.350751, 0.411597]))
         else if @get('direction') is Directions.WEST
             @set('line', @sampleFromTrainColorDistribution([0.274308, 0.374703, 0.350988]))
 
+    ###
+    # Uses linear interpolation to set the location of the train based it's position between two stations
+    ###
     interpolatePosition: (station1, station2, percent) ->
         if percent > 1
             percent = 1
@@ -36,6 +46,10 @@ class Train extends Backbone.Model
             longitude: longitude1 + (longitude2 - longitude1) * percent
         )
 
+    ###
+    # Uses the current timestamp + the arrival time at a station to figure out the interpolated position of the train
+    # at a given time
+    ###
     figureOutPosition: (currentTimestamp) ->
         missing = []
         if not @has('connection')
@@ -56,6 +70,10 @@ class Train extends Backbone.Model
         percent = @fractionalDistanceFromPreviousStation(currentTimestamp)
         @interpolatePosition(@get('previousStation'), @get('nextStation'), percent)
 
+    ###
+    # Given the train's arrival time and current timestamp, decides the fractional distance (0 to 1) that the train is
+    # down it's current connection
+    ###
     fractionalDistanceFromPreviousStation: (currentTimestamp) ->
         if not @has('connection') or not @has('previousStation')
             return 0

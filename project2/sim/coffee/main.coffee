@@ -15,6 +15,9 @@ HistogramView = require './HistogramView'
 Emitter = require './Emitter'
 ArrivalData = require './arrival_data'
 
+###
+# Given a direction, generates a list of random timestamps based on the empirical distribution in that direction
+###
 generateTimestampList = (direction) ->
    emitter = new Emitter(
        eventQueue: EventQueueSingleton
@@ -30,7 +33,9 @@ generateTimestampList = (direction) ->
 
    return timestamps
 
-
+###
+# Stubs an arrival event for a train at a given time and direction
+###
 stubEvent = (timestamp, metroSystem, direction) ->
     station = metroSystem.stationData[0]
     connection = metroSystem.connections[0]
@@ -52,6 +57,10 @@ stubEvent = (timestamp, metroSystem, direction) ->
             track: track
     )
 
+###
+# Pushes a bunch of arrival events for the metro system in both directions, based on an empirical distribution of
+# arrivals
+###
 pushTrains = (metroSystem) ->
     westwardTimestamps = generateTimestampList(Directions.WEST)
     eastwardTimestamps = generateTimestampList(Directions.EAST)
@@ -62,20 +71,24 @@ pushTrains = (metroSystem) ->
     return EventQueueSingleton.toArray()
 
 $ ->
+    # Render a map
     map = new MapView(
         el: $('#map')
     )
 
+    # Build the metro system from the station data we have stored, and then render to a map
     metroSystem = new MetroSystem(stationData)
     metroSystemView = new MetroSystemView(
         model: metroSystem
         map: map.map
     )
 
+    # Queue up events for the simulation, but save the results, since we'll use it to render every train as it moves
+    # through the system
     events = pushTrains(metroSystem)
-
     new TrainView(model: event.get('data').train, map: map.map) for event in events
 
+    # Start time back at 0
     Time.reset()
 
     # Allow the user to update simulation speed on the fly
@@ -90,7 +103,7 @@ $ ->
     )
     disableView.render()
 
-    # Listen for changes in the the output
+    # Listen for westward trains to finish their journey, and render stats accordingly
     westwardDistribution = new HistogramView(
         el: $('#westward-distribution')
         histogramSize:
@@ -111,6 +124,7 @@ $ ->
         westwardDistribution.collection.add(value: durationInSystem)
     )
 
+    # Listen for eastward trains to finish their journey, and render stats accordingly
     eastwardDistribution = new HistogramView(
         el: $('#eastward-distribution')
         histogramSize:
@@ -131,6 +145,7 @@ $ ->
         eastwardDistribution.collection.add(value: durationInSystem)
     )
 
+    # A poor man's infinite loop that does not block the UI
     doAStep = ->
         events = EventQueueSingleton.emitNextAt(Time.current())
         Time.step(2)

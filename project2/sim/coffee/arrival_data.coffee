@@ -1,5 +1,8 @@
 Directions = require './Directions'
 
+###
+# The empirical distribution of train interarrival times
+###
 module.exports[Directions.WEST] = {
     pdf: [
         0.038950715,

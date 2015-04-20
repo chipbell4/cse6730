@@ -1,3 +1,7 @@
+###
+# Module to wrap Math.random to help with testing. However, I'm pretty sure you'll find places where I'm inconsistent
+# and forget to use it.
+###
 module.exports =
     ###
     # Returns a random number in the range provided, defaulting to [0,1]

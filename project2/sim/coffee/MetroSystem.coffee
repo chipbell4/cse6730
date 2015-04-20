@@ -8,6 +8,11 @@ EventQueueSingleton = require './EventQueueSingleton'
 # A class to represent the collection of stations, connected by pieces of track
 ###
 class MetroSystem
+    ###
+    # The main constructor. Takes an array of station data (see the station data file for an example) and builds a
+    # list of stations, along with station connections to join them. Also handles events that require a train to pass
+    # from one connection to the next
+    ###
     constructor: (@stationData) ->
         # Map to an array of station objects
         @stationData = (new Station(station) for station in @stationData)
@@ -18,6 +23,10 @@ class MetroSystem
         # Wire up events
         EventQueueSingleton.on('train:exit', @onConnectionExit.bind(@))
 
+    ###
+    # Helper function for building a station connection from the list of stations stored within the metro system. Takes
+    # the right index at which to build
+    ###
     stationConnectionFactory: (index) ->
         eastwardTime = @stationData[index - 1].get('timeFromNextEasternStation')
         westwardTime = @stationData[index].get('timeFromNextWesternStation')
@@ -36,6 +45,10 @@ class MetroSystem
             timeBetweenStations: timeBetweenStations
         )
 
+    ###
+    # Event handler for when a train exits a connection, meaning that it needs to arrive at the next connection in the
+    # list of connections, if there is one
+    ###
     onConnectionExit: (event) ->
         eventData = event.get('data')
         nextConnection = @nextConnectionForTrain(eventData.train, eventData.connection)
@@ -56,7 +69,9 @@ class MetroSystem
                 station: arrivingStation
         )
 
-
+    ###
+    # Figures out the next connection for train, given the current one it just left
+    ###
     nextConnectionForTrain: (train, currentConnection) ->
         index = @connections.indexOf(currentConnection)
         if index is -1
@@ -67,6 +82,5 @@ class MetroSystem
             return null
 
         return @connections[index + train.get('direction')]
-
 
 module.exports = MetroSystem

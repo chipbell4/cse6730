@@ -4,7 +4,15 @@ EventQueueSingleton = require './EventQueueSingleton'
 Directions = require './Directions.coffee'
 TrackSegment = require './TrackSegment.coffee'
 
+###
+# The most important class in the simulation. Represents the connection between two stations. Each connection has a
+# designated eastward and westward track, but these can be disabled forcing eastbound and westbound trains to share
+# a track.
+###
 class StationConnection extends Backbone.Model
+    ###
+    # The default values for the connection. Initializes empty tracks, and defaults 0 tracks to be disabled
+    ###
     defaults: () ->
         {
             eastwardTrack: new TrackSegment
@@ -13,28 +21,46 @@ class StationConnection extends Backbone.Model
             tracksDisabled: 0
         }
 
+    ###
+    # The constructor. Wires up the main events we care about: When a train arrives at the edge of the connection. When
+    # a train enters a connection, occupying a track, and when a train exits a connection, freeing a track for use by
+    # the next train
+    ###
     initialize: (options = {}) ->
-        # wire up events
         @listenTo(EventQueueSingleton, 'train:arrive', @onTrainArrived)
         @listenTo(EventQueueSingleton, 'train:enter', @onConnectionEnter)
         @listenTo(EventQueueSingleton, 'train:exit', @onConnectionExit)
 
+    ###
+    # disables a track, forcing trains to share a track (potentially even wait for a track to become free)
+    ###
     disableTrack: () ->
         @set('tracksDisabled', @get('tracksDisabled') + 1)
         if @get('tracksDisabled') > 2
             @set('tracksDisabled', 2)
         @realignTrains()
 
+    ###
+    # Enables a track
+    ###
     enableTrack: () ->
         @set('tracksDisabled', @get('tracksDisabled') - 1)
         if @get('tracksDisabled') < 0
             @set('tracksDisabled', 0)
         @realignTrains()
 
+    ###
+    # Enqueues a new train to pass through the connection
+    ###
     enqueueTrain: (train) ->
         @get('waitingTrack').add train
         @realignTrains()
 
+    ###
+    # Reassigns trains to the correct holding locations. For instance, if no tracks are available, it pushes all trains
+    # to a "waiting track". If a single is available, makes all trains use an eastward track. Otherwise, splits them by
+    # their direction
+    ###
     realignTrains: () ->
         # First, push all trains to the waiting track. We'll decide whether or not to split from there
         @get('waitingTrack').add @get('eastwardTrack').toArray()
@@ -60,11 +86,18 @@ class StationConnection extends Backbone.Model
         
         @get('waitingTrack').reset()
 
+    ###
+    # Releases the next train heading a certain direction
+    ###
     releaseNextTrain: (direction) ->
         return if @get('tracksDisabled') == 2
         return @get('eastwardTrack').shift() if @get('tracksDisabled') == 1 or direction is Directions.EAST
         return @get('westwardTrack').shift() if direction is Directions.WEST
 
+    ###
+    # Handler for when a train arrives. Pushes the train onto the queue to be processed. However, if a track is open,
+    # it goes ahead and pushes the train through
+    ###
     onTrainArrived: (event) ->
         train = event.get('data').train
         station = event.get('data').station
@@ -79,6 +112,10 @@ class StationConnection extends Backbone.Model
             track.shift()
             @onConnectionEnter(event)
 
+    ###
+    # Handler for when a train enters a connection. Prevents other trains from entering the connection, but also
+    # schedules the exit event for the train in the future, so that other trains can move through.
+    ###
     onConnectionEnter: (event) ->
         return if event.get('data').connection isnt @
 
@@ -112,6 +149,10 @@ class StationConnection extends Backbone.Model
         )
         EventQueueSingleton.add(exitEvent)
 
+    ###
+    # Handler for when a train exits the connection. Frees the track that was being used, and queues up the next train
+    # (if there is one) to occupy the connection.
+    ###
     onConnectionExit: (event) ->
         # pluck data off of the event
         connection = event.get('data').connection
@@ -145,6 +186,9 @@ class StationConnection extends Backbone.Model
                 station: event.get('station')
         )
 
+    ###
+    # Decides which track a train should be placed on, based on it's direction and how many tracks are available.
+    ###
     preferredTrackForTrain: (train) ->
         return null if @get('tracksDisabled') is 2
         return @get('eastwardTrack') if train.get('direction') is Directions.EAST and not @get('eastwardTrack').isOccupied()
@@ -188,6 +232,9 @@ class StationConnection extends Backbone.Model
         track = @preferredTrackForTrain(new Backbone.Model(direction: direction))
         return track?
 
+    ###
+    # A nice string representation of the connection. Provides the two stations that are connected
+    ###
     toString: () ->
         @get('eastStation').get('name') + ' to ' + @get('westStation').get('name')
 

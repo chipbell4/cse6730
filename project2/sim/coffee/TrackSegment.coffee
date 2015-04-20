@@ -32,12 +32,18 @@ class TrackSegment extends Backbone.Collection
 
         return splitTrains
 
+    ###
+    # Marks the track segment as being occupied, so no other trains can use it
+    ###
     occupy: (train) ->
         if train?
             @occupyingTrain = train
         else
             delete @occupyingTrain
 
+    ###
+    # Returns true or false if the track is occupied
+    ###
     isOccupied: () ->
         @occupyingTrain?
 

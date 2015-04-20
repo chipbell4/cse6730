@@ -1,6 +1,9 @@
 Backbone = require 'backbone'
 Station = require './Station.coffee'
 
+###
+# Represents a collection of stations
+###
 class StationCollection extends Backbone.Collection
     model: Station
 
