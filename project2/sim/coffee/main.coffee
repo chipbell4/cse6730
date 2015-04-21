@@ -108,7 +108,7 @@ $ ->
         el: $('#westward-distribution')
         histogramSize:
             min: 15
-            max: 165
+            max: 50
     )
     westwardTrainStarts = { }
     EventQueueSingleton.on('train:arrive', (event) ->
@@ -129,7 +129,7 @@ $ ->
         el: $('#eastward-distribution')
         histogramSize:
             min: 15
-            max: 165
+            max: 50
     )
     eastwardTrainStarts = { }
     EventQueueSingleton.on('train:arrive', (event) ->
