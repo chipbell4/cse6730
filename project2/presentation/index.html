@@ -42,6 +42,10 @@
                 background-color: #a1a3a1;
                 color: black;
             }
+            .test-output {
+                font-size: 15px;
+                max-height: 30em;
+            }
         </style>
     </head>
     <body>
@@ -135,6 +139,178 @@
                 What is the ratio of <span class="blue">Blue</span> line to <span class="orange">Orange</span> and <span class="silver">Silver</span>?
                 Roughly ~30% <span class="blue">Blue</span>, and ~40% for <span class="orange">Orange</span> and <span class="silver">Silver</span></li>
             </ul>
+        </div>
+        <div class="slide">
+            <h2>Verification</h2>
+            <ul>
+                <li>
+                    Since I'm not perfect, I wrote a nice test suite for the code (as I was writing it). Here's the
+                    output at the time of writing. Note that my terminal highlights it nice and green!
+                </li>
+            </ul>
+<pre class="test-output"><code>[gulp] Using gulpfile /Users/chip/git/cse6730/project2/sim/gulpfile.js
+[gulp] Starting 'test'...
+
+
+  Emitter
+    ✓ should exist
+    chooseBinRandomly
+      ✓ should choose the first bin if the chosen random number is 0
+      ✓ should choose the last bin if the chosen random number is 1
+      ✓ should choose a middle bin if the random number falls there in the cdf
+    calculateBinWidth
+      ✓ should calculate the bin width correctly with a 0 min
+      ✓ should calculate the bin with correctly with a 0 max
+      ✓ should calculate the bin with correctly with a non-zero max and min
+    uniformSampleWithinBin
+      ✓ should return the left edge of the bin if the random number is 0
+      ✓ should return the right edge of the bin if the random number is 1
+
+  MetroSystem
+    constructor
+      ✓ should create the correct number of station connections
+    stationConnectionFactory
+      ✓ should average the two values if they are both non-null
+      ✓ should just use the timeFromNextEasternStation if no western is provided
+      ✓ should just use the timeFromNextWesternStation if no eastern is provided
+    nextConnectionForTrain
+      ✓ should return the next station if the train is westward
+      ✓ should return null if there are no more stations in the west direction and the train is westward
+      ✓ should return the previous station if the train is eastward
+      ✓ should return null if there are no more stations in the east direction and the train is eastward
+      ✓ should return null if it cannot find the connection provided
+    onConnectionExit
+      ✓ should pass it to the next westward station if the train is heading west
+      ✓ should pass it to the next eastward train if the train is heading east
+      ✓ should trigger a train:finish if the train is westward, with no more stations
+      ✓ should trigger a train:finish if the train is eastward, with no more stations
+
+  Station
+    idAttribute
+      ✓ should use the station code as an id
+
+  StationCollection
+    get
+      ✓ should be able to find by code
+    stationAfter
+      ✓ should work with codes in the west direction
+      ✓ should work with a model in the west direction
+      ✓ should work in codes the east direction
+      ✓ should work in models the east direction
+      ✓ should return null if cannot find the model
+      ✓ should return nothing if the next station index is out of bounds
+
+  StationConnection
+    disableTrack
+      ✓ should by default have 0 tracks disabled
+      ✓ should increment to 1 if a single track is disabled
+      ✓ should increment to 2 if two tracks are disabled
+      ✓ should never go above 2
+    enableTrack
+      ✓ should decrement the number of tracks to 1 if 2 tracks are disabled
+      ✓ should never go below 0
+    enqueueTrain
+      ✓ should push the train to the eastward track if the train is heading eastward
+      ✓ should push the train to the westward track if the train is heading westward
+      ✓ should push all trains to the east track if a single track is disabled
+      ✓ should push the train to the waiting track if all tracks are disabled, so it will not be processed
+    realignTrains
+      ✓ should push all trains from both east and west collections into the waiting track if all tracks are disabled
+      ✓ should push all trains from westward and waiting to eastward if a single track is available
+      ✓ should push all trains to their correct location if two trains are available
+    releaseNextTrain
+      ✓ should release a train from the east direction if one is available
+      ✓ should release a train from the west direction if one is available
+      ✓ should return null if no tracks are available
+      ✓ should return whatever is in the eastern track if there is one track
+    onTrainArrived
+      ✓ should not push a train if its not the same connection
+      ✓ should push a train if its heading east and the connection matches
+      ✓ should push a train if its heading west and the connection matches
+    onConnectionEnter
+      ✓ should emit an event with the same train, but at a later time
+      ✓ should not emit an event if the connection does no match
+    onConnectionExit
+      ✓ should enqueue nothing if the connection mismatches
+      ✓ should enqueue nothing if the station mismatches
+      ✓ should enqueue nothing if both track segments are blocked
+      ✓ should dequeue the westward train if a westward train was released and no lines are blocked
+      ✓ should dequeue the eastward train if an eastward train was released and no lines are blocked
+      ✓ should dequeue the first available train if only a single lane is available
+    preferredTrackForTrain
+      ✓ should return a track if the train is eastward and the eastward track is unoccupied
+      ✓ should return a track if the train is westward and the westward track is unoccupied, with no disabled tracks
+      ✓ should return a track if the train is westward and the eastward track is unoccupied with a single disabled track
+      ✓ should return nothing if there are no tracks available
+    canAwakenInDirection
+      ✓ should return false regardless of direction if no lines are free
+      ✓ should return true if the direction is east and the east line is free
+      ✓ should return false if the direciton is east but the east line is not free
+      ✓ should return true if the direction is west and the west line is free, with no tracks blocked
+      ✓ should return true if the direction is west and east line is free, with one track blocked
+      ✓ should return false if the direction is west and west line is blocked with no tracks blocked
+      ✓ should return false if the diretion is west and the east line is blocked with one track blocked
+
+  TrackSegment
+    model
+      ✓ should use a train as a model
+    releaseNextTrain
+      ✓ should pop the first in the list
+    splitByDirection
+      ✓ should return the correct types
+      ✓ should put eastbound trains in the east list
+      ✓ should put westbound trains in the west list
+    occupy
+      ✓ should by default not have an occupying train
+      ✓ should save the train on the track segment
+      ✓ should remove the train if it is called with nothing
+
+  Train
+    interpolatePosition
+      ✓ should interpolate correctly
+      ✓ should handle the left edge okay
+      ✓ should handle the right edge okay
+      ✓ should clamp to 1 if greater than 1
+      ✓ should only throw one change event
+    figureOutPosition
+      ✓ should set the lat and long to 0 if there is no connection
+      ✓ should set the lat and long to 0 if there is no previous station
+      ✓ should set the lat and long to 0 if ther is no next station
+      ✓ should use the fractional distance if everything is set correctly
+    fractionalDistanceFromPreviousStation
+      ✓ should return 0 if there is no connection
+      ✓ should return 0 if there is no previous station
+      ✓ should return the correct value if the connection and previous station are set
+
+  Dummy Test
+    ✓ Should totally work
+
+
+  90 passing (70ms)
+
+[gulp] Finished 'test' after 2.67 s</pre></code>
+        </div>
+        <div class="slide">
+            <h2>Validation</h2>
+            <ul>
+                <li>
+                    WMATA posts <a href="http://www.wmata.com/rail/station_to_station_fares.cfm?src_station_id=63&dst_station_id=41&x=57&y=13">time estimates</a>
+                    along with fares. We can use this as a benchmark for what we've seen.
+                </li>
+                <li>
+                For instance, WMATA estimates 21 minutes for the entire westward journey. Our simulation gives us similar: <br/><img src="westward_throughput.png"/>
+                </li>
+            </ul>
+        </div>
+        <div class="slide">
+            <h2>Results</h2>
+            <ul>
+                <li>WMATA estimates fairly well. The times on their site are conservative, but accurate</li>
+                <li>WMATA's train schedule is spaced enough to provide cushion against track outages with few delays</li>
+            </ul>
+        </div>
+        <div class="slide">
+            <h2>?</h2>
         </div>
 
         <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
