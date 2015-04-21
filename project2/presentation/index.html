@@ -22,6 +22,9 @@
                 padding-bottom: 2em;
                 border-bottom: solid 1px #ccc;
             }
+            figure {
+                text-align: center;
+            }
         </style>
     </head>
     <body>
@@ -61,6 +64,56 @@
                 <li>
                     <a target="_blank" href="http://mochajs.org/">Mocha</a> was used for testing</a>
                 </li>
+            </ul>
+        </div>
+        <div class="slide">
+            <h2>Architecture</h2>
+            <ul>
+                <li>Discrete-Event Simulation, using a Backbone collection as an event queue</li>
+                <li>Runs in "scaled real-time" so we can change the system's behavior on the fly</li>
+                <li>Models to represent individual Trains, Stations, connections between stations, and the entire metro system itself</li>
+                <li>Views to represent items on the map, along with statistics and interacting with the system</li>
+            </ul>
+        </div>
+        <div class="slide">
+            <h2>Fun Features</h2>
+            <ul>
+                <li>Trains on the map are colored based on which line they are</li>
+                <li>Clicking on a station connection will tell you trains waiting, and tracks disabled</li>
+                <li>You can disable tracks on the fly</li>
+                <li>The map can be zoomed, dragged, etc.</li>
+            </ul>
+        </div>
+        <div class="slide">
+            <h2>Input Data</h2>
+            <ul>
+                <li>WMATA provides an <a target="_blank" href="https://developer.wmata.com/">API</a></li>
+                <li>I wrote a cron job that pinged the API every minute for a week.</li>
+                <li>Imported them into <a target="_blank" href="https://www.mongodb.org/">MongoDB</a></li>
+                <li>
+                    This is what I got: <b>2,504,793</b> documents that all look sort of like this: <img src="mongo_document.png" />
+                </li>
+        </div>
+        <div class="slide">
+            <h2>Input Analysis</h2>
+            <ul>
+                <li>
+                    What is the interarrival time of trains look like?
+                    <br/>
+                    <figure>
+                        <img src="eastbound_interarrivals.png" width="300px" />
+                        <figcaption>
+                            <small>Eastbound Interarrivals. <br/> Bounds are 0 to 1320 seconds</small>
+                        </figcaption>
+                    </figure>
+                    <figure>
+                        <img src="westbound_interarrivals.png" width="300px" />
+                        <figcaption>
+                            <small>Westbound Interarrivals. <br/> Bounds are 0 to 1680 seconds</small>
+                        </figcaption>
+                    </figure>
+                </li>
+                <li>How long does it take for trains to travel between stations? In general, <b>2 minutes</b></li>
             </ul>
         </div>
 
