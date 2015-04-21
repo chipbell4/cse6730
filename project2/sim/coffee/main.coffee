@@ -27,7 +27,7 @@ generateTimestampList = (direction) ->
    timestamps = []
    latestTimestamp = 0
    # for 10 hours
-   while latestTimestamp < 10 * 60 * 10
+   while latestTimestamp < 10 * 60 * 60
        latestTimestamp = emitter.emitNext(latestTimestamp)
        timestamps.push(latestTimestamp)
 
