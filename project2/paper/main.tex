@@ -39,11 +39,15 @@ A common occurrence in the metro system is that between two stations a particula
 maintenance, forcing trains going both directions to share a track. These basic issues result in a couple of clear
 concepts that we'll incorporate in our model.
 
-The first is a train. A train encapsulates all of the information relevant to our application: which line it is
+The first is a train. A \texttt{Train} encapsulates all of the information relevant to our application: which line it is
 (Orange, Blue, or Silver), it's direction, and it's location within the system. Measuring the throughput of trains
 in the system will be our primary statistic when running the simulation.
 
-The other important entity to be concerned with is the track itself. From a queueing standpoint, it is a limited
+The other important entity to be concerned with is the track itself. In the simulation, this is modeled using a
+\texttt{TrackSegment} class. A \texttt{TrackSegment} is simply a queue with the ability to be process \texttt{Train}s
+one at time.
+
+From a queueing standpoint, a \texttt{TrackSegment} is a limited
 resource that only a single train can use at a single point. If a piece of track is occupied by a train, all other
 trains must wait before they may proceed through the track (in an assumed FIFO order). It is for this reason that
 most train systems do prefer to have a second track to prevent blocking for trains going in opposite directions.
@@ -57,14 +61,33 @@ Silver share a track (See \ref{fig:metromap}). Since there are no track crossove
 to be isolated from other lines. However, we do need to keep in mind that for two tracks, each track is devoted to a
 specific direction. Only in the case of a single track is when a track will handle both directions.
 
-Because this will be a discrete-event simulation, we will need to be mindful of the events that travel through our
-application. A first example that comes to mind is the \texttt{train:arrived} event, which will be received by the
-Rosslyn and Stadium-Armory stations when a train arrives. This event will need to contain which line, along with the
-direction its heading (although that is implied by the station in our case).
+I've also chosen to conceptually model pairs of tracks between stations as a \texttt{StationConnection} class. Perhaps
+unsurprisingly, this is the largest and most important class in the simulation, since it manage two
+\texttt{TrackSegment}s, along with the disabling/enabling of a track segment. When a track is disabled, the
+\texttt{StationConnection} must begin routing trains through a single track, rather than reserving tracks for
+only particular directions. This logic is important to the accuracy and realism of the simulation, since it's one of
+fundamental principles behind a train track. 
 
-Track sections will need to inform neighboring stations when they are free, or if they are occupied. This of course
-will influence when and where trains are sent in order to reach their destination. In this respect, track sections are
-the queues in this network.
+Because this will be a discrete-event simulation, we will need to be mindful of the events that travel through our
+application. A first example that comes to mind is the \texttt{train:arrive} event, which will be received by the
+Rosslyn and Stadium-Armory stations when a train first arrives in the system. This event will need to contain the train
+instance, along with the direction its heading (although that is implied by the station in our case). This way, we can
+track the train as it moves through the system to calculate metrics about the system's performance.
+
+When a train first arrives at a station, it is queued up to await a free track. If the track designated for that
+direction is already available, the train simply moves on to the track and occupies it until it reaches the next
+station where it exits and then queues up at the next station.
+
+When a train is dequeued and allowed to enter a track, a \texttt{train:enter} event is thrown. When this event occurs,
+the station connection marks the track as occupied so that later arriving trains do not attempt to enter the track. The
+connection also schedules a new event: \texttt{train:exit}
+
+\texttt{train:exit} is triggered when a train exits a connection, which informs a connection to free up the track and
+push the next train through if there is one. As mentioned before, this event is actually scheduled when a train enters
+a track between stations. Each connection has knowledge of the time between it's associated stations, and uses that
+time to schedule the \texttt{train:exit} in relation to \texttt{train:enter} for a particular train. Lastly, when a
+train exits a particular connection, a \texttt{train:arrive} event is scheduled immediately for the next connection in
+the metro system.
 
 \begin{figure}
 \begin{center}
@@ -163,7 +186,12 @@ constant velocity through the system, although this is clearly not the case.
 The simulation was built using CoffeeScript \cite{coffeescript}, using Backbone \cite{backbone}, Underscore
 \cite{underscore} and jQuery \cite{jQuery} to organize code some. Code was bundled via Browserify \cite{browserify},
 and minified with UglifyJS \cite{uglify}. Gulp \cite{gulp} was used as a build tool and package management was done
-via NPM \cite{npm}. Geo-mapping was done via Leaflet \cite{leaflet}.
+via NPM \cite{npm}. Geo-mapping was done via Leaflet \cite{leaflet}, which provides an API for enhancing the map with
+markers, text, shapes, etc.
+
+In an effort to ensure code is working properly, the simulation was built with a testing suite. Mocha \cite{mocha} was
+used as the testing framework, and Chai \cite{chai} was used for BDD-style assertions. Sinon \cite{sinon} was used to
+mock function calls during tests.
 
 \section{Current and Remaining Work}
 Currently, the app is simply mapping stations and labeling them based on information provided by the API. The entirety
