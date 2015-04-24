@@ -194,18 +194,31 @@ used as the testing framework, and Chai \cite{chai} was used for BDD-style asser
 mock function calls during tests.
 
 \section{Current Build and Instructions}
-Currently, the app is simply mapping stations and labeling them based on information provided by the API. The entirety
-of data analysis is complete, and can be
-viewed within the \texttt{queries} directory, along with the \texttt{utils}. A few data files are strewn about the
-codebase as well. The WMATA API query code is stored within the \texttt{wmata} folder.
+The functioning simulation is currently hosted at \cite{aprilandchip}. On this page, you can see trains moving through
+the metro system, with real-time statistics as trains reach the other side. Also, tracks can be disabled via the
+checkboxes at the bottom, which will influence trains in real-time. The map itself is interactive, and provides a few
+glimpses into the system. Clicking on a station gives you the name, and clicking on a connection tells you current stats
+at that section of track.
 
-I have also copied some code over from the first project since it will be applicable, such as a discrete event queue.
-However, the \texttt{Track} class remains to be written and is integral to the application, along with the \texttt{Train}
-class. Furthermore, the actual
-train scheduling algorithm itself needs to be written. However, the current application is deployed here
-\cite{aprilandchip}.
+Also within the project directory that has been uploaded with the submission are some of the data analysis tools I've
+built for performing queries, and cleaning data. These can be found in the \texttt{queries} and \texttt{utils}
+directory of the project. Among the scripts found include bash scripts for file templating (for building queries
+dynamically), templated js scripts for querying a mongo database, along with a few Python scripts for performing data
+cleanup (like boxcar filtering for smoothing, and simple binning for histograms).
 
 \section{Results and Conclusions}
+One of the goals for this project was to better understand the metro system as a whole. In particular, I wanted to
+discover how accurate WMATA was at predicting trains, and also how robust their scheduling was to unpredicted track
+unavailability. WMATA provides their own estimates of how often trains occur \cite{metroschedule}, along with between
+station times from any station to another \cite{rosslyntime}. This gives us plenty of room for comparison.
+
+% Talking points
+% - Average between station time
+% - Rosslyn to Stadium Armory time is consistent
+% - Robustness to changes in track availability 
+
+Unsurprisingly, WMATA plans its trains effectively to be robust to a fair amount track outages, while still providing
+the timings estimated on their website. 
 
 \bibliographystyle{plain}
 \bibliography{main}
