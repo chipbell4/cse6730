@@ -212,13 +212,37 @@ discover how accurate WMATA was at predicting trains, and also how robust their 
 unavailability. WMATA provides their own estimates of how often trains occur \cite{metroschedule}, along with between
 station times from any station to another \cite{rosslyntime}. This gives us plenty of room for comparison.
 
-% Talking points
-% - Average between station time
-% - Rosslyn to Stadium Armory time is consistent
-% - Robustness to changes in track availability 
+Empirically measuring between station times is a very granular way to measure the accuracy of WMATA's predictions. For
+instance, stations within DC are estimated between 1 and 2 minutes, resulting in a travel time from Rosslyn to
+Stadium-Armory taking 21 minutes. Based on the between station data we collected, we estimate empirically this actaully
+ends up being around 24 minutes and 8 seconds. This discrepancy can be explained by a few reasons, the first being that
+WMATA is wrong. This is of course, a potential case, but I'm more sure that this really an indication of issues in the
+dataset itself. Since rail predictions are only precise to the minute, stations that are only a minute apart have the
+potential to cause aliasing when calculating between station times. This may be the reason some of the interior station
+times are 2 minutes instead of 1. Moreover, because this was a global measurement over a period of time, I may have 
+captured some delaying event that caused between station times to diminish to a great enough value for a long enough
+time to ``pull'' the mean up.
+
+Regardless of these discrepancies, the simulation appears to agree with the estimates. Trains moving westward average
+around 22.15 minutes to reach Rosslyn from Stadium-Armory. Eastward trains perform slightly better, hovering closer to
+21 minutes. Both distributions, without any track disturbances, are very tight with little variance. The difference in
+means is accounted for by the empirical measurement of between station times. The total westward time from Rosslyn to
+Stadium-Armory is roughly 30 seconds shorter than the eastward counterpart. The remaining time may be accounted for by
+the Rosslyn-Foggy Bottom connection, the most western connection in the system. The between station time here is 
+consistently 3 minutes, rather than 2. Because of this, arriving trains may be forced to wait more often. However,
+because our scope is narrowed for this project, we may be missing some other behavior further westward that may explain
+this behavior.
 
 Unsurprisingly, WMATA plans its trains effectively to be robust to a fair amount track outages, while still providing
-the timings estimated on their website. 
+the timings estimated on their website. Even with three tracks disabled, the mean travel time of eastern and western
+trains still hovers around 23 minutes and 30 seconds. However, worth noting is that the \emph{variabilty} increases
+drastically. Even though the mean moves little, there still are some trains that end up taking over 40 minutes to
+reach the other side given these conditions. In a way, this is simply ``bad luck'' on that particular train's part,
+simply because it's timing fell so that it arrived right as another train had occupied the track (with potentially
+other trains waiting already). However as more tracks become disabled, the bad luck slowly becomes more likely for any
+train to experience.
+
+
 
 \bibliographystyle{plain}
 \bibliography{main}
