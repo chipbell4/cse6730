@@ -79,6 +79,21 @@ class HistogramView extends Backbone.View
 
         @render()
 
+    mean: () ->
+        if @collection.length < 1
+            return 0
+        @collection.pluck('value').reduce(((total, current) -> total + current), 0) / @collection.length
+
+    standardDeviation: (mean) ->
+        if @collection.length < 2
+            return 0
+
+        if not mean?
+            mean = @mean()
+
+        squaredDeviation = @collection.pluck('value').reduce(((total, current) -> total + Math.pow(current - mean, 2)), 0)
+        return Math.sqrt(squaredDeviation / (@collection.length - 1))
+
     ###
     # Helper function for spitting a SVG text on the page
     ###
@@ -115,5 +130,11 @@ class HistogramView extends Backbone.View
         svg.appendChild @buildLabel( (oneHalf), 0.5, 0)
         svg.appendChild @buildLabel( (threeQuarter), 0.7, 0)
         svg.appendChild @buildLabel(@histogramSize.max, 0.9, 0)
+
+        # render stats
+        mean = @mean()
+        stdDev = @standardDeviation(mean)
+        labelText = 'µ=' + mean.toFixed(2) + ', σ=' + stdDev.toFixed(2)
+        svg.appendChild @buildLabel(labelText, 0.65, 0.9)
 
 module.exports = HistogramView
