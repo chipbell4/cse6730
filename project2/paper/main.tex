@@ -57,9 +57,11 @@ opposing tracks to share.
 
 Because of this, we can represent the entire metro as queuing network with sections between stations as the queue. In
 our case, we will only be modeling the section of track between Rosslyn and Stadium-Armory where the Orange, Blue, and
-Silver share a track (See \ref{fig:metromap}). Since there are no track crossovers, we can consider these three lines
-to be isolated from other lines. However, we do need to keep in mind that for two tracks, each track is devoted to a
-specific direction. Only in the case of a single track is when a track will handle both directions.
+Silver share a track (See \ref{fig:metromap}) which results in a simpler network with the nodes falling in a single
+line. Since there are no track crossovers within the DC metro, we can consider these three lines
+to be isolated from other lines, so we lose no accuracy by excluding the other lines from the simulation. However, we
+do need to keep in mind that for two tracks, each track is devoted to a specific direction. Only in the case of a single
+track is when a track will handle both directions.
 
 I've also chosen to conceptually model pairs of tracks between stations as a \texttt{StationConnection} class. Perhaps
 unsurprisingly, this is the largest and most important class in the simulation, since it manage two
@@ -71,7 +73,7 @@ fundamental principles behind a train track.
 Because this will be a discrete-event simulation, we will need to be mindful of the events that travel through our
 application. A first example that comes to mind is the \texttt{train:arrive} event, which will be received by the
 Rosslyn and Stadium-Armory stations when a train first arrives in the system. This event will need to contain the train
-instance, along with the direction its heading (although that is implied by the station in our case). This way, we can
+instance, along with the direction its heading. This way, we can
 track the train as it moves through the system to calculate metrics about the system's performance.
 
 When a train first arrives at a station, it is queued up to await a free track. If the track designated for that
@@ -83,7 +85,7 @@ the station connection marks the track as occupied so that later arriving trains
 connection also schedules a new event: \texttt{train:exit}
 
 \texttt{train:exit} is triggered when a train exits a connection, which informs a connection to free up the track and
-push the next train through if there is one. As mentioned before, this event is actually scheduled when a train enters
+push the next train through, if there is one. As mentioned before, this event is actually scheduled when a train enters
 a track between stations. Each connection has knowledge of the time between it's associated stations, and uses that
 time to schedule the \texttt{train:exit} in relation to \texttt{train:enter} for a particular train. Lastly, when a
 train exits a particular connection, a \texttt{train:arrive} event is scheduled immediately for the next connection in
@@ -101,7 +103,7 @@ the metro system.
 \subsection{Query Design}
 Viewing this as a queueing problem, there are some ``missing pieces'' that our model did not incorporate, namely the
 arrival rate of trains and the service time for a single train. Instead of attempting to calculate these based on 
-numerical models of motion, we can instead use the WMATA API \cite{wmataapi} to calculate this.
+numerical models of motion, we can instead use the WMATA API \cite{wmataapi} to claculate an empirical value.
 
 The API provides data by station with an estimate at each station of the wait time until the next train. For instance,
 the API for a station on the blue line might list a train to Franconia-Springfield (westbound) in 1 minute. If there
@@ -110,9 +112,10 @@ is close enough).
 
 Given this information, we can calculate how often a train runs simply by marking the timestamp of the API call and
 offset by the estimated time until arrival provided by the API. For instance, if we query a station at 12:00 PM, and
-the API estimates a train arriving in 3 minutes, we can roughly estimate that the train will arrive at 12:03. This
-gives us our arrival rate. Furthermore, we can query by train line as well to verify that trains run according to the
-schedule that WMATA provides on its website \cite{metroschedule}.
+the API estimates a train arriving in 3 minutes, we can roughly estimate that the train will arrive at 12:03.
+Performing this operation over time gives us a list of train arrival time by station from which we can calculate
+interarrival time via a running diff. Furthermore, we can query by train line as well to verify that trains run
+according to the schedule that WMATA provides on its website \cite{metroschedule}.
 
 To calculate service times for a particular section of track, we need an estimate of the time it takes for a train to
 travel between two stations. This is clearly station dependent, since some stations are closer than others. However,
@@ -127,15 +130,17 @@ this happening if we restrict our queries on $A$ to trains that are only a minut
 close, we minimize the likelihood that there is a ``middle train'' that causes inaccurate estimates.
 
 \subsection{Query Results}
-A script was built to call the WMATA API for train estimates, and was setup as a cron job on server. The script
+A script was built to call the WMATA API for train estimates, and was setup as a cron job on a server and scheduled to
+run every minute for a week. The script
 essentially downloaded the estimates of train arrivals for every station into a single timestamped JSON file (see the
 JSON format \cite{json}. Cron \cite{crontab} was configured to run the script every minute for an entire week,
-resulting in a directory full of timestamped JSON files. These were then imported into a Mongo \cite{mongodb} database 
+resulting in a directory full of timestamped JSON files. These were then imported into a MongoDB \cite{mongodb} database 
 to allow easier queries.
 
-Train interarrivals were measured by line and direction. \ref{fig:eastboundblueinterarrivals} demonstrates a case where
-the data appears to be normal. However, other cases such as \ref{fig:westboundsilverinterarrivals} show that this is
-not necessarily true. Graphs for the remaining directions and line colors were omitted for brevity, but are included in
+Train interarrivals were measured by line and direction. (\ref{fig:eastboundblueinterarrivals}) demonstrates that the
+data oftentimes appears to follow some ``standard'' distribution. However, other cases such as
+(\ref{fig:westboundsilverinterarrivals}) show that this is not necessarily true. Graphs for the remaining directions
+and line colors were omitted for brevity, but are included in
 the submission. Due to time constraints, we'll use an empirical distribution rather than trying to fit any particular
 distribution.
 
@@ -166,9 +171,10 @@ model.
 
 One of the simplifications that we've made is that we've excluded all other stations in the metro system except those
 between Rosslyn and Stadium Armory. Other lines, the Red, Green, and Yellow lines, do not share track with any train,
-nor do they cross at any point. In this respect, they are isolated (regardless of the fact that they may share
-stations). So, in this case, the simplification hinders accuracy in no way whatsoever. However, ignoring Blue, Orange,
-and Silver stations beyond Stadium-Armory and Rosslyn could potentially
+nor do they cross at any point. In this respect, they are isolated. Event though other lines may share stations, the
+trains run at a different elevation and therefore do no share a track. So, in this case, the simplification hinders
+accuracy in no way whatsoever. However, ignoring Blue, Orange, and Silver stations beyond Stadium-Armory and Rosslyn
+could potentially
 reduce model accuracy here because train events at those stations can very easily influence the stations within D.C.
 We have chosen instead to model those exterior stations as a probability distribution which is based off of empirical
 data, but we still run a risk that we may have not captured an important interaction.
@@ -183,15 +189,15 @@ between station times measurements captures that. For visualization purposes, we
 constant velocity through the system, although this is clearly not the case.
 
 \section{Technology Used}
-The simulation was built using CoffeeScript \cite{coffeescript}, using Backbone \cite{backbone}, Underscore
+The simulation was built using CoffeeScript \cite{coffeescript}, Backbone \cite{backbone}, Underscore
 \cite{underscore} and jQuery \cite{jQuery} to organize code some. Code was bundled via Browserify \cite{browserify},
-and minified with UglifyJS \cite{uglify}. Gulp \cite{gulp} was used as a build tool and package management was done
-via NPM \cite{npm}. Geo-mapping was done via Leaflet \cite{leaflet}, which provides an API for enhancing the map with
+and minified with UglifyJS \cite{uglify}. Gulp \cite{gulp} was used as a build tool and NPM \cite{npm} was used as a
+package manager. Geo-mapping was provided by Leaflet \cite{leaflet}, which has an API for enhancing the map with
 markers, text, shapes, etc.
 
-In an effort to ensure code is working properly, the simulation was built with a testing suite. Mocha \cite{mocha} was
-used as the testing framework, and Chai \cite{chai} was used for BDD-style assertions. Sinon \cite{sinon} was used to
-mock function calls during tests.
+In an effort to ensure that the code worked properly, the simulation was built with a testing suite. Mocha \cite{mocha}
+was used as the testing framework, and Chai \cite{chai} was used for BDD-style assertions. Sinon \cite{sinon} was used
+to mock function calls during tests.
 
 \section{Current Build and Instructions}
 The functioning simulation is currently hosted at \cite{aprilandchip}. On this page, you can see trains moving through
@@ -224,14 +230,15 @@ captured some delaying event that caused between station times to diminish to a 
 time to ``pull'' the mean up.
 
 Regardless of these discrepancies, the simulation appears to agree with the estimates. Trains moving westward average
-around 22.15 minutes to reach Rosslyn from Stadium-Armory. Eastward trains perform slightly better, hovering closer to
-21 minutes. Both distributions, without any track disturbances, are very tight with little variance. The difference in
-means is accounted for by the empirical measurement of between station times. The total westward time from Rosslyn to
-Stadium-Armory is roughly 30 seconds shorter than the eastward counterpart. The remaining time may be accounted for by
-the Rosslyn-Foggy Bottom connection, the most western connection in the system. The between station time here is 
-consistently 3 minutes, rather than 2. Because of this, arriving trains may be forced to wait more often. However,
-because our scope is narrowed for this project, we may be missing some other behavior further westward that may explain
-this behavior.
+around 22.15 minutes to reach Rosslyn from Stadium-Armory within the simulation. Eastward trains perform slightly
+better, hovering closer to 21 minutes. Both distributions, without any track disturbances, are very tight with little
+variance. The difference in  means is accounted for by the empirical measurement of between station times. The total
+westward time from Rosslyn to  Stadium-Armory is roughly 30 seconds shorter than the eastward counterpart. This could
+be a result of many factors, such as geography, or even interactions beyond Rosslyn and Stadium-Armory ``captured''
+in our empirical distribution. The remaining time may be accounted for by the Rosslyn-Foggy Bottom connection, the
+most western connection in the system. The between station time here is  consistently 3 minutes, rather than 2.
+Because of this, arriving trains may be forced to wait more often. WMATA estimates the travel time being the same
+regardless of direction, and I still cannot explain the discrepancy.
 
 Unsurprisingly, WMATA plans its trains effectively to be robust to a fair amount track outages, while still providing
 the timings estimated on their website. Even with three tracks disabled, the mean travel time of eastern and western
@@ -240,9 +247,15 @@ drastically. Even though the mean moves little, there still are some trains that
 reach the other side given these conditions. In a way, this is simply ``bad luck'' on that particular train's part,
 simply because it's timing fell so that it arrived right as another train had occupied the track (with potentially
 other trains waiting already). However as more tracks become disabled, the bad luck slowly becomes more likely for any
-train to experience.
+train to experience. Eventually, the mean does increase to around 32 minutes, with a very wide distribution with many
+trains exceeding 45 minute travel times.
 
-
+In conclusion, we see that WMATA does indeed provide fairly accurate estimates of train travel times, along with the
+interarrival times between stations. Furthermore, WMATA's train scheduling is fairly robust to track outages, without
+drastically impacting the throughput of trains. There are some unanswered questions, however. Why does the direction
+affect the travel time between stations? Why do the simulated travel times agree with WMATA's estimate, but the average
+interarrivals measured from the API do not? Would increasing the scope of the model improve the accuracy and remove the
+discrepancies altogether? These questions can perhaps be answered with deeper investigation and more data.
 
 \bibliographystyle{plain}
 \bibliography{main}
